@@ -17,13 +17,16 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y texlive-xetex texlive-fonts-extra texlive-latex-extra
 
+    - name: Install latexmk
+        run: sudo apt-get install -y latexmk
+
 
     - name: Compile LaTeX to PDF
       run: |
         mkdir pdfs
         for file in Slides/*.tex; do
           filename=$(basename "$file" .tex)
-          xelatex -interaction=nonstopmode -output-directory=pdfs "$file"
+          latexmk -xelatex -interaction=nonstopmode -output-directory=pdfs "$file"
         done
 
     - name: Deploy PDFs to 'pdf' branch
