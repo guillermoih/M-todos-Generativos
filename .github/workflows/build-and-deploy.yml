@@ -15,14 +15,14 @@ jobs:
     - name: Install LaTeX (TeX Live)
       run: |
         sudo apt-get update
-        sudo apt-get install -y texlive-full
+        sudo apt-get install -y texlive-xetex texlive-fonts-recommended texlive-latex-extra
 
     - name: Compile LaTeX to PDF
       run: |
         mkdir pdfs
         for file in Slides/*.tex; do
           filename=$(basename "$file" .tex)
-          pdflatex -output-directory=pdfs "$file"
+          xelatex -interaction=nonstopmode -output-directory=pdfs "$file"
         done
 
     - name: Deploy PDFs to 'pdf' branch
@@ -34,5 +34,5 @@ jobs:
         git rm -rf .
         cp pdfs/*.pdf .
         git add .
-        git commit -m "Update LaTeX PDFs"
+        git commit -m "Update PDFs (XeLaTeX)"
         git push --force origin pdf
