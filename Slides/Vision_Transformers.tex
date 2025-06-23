@@ -58,7 +58,7 @@ De la misma manera que los Transformers en \alert{\gls{nlp}} necesitan que el te
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Vision_Transformers/Image_Preprocessing.png}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Vision_Transformers/Image_Preprocessing.png}
 \end{figure}
 \end{frame}
 
@@ -67,7 +67,7 @@ Los \gls{vit} procesan una imagen como una \alert{secuencia de tokens}. Cada tok
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Vision_Transformers/Image_Tiling.png}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Vision_Transformers/Image_Tiling.png}
 \end{figure}
 
 *El tamaño más estándar para los parches es 16x16 píxeles
@@ -78,7 +78,7 @@ Cada parche es \alert{vectorizado} aplicando un flatten.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Vision_Transformers/Patch_Flatten.png}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Vision_Transformers/Patch_Flatten.png}
 \end{figure}
 
 Cada posición representa el valor de color del píxel.
@@ -89,7 +89,7 @@ Una práctica común es proyectar los tokens a un espacio latente de un tamaño 
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Vision_Transformers/Token_Projection.png}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Vision_Transformers/Token_Projection.png}
 \end{figure}
 
 *En \cite{dosovitskiy2020image} el \textit{token lenght} se define a 768.
@@ -100,7 +100,7 @@ Con todo el proceso definido anteriormente, es posible generar una \alert{repres
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Vision_Transformers/Image_Tokenization_Process.png}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Vision_Transformers/Image_Tokenization_Process.png}
 \end{figure}
 \end{frame}
 
@@ -109,7 +109,7 @@ El siguiente paso consiste en procesar los tokens para añadir \alert{informaci�
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Vision_Transformers/Image_Tokenization_Process.png}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Vision_Transformers/Image_Tokenization_Process.png}
 \end{figure}
 \end{frame}
 
@@ -118,7 +118,7 @@ El \alert{\textit{prediction token}} es un vector que siempre se inicializa a \a
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Vision_Transformers/Pred_Token.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Vision_Transformers/Pred_Token.png}
 \end{figure}
 \end{frame}
 
@@ -127,7 +127,7 @@ Para mantener las \alert{relaciones espaciales} de los parches de una imagen se 
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Vision_Transformers/Pos_Embedding.png}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Vision_Transformers/Pos_Embedding.png}
 \end{figure}
 
 *Es importante recalcar que el positional embedding es \alert{sumado} a los anteriores. Normalmente se una una función \alert{sinusoidal}.
@@ -138,7 +138,7 @@ La información generada previamente se procesa con \alert{bloques de encoding} 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Vision_Transformers/Encoding_Block.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Vision_Transformers/Encoding_Block.png}
 \end{figure}
 \end{frame}
 
@@ -147,7 +147,7 @@ En este punto cabe recordar que el \alert{encoder} está procesando cada parche 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Vision_Transformers/Encoding_Processing.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Vision_Transformers/Encoding_Processing.png}
 \end{figure}
 \end{frame}
 
@@ -158,7 +158,7 @@ Para ello se usa el \alert{prediction token} anteriormente definido.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Vision_Transformers/Encoding_Processing.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Vision_Transformers/Encoding_Processing.png}
 \end{figure}
 \end{frame}
 
@@ -169,7 +169,7 @@ Normalmente, este perceptrón no es más que una capa con activación lineal.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Vision_Transformers/Output.png}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Vision_Transformers/Output.png}
 \end{figure}
 \end{frame}
 
@@ -178,7 +178,7 @@ Existen arquitecturas como \alert{\gls{diffit}} \cite{hatamizadeh2024diffit} que
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Vision_Transformers/DiffiT_Architecture.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Vision_Transformers/DiffiT_Architecture.png}
     \caption{\cite{hatamizadeh2024diffit}}
 \end{figure}
 \end{frame}
@@ -188,7 +188,7 @@ Combinando una arquitectura de \alert{\gls{ae}} e introduciendo bloques de \gls{
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Vision_Transformers/DiffiT_Transformer.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Vision_Transformers/DiffiT_Transformer.png}
     \caption{\cite{hatamizadeh2024diffit}}
 \end{figure}
 \end{frame}
