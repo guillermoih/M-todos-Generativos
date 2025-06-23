@@ -1,0 +1,38 @@
+name: Compile LaTeX Slides to PDF
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  compile-pdf:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install LaTeX (TeX Live)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y texlive-full
+
+    - name: Compile LaTeX to PDF
+      run: |
+        mkdir pdfs
+        for file in Slides/*.tex; do
+          filename=$(basename "$file" .tex)
+          pdflatex -output-directory=pdfs "$file"
+        done
+
+    - name: Deploy PDFs to 'pdf' branch
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git fetch origin pdf || true
+        git switch --orphan pdf
+        git rm -rf .
+        cp pdfs/*.pdf .
+        git add .
+        git commit -m "Update LaTeX PDFs"
+        git push --force origin pdf
