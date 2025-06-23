@@ -1,0 +1,50 @@
+\documentclass[10pt,x11names,table]{beamer}
+
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{appendixnumberbeamer}
+\usepackage{xcolor}
+
+\usepackage{polyglossia}
+\setmainlanguage{spanish}
+
+\usepackage{listings}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+%ANIMACIONES
+\usepackage{animate}
+\usepackage{graphicx}
+\usepackage[caption=false]{subfig}
+
+\usepackage{xspace}
+
+\newcommand*{\eg}{e.g.\@\xspace}
+\newcommand*{\ie}{i.e.\@\xspace}
+
+\let\oldquote\quote
+\let\endoldquote\endquote
+\renewenvironment{quote}[2][]
+  {\if\relax\detokenize{#1}\relax
+     \def\quoteauthor{#2}%
+   \else
+     \def\quoteauthor{#2~---~#1}%
+   \fi
+   \oldquote}
+  {\par\nobreak\smallskip\hfill(\quoteauthor)%
+   \endoldquote\addvspace{\bigskipamount}}
+   
+\usepackage{wrapfig}
+
+\usepackage{subfig}
+\usepackage{hyperref}
+\usepackage{multicol}
+
+\setbeamertemplate{bibliography item}[text]
+
+\usepackage[font=small,skip=0pt, labelformat=empty]{caption}
+
+\usepackage{dirtytalk}
