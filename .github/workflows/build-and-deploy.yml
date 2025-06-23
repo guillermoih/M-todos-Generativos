@@ -27,6 +27,8 @@ jobs:
         done
 
     - name: Deploy PDFs to 'pdf' branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --global user.name 'github-actions'
         git config --global user.email 'github-actions@github.com'
@@ -35,4 +37,4 @@ jobs:
         cp pdfs/*.pdf .
         git add .
         git commit -m "Update PDFs (XeLaTeX)"
-        git push --force origin pdf
+        git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" HEAD:pdf
