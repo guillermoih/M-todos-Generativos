@@ -1,0 +1,4 @@
+\xpginauxfiletrue 
+\selectlanguage *{spanish}
+\beamer@sectionintoc {1}{Tuneo de \glspl {cnn}}{17}{0}{1}
+\contentsline {section}{Referencias}{24}{}%
