@@ -1,0 +1,3 @@
+\xpginauxfiletrue 
+\selectlanguage *{spanish}
+\beamer@sectionintoc {1}{Transformers}{4}{0}{1}

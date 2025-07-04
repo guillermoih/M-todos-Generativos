@@ -1,0 +1,7 @@
+\xpginauxfiletrue 
+\selectlanguage *{spanish}
+\beamer@sectionintoc {1}{Auto-encoders (AEs)}{4}{0}{1}
+\beamer@sectionintoc {2}{Vanilla Autoencoder}{14}{0}{2}
+\beamer@sectionintoc {3}{Autoencoders Convolucionales}{18}{0}{3}
+\beamer@sectionintoc {4}{Autoencoders de Eliminación de Ruido (Denoising Autoencoders)}{22}{0}{4}
+\beamer@sectionintoc {5}{Autoencoders Apilados (Stacked autoencoders)}{26}{0}{5}

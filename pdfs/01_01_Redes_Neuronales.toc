@@ -1,0 +1,5 @@
+\xpginauxfiletrue 
+\selectlanguage *{spanish}
+\beamer@sectionintoc {1}{Repaso de conceptos básicos de redes neuronales}{2}{0}{1}
+\beamer@sectionintoc {2}{Perceptrón multicapa para procesar imágenes}{33}{0}{2}
+\contentsline {section}{Referencias}{37}{}%

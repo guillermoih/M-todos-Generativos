@@ -1,0 +1,3 @@
+\xpginauxfiletrue 
+\selectlanguage *{spanish}
+\beamer@sectionintoc {1}{Auto-encoders Variacionales (VAEs)}{4}{0}{1}

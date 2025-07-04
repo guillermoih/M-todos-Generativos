@@ -1,0 +1,3 @@
+\xpginauxfiletrue 
+\selectlanguage *{spanish}
+\contentsline {section}{Referencias}{2}{}%

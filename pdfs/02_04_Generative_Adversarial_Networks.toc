@@ -1,0 +1,9 @@
+\xpginauxfiletrue 
+\selectlanguage *{spanish}
+\beamer@sectionintoc {1}{Modelos generativos}{2}{0}{1}
+\beamer@sectionintoc {2}{\gls {gan}: Fundamentos}{8}{0}{2}
+\beamer@sectionintoc {3}{\gls {gan}: Entrenamiento}{20}{0}{3}
+\beamer@sectionintoc {4}{\gls {gan}: Problemas principales}{33}{0}{4}
+\beamer@sectionintoc {5}{\gls {gan}: Aplicaciones}{41}{0}{5}
+\beamer@sectionintoc {6}{\gls {gan}: Arquitecturas}{48}{0}{6}
+\contentsline {section}{Referencias}{57}{}%

@@ -1,0 +1,17 @@
+\begin{thebibliography}{1}
+
+\bibitem{Cortex}
+Michael~H. Herzog and Aaron M.~Clarke (frontiers).
+\newblock Cortex image.
+\newblock https://www.frontiersin.org/articles/10.3389/fncom.2014.00135/full.
+\newblock [Online; accessed August, 2022].
+
+\bibitem{siddiqui2018automatic}
+Shoaib~Ahmed Siddiqui, Ahmad Salman, Muhammad~Imran Malik, Faisal Shafait,
+  Ajmal Mian, Mark~R Shortis, and Euan~S Harvey.
+\newblock Automatic fish species classification in underwater videos:
+  exploiting pre-trained deep neural network models to compensate for limited
+  labelled data.
+\newblock {\em ICES Journal of Marine Science}, 75(1):374--389, 2018.
+
+\end{thebibliography}
