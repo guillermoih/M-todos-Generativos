@@ -14,8 +14,10 @@ jobs:
 
     - name: Compile LaTeX to PDF
       run: |
+        echo "Compiling .pdfs"
         mkdir pdfs
         for file in Slides/*.tex; do
+          echo "$file"
           filename=$(basename "$file" .tex)
           latexmk -xelatex -interaction=nonstopmode -output-directory=pdfs "$file"
         done
