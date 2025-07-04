@@ -6,7 +6,7 @@ on:
 
 jobs:
   compile-pdf:
-    runs-on: leplusorg/latex
+    runs-on: pandoc/latex
 
     steps:
     - name: Checkout repository
