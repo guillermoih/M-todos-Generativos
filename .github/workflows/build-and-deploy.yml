@@ -6,20 +6,11 @@ on:
 
 jobs:
   compile-pdf:
-    runs-on: ubuntu-latest
+    runs-on: pandoc/latex
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    - name: Install LaTeX (TeX Live)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y texlive-xetex texlive-fonts-extra texlive-latex-extra
-
-    - name: Install latexmk
-      run: |
-        sudo apt-get install -y latexmk
 
 
     - name: Compile LaTeX to PDF
