@@ -48,3 +48,11 @@
 \usepackage[font=small,skip=0pt, labelformat=empty]{caption}
 
 \usepackage{dirtytalk}
+
+\newenvironment{exercise}{%
+    \setbeamertemplate{footline}{}
+    \setbeamercolor{palette primary}{fg=black, bg=yellow}
+    \begin{frame}[standout]
+}{%
+    \end{frame}
+}
