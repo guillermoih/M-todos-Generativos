@@ -26,6 +26,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        git config --global --add safe.directory /__w/M-todos-Generativos/M-todos-Generativos
         git config --global user.name 'github-actions'
         git config --global user.email 'github-actions@github.com'
         git fetch origin pdf || true
