@@ -1,0 +1,4 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Motivación}{2}{0}{1}
+\beamer@sectionintoc {2}{Fundamentos de las redes convolucionales}{6}{0}{2}
+\contentsline {section}{Referencias}{41}{}%

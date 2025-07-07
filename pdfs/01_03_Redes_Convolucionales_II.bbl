@@ -1,0 +1,33 @@
+\begin{thebibliography}{1}
+
+\bibitem{ConvHierarchy}
+Kathrin~Melcher (Medium).
+\newblock Convolutional hierarchy image.
+\newblock
+  https://medium.com/low-code-for-advanced-data-science/introduction-to-convolutional-neural-networks-and-computer-vision-72b2d85dd1c0.
+\newblock [Online; accessed August, 2022].
+
+\bibitem{bieder2021comparison}
+Florentin Bieder, Robin Sandk{\"u}hler, and Philippe~C Cattin.
+\newblock Comparison of methods generalizing max-and average-pooling.
+\newblock {\em arXiv preprint arXiv:2103.01746}, 2021.
+
+\bibitem{MaxPoolingvsStrides}
+itdxer (StackExchange).
+\newblock Strides vs maxpooling debate.
+\newblock
+  https://stats.stackexchange.com/questions/387482/pooling-vs-stride-for-downsampling.
+\newblock [Online; accessed September, 2023].
+
+\bibitem{sun2018fishnet}
+Shuyang Sun, Jiangmiao Pang, Jianping Shi, Shuai Yi, and Wanli Ouyang.
+\newblock Fishnet: A versatile backbone for image, region, and pixel level
+  prediction.
+\newblock {\em Advances in neural information processing systems}, 31, 2018.
+
+\bibitem{simonyan2014very}
+Karen Simonyan and Andrew Zisserman.
+\newblock Very deep convolutional networks for large-scale image recognition.
+\newblock {\em arXiv preprint arXiv:1409.1556}, 2014.
+
+\end{thebibliography}

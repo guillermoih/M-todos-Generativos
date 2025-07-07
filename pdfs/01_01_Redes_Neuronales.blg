@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: 01_01_Redes_Neuronales.aux
+The style file: unsrt.bst
+Database file #1: Slides/references.bib
+You've used 7 entries,
+            1791 wiz_defined-function locations,
+            486 strings with 4727 characters,
+and the built_in function-call counts, 1183 in all, are:
+= -- 108
+> -- 39
+< -- 0
++ -- 17
+- -- 10
+* -- 43
+:= -- 191
+add.period$ -- 26
+call.type$ -- 7
+change.case$ -- 7
+chr.to.int$ -- 0
+cite$ -- 7
+duplicate$ -- 43
+empty$ -- 139
+format.name$ -- 10
+if$ -- 267
+int.to.chr$ -- 0
+int.to.str$ -- 7
+missing$ -- 2
+newline$ -- 43
+num.names$ -- 7
+pop$ -- 37
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 17
+stack$ -- 0
+substring$ -- 50
+swap$ -- 7
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 11
+width$ -- 8
+write$ -- 79
