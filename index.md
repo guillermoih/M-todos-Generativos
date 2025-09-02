@@ -15,3 +15,6 @@
 - [02_05_Transformers](./02_05_Transformers.pdf)
 - [03_03_Vision_Transformers](./03_03_Vision_Transformers.pdf)
 - [default](./default.pdf)
+## Notebooks
+
+- [1.1_01-PerceptronClasificador](https://colab.research.google.com/github/guillermoih/M-todos-Generativos/blob/main/Notebooks/1.1_01-PerceptronClasificador.ipynb)
