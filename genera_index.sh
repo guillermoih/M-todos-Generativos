@@ -2,7 +2,7 @@
 
 echo -e "# Índica de contenidos\n" > index.md
 
-URL="https://guillermoih.github.io/M-todos-Generativos/"
+URL="https://guillermoih.github.io/M-todos-Generativos"
 URLCOLAB="https://colab.research.google.com/github/guillermoih/M-todos-Generativos/blob/main/Notebooks"
 
 
@@ -11,7 +11,7 @@ PDFS=$(ls ./Slides/*.tex)
 
 for pdf in $PDFS; do
     name=$(basename "$pdf" .tex)
-    echo "- [$name](./$name.pdf)" >> index.md
+    echo "- [$name]($URL/$name.pdf)" >> index.md
 done
 
 echo -e "## Notebooks\n" >> index.md
