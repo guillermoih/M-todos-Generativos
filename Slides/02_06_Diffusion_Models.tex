@@ -19,7 +19,7 @@ Su funcionamiento se basa en aplicar \alert{denoising} a un dato de manera itera
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/Diffusion_Models/Generation-with-Diffusion-Models.png}
+    \includegraphics[width=0.9\textwidth]{Slides/figures/Diffusion_Models/Generation-with-Diffusion-Models.png}
     \caption{\cite{vahdat2022improving}}
 \end{figure}
 \end{frame}
@@ -41,7 +41,7 @@ Finalmente, una \alert{red de neuronas} aprenderá a realizar el proceso inverso
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{figures/Diffusion_Models/DifussionModel_Basic.png}
+    \includegraphics[width=0.6\textwidth]{Slides/figures/Diffusion_Models/DifussionModel_Basic.png}
     \caption{\cite{DifussionModel_Basic}}
 \end{figure}
 \end{frame}
@@ -55,7 +55,7 @@ Cada instante $t+1$ es generado a partir del instante $t$ añadiendo \alert{ruid
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Diffusion_Models/Noising_Process.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/Noising_Process.png}
     \caption{\cite{vahdat2022improving}}
 \end{figure}
 
@@ -69,7 +69,7 @@ Para el instante \alert{$T$} la distribución seguida por los datos será una \a
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Diffusion_Models/ForwardDiffusion.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/ForwardDiffusion.png}
     \caption{\cite{ForwardDiffusion}}
 \end{figure}
 \end{frame}
@@ -119,7 +119,7 @@ Añadiendo cierto ruido tras cada paso de la difusión inversa, se consigue aume
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Diffusion_Models/DDPM_Variation.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/DDPM_Variation.png}
     \caption{\cite{DeepLearningDifussionModelCourse}}
 \end{figure}
 \end{frame}
@@ -133,7 +133,7 @@ Dichas redes deberán calcular el \alert{ruido} presente en las imágenes que se
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Diffusion_Models/Architecture.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/Architecture.png}
 \end{figure}
 \end{frame}
 
@@ -144,7 +144,7 @@ La función del Autoencoder será obtener cuál es el \alert{ruido} de la imagen
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Diffusion_Models/Autoencoder_Denoising.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/Autoencoder_Denoising.png}
 \end{figure}
 \end{frame}
 
@@ -155,7 +155,7 @@ Aunque cabe destacar que dependiendo del \alert{conjunto de datos} que se esté 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Diffusion_Models/U-Net.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/U-Net.png}
     \caption{\cite{U-Net}}
 \end{figure}
 \end{frame}
@@ -177,7 +177,7 @@ Una de las ventajas de los embeddings es que puedes \alert{combinar información
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Diffusion_Models/Embedding_Combination.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/Embedding_Combination.png}
 \end{figure}
 \end{frame}
 
@@ -186,7 +186,7 @@ Este embedding es \alert{alimentado} a la red después de cada bloque convolucio
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Diffusion_Models/Context_Embedding.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/Context_Embedding.png}
     \caption{\cite{DeepLearningDifussionModelCourse}}
 \end{figure}
 \end{frame}
@@ -200,7 +200,7 @@ Este tipo de soluciones son las que hoy en dia se utilizan en \alert{dall-e} o \
 \begin{frame}{Resumen diffusion models}
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Diffusion_Models/Difussion_Model.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/Difussion_Model.png}
     \caption{\cite{rombach2022high}}
 \end{figure}
 \end{frame}
@@ -214,7 +214,7 @@ Se basa en la idea de saltar varios pasos de la \alert{inverse difussion} de una
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/Diffusion_Models/DDIM.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/DDIM.png}
     \caption{\cite{DeepLearningDifussionModelCourse}}
 \end{figure}
 \end{frame}
@@ -234,7 +234,7 @@ Quizás las aplicaciones más conocidas de los \alert{diffusion models} son \ale
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Diffusion_Models/Stable_Diffusion_Dalle.png}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Diffusion_Models/Stable_Diffusion_Dalle.png}
     \caption{\cite{SD_vs_DE_vs_MJ}}
 \end{figure}
 
@@ -254,7 +254,7 @@ Este trabajo usa la arquitectura \gls{ldm} introduciendo un \alert{batch de imá
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Diffusion_Models/AlignYourLatent_NVIDIA.png}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Diffusion_Models/AlignYourLatent_NVIDIA.png}
     \caption{Ejemplos del resultado en la \href{https://research.nvidia.com/labs/toronto-ai/VideoLDM/samples.html}{\alert{Web de NVIDIA}}}
 \end{figure}
 \end{frame}
@@ -264,7 +264,7 @@ En la arquitectura propuesta se usan ideas también de \gls{gan}, como el uso de
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Diffusion_Models/AlignYourLatent.png}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Diffusion_Models/AlignYourLatent.png}
     \caption{\cite{blattmann2023align}}
 \end{figure}
 \end{frame}
@@ -281,7 +281,7 @@ Para ello se proponen 2 componentes principales:
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Diffusion_Models/Noise2Music.png}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Diffusion_Models/Noise2Music.png}
     \caption{\cite{huang2023noise2music}}
 \end{figure}
 \end{frame}
