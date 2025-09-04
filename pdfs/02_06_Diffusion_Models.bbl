@@ -1,0 +1,81 @@
+\begin{thebibliography}{10}
+
+\bibitem{sohl2015deep}
+Jascha Sohl-Dickstein, Eric Weiss, Niru Maheswaranathan, and Surya Ganguli.
+\newblock Deep unsupervised learning using nonequilibrium thermodynamics.
+\newblock In {\em International conference on machine learning}, pages
+  2256--2265. PMLR, 2015.
+
+\bibitem{vahdat2022improving}
+A~Vahdat and Karsten Kreis.
+\newblock Improving diffusion models as an alternative to gans, part 1. nvidia
+  technical blog.
+\newblock {\em NVIDIA Developer}, 2022.
+
+\bibitem{DifussionModel_Basic}
+J.~Rafid~Siddiqui (towards~data science).
+\newblock Diffusion model basic scheme.
+\newblock
+  \url{https://towardsdatascience.com/diffusion-models-made-easy-8414298ce4da}.
+\newblock [Online; accessed August, 2023].
+
+\bibitem{ForwardDiffusion}
+Ayan Das.
+\newblock Forward diffusion image.
+\newblock
+  \url{https://ayandas.me/blog-tut/2021/12/04/diffusion-prob-models.html}.
+\newblock [Online; accessed August, 2023].
+
+\bibitem{ho2020denoising}
+Jonathan Ho, Ajay Jain, and Pieter Abbeel.
+\newblock Denoising diffusion probabilistic models.
+\newblock {\em Advances in neural information processing systems},
+  33:6840--6851, 2020.
+
+\bibitem{DeepLearningDifussionModelCourse}
+Sharon Zhou.
+\newblock How diffusion models work.
+\newblock \url{https://learn.deeplearning.ai/diffusion-models}.
+\newblock [Online; accessed August, 2023].
+
+\bibitem{U-Net}
+Vaibhav~Singh (LearnOpenCV).
+\newblock U-net architecture image.
+\newblock
+  \url{https://learnopencv.com/denoising-diffusion-probabilistic-models/}.
+\newblock [Online; accessed August, 2023].
+
+\bibitem{rombach2022high}
+Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Bj{\"o}rn
+  Ommer.
+\newblock High-resolution image synthesis with latent diffusion models.
+\newblock In {\em Proceedings of the IEEE/CVF conference on computer vision and
+  pattern recognition}, pages 10684--10695, 2022.
+
+\bibitem{song2020denoising}
+Jiaming Song, Chenlin Meng, and Stefano Ermon.
+\newblock Denoising diffusion implicit models.
+\newblock {\em arXiv preprint arXiv:2010.02502}, 2020.
+
+\bibitem{SD_vs_DE_vs_MJ}
+Bootcamp AI.
+\newblock Stable diffusion, dall-e 2 midjourney comparison image.
+\newblock
+  https://bootcampai.medium.com/c%C3%B3mo-funcionan-dall-e-2-stable-diffusion-y-midjourney-66ff9a797094.
+\newblock [Online; accessed August, 2023].
+
+\bibitem{blattmann2023align}
+Andreas Blattmann, Robin Rombach, Huan Ling, Tim Dockhorn, Seung~Wook Kim,
+  Sanja Fidler, and Karsten Kreis.
+\newblock Align your latents: High-resolution video synthesis with latent
+  diffusion models.
+\newblock In {\em Proceedings of the IEEE/CVF Conference on Computer Vision and
+  Pattern Recognition}, pages 22563--22575, 2023.
+
+\bibitem{huang2023noise2music}
+Qingqing Huang, Daniel~S Park, Tao Wang, Timo~I Denk, Andy Ly, Nanxin Chen,
+  Zhengdong Zhang, Zhishuai Zhang, Jiahui Yu, Christian Frank, et~al.
+\newblock Noise2music: Text-conditioned music generation with diffusion models.
+\newblock {\em arXiv preprint arXiv:2302.03917}, 2023.
+
+\end{thebibliography}

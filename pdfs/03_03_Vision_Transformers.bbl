@@ -1,0 +1,25 @@
+\begin{thebibliography}{1}
+
+\bibitem{dosovitskiy2020image}
+Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn,
+  Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg
+  Heigold, Sylvain Gelly, et~al.
+\newblock An image is worth 16x16 words: Transformers for image recognition at
+  scale.
+\newblock {\em arXiv preprint arXiv:2010.11929}, 2020.
+
+\bibitem{yuan2021tokens}
+Li~Yuan, Yunpeng Chen, Tao Wang, Weihao Yu, Yujun Shi, Zi-Hang Jiang,
+  Francis~EH Tay, Jiashi Feng, and Shuicheng Yan.
+\newblock Tokens-to-token vit: Training vision transformers from scratch on
+  imagenet.
+\newblock In {\em Proceedings of the IEEE/CVF international conference on
+  computer vision}, pages 558--567, 2021.
+
+\bibitem{hatamizadeh2024diffit}
+Ali Hatamizadeh, Jiaming Song, Guilin Liu, Jan Kautz, and Arash Vahdat.
+\newblock Diffit: Diffusion vision transformers for image generation.
+\newblock In {\em European Conference on Computer Vision}, pages 37--55.
+  Springer, 2024.
+
+\end{thebibliography}
