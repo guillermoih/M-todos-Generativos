@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: 02_04_Generative_Adversarial_Networks.aux
+The style file: unsrt.bst
+Database file #1: Slides/references.bib
+Warning--empty journal in cournot1897researches
+Warning--can't use both volume and number fields in cao2021weighted
+Warning--can't use both volume and number fields in liu2021dynamically
+You've used 21 entries,
+            1791 wiz_defined-function locations,
+            555 strings with 7814 characters,
+and the built_in function-call counts, 5612 in all, are:
+= -- 487
+> -- 293
+< -- 9
++ -- 105
+- -- 84
+* -- 337
+:= -- 862
+add.period$ -- 65
+call.type$ -- 21
+change.case$ -- 21
+chr.to.int$ -- 0
+cite$ -- 24
+duplicate$ -- 277
+empty$ -- 499
+format.name$ -- 84
+if$ -- 1281
+int.to.chr$ -- 0
+int.to.str$ -- 21
+missing$ -- 21
+newline$ -- 108
+num.names$ -- 21
+pop$ -- 75
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 181
+stack$ -- 0
+substring$ -- 320
+swap$ -- 110
+text.length$ -- 9
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 3
+while$ -- 44
+width$ -- 23
+write$ -- 226
+(There were 3 warnings)
