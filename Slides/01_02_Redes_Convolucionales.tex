@@ -5,6 +5,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
 \title{Redes convolucionales}
 
+% Definir color de enlace
+\definecolor{linkblue}{RGB}{0,0,180} % un azul visible pero agradable
+
+% Configurar hyperref
+\hypersetup{
+    colorlinks=true,  % los enlaces tendrán color
+    linkcolor=linkblue,  % enlaces internos (índice, secciones)
+    urlcolor=linkblue,   % enlaces externos (href)
+    citecolor=linkblue
+}
+
+\usepackage{fontawesome5}
+
 \begin{document}
 \maketitle
 
@@ -37,7 +50,7 @@ Los principales beneficios de su uso son los siguientes:
 \begin{itemize}
     \item Aprovechamiento de la información \alert{espacial}.
     \item Reducción del número de \alert{parámetros}.
-    \item \alert{Invarianza} aprendida de los datos.
+    \item \alert{Invarianza} aprendida de los datos (traslaciones, escalas, deformaciones).
 \end{itemize}
 \end{frame}
 
@@ -62,6 +75,10 @@ Para ello hay dos elementos fundamentales:
 La salida se calcula  haciendo una \alert{combinación lineal} de cada región de la imagen. De esta manera la salida contiene la activación de cada zona de la imagen.
 
 Esta región que el \alert{kernel} es capaz de \alert{observar} se conoce como \alert{campo receptivo}.
+
+\begin{itemize}
+    \item Capa 1: kernel 3×3, campo receptivo 3x3; Capa 2: kernel 3×3 aplicado sobre la salida de la primera capa, campo receptivo de cada neurona es 5×5; ...
+\end{itemize}
 
 \begin{figure}
     \centering
@@ -177,10 +194,13 @@ Existen dos \alert{configuraciones} predominantes para la elección de padding e
 \end{frame}
 
 \begin{frame}{Resultado de una capa convolucional}
-Cada \alert{capa convolucional} está formada por una serie de convoluciones. Las \alert{dimensiones de salida} de cada capa vienen dadas por:
+Una \alert{capa convolucional} aplica varios filtros sobre la entrada y produce un volumen de salida cuyas dimensiones son:
 \begin{itemize}
-    \item \alert{Alto y ancho}: Dependen de las dimensiones de los \alert{datos recibidos}, el tamaño de \alert{kernel} y el \alert{padding} utilizado.
-    \item \alert{Profundidad}: Corresponde con el \alert{número de filtros} aplicados a los datos.
+    \item \alert{Alto y ancho}: Determinados por las dimensiones de la \alert{entrada}, el tamaño del \alert{kernel} y el \alert{padding}.
+    \begin{itemize}
+        \item También influye el \alert{stride}, se ve a continuación.
+    \end{itemize}
+    \item \alert{Profundidad}: Igual al \alert{número de filtros} utilizados en la convolución.
 \end{itemize}
 \end{frame}
 
@@ -328,7 +348,7 @@ El siguiente notebook contiene un breve código para explorar las \alert{dimensi
 \end{figure}
 \begin{itemize}
     \centering
-    \item {\Large \href{https://colab.research.google.com/drive/1UpvEAbh6kwSScuOJjf7228ZA5lWCHihO?usp=sharing}{1.2\_1-DimensionesConv2D.ipynb}}
+    \item {\Large \href{https://colab.research.google.com/github/guillermoih/M-todos-Generativos/blob/main/Notebooks/1.2_01-DimensionesConv2D.ipynb}{1.2\_01-DimensionesConv2D.ipynb}}
 \end{itemize}
 \end{frame}
 
@@ -356,6 +376,21 @@ Esto se traduce en que, la \alert{primeras} capas de la red se encargan de proce
 \end{figure}
 \end{frame}
 
+
+
+
+\begin{frame}{Web interactiva con convoluciones}
+Web interactiva con convoluciones
+
+
+
+\begin{itemize}
+    \centering
+    \item \Large \faHandPointRight {\Large \href{https://poloclub.github.io/cnn-explainer/}{CNN Explainer}}
+\end{itemize}
+\end{frame}
+
+
 \begin{frame}{Notebook de ejemplo, clasificador con redes convolucionales}
 El siguiente notebook contiene un ejemplo de clasificador redes convolucionales.
 
@@ -365,7 +400,7 @@ El siguiente notebook contiene un ejemplo de clasificador redes convolucionales.
 \end{figure}
 \begin{itemize}
     \centering
-    \item {\Large \href{https://colab.research.google.com/drive/19TfnBBgbAEDG4YC7EGwcJ6ETZi-xfAiL?usp=sharing}{1.2\_2-CNNImagenes.ipynb}}
+    \item {\Large \href{https://colab.research.google.com/github/guillermoih/M-todos-Generativos/blob/main/Notebooks/1.2_02-CNNImagenes.ipynb}{1.2\_02-CNNImagenes.ipynb}}
 \end{itemize}
 \end{frame}
 

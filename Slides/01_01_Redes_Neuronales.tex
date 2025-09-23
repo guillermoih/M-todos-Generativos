@@ -5,6 +5,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
 \title{Repaso de redes neuronales artificiales}
 
+% Definir color de enlace
+\definecolor{linkblue}{RGB}{0,0,180} % un azul visible pero agradable
+
+% Configurar hyperref
+\hypersetup{
+    colorlinks=true,  % los enlaces tendrán color
+    linkcolor=linkblue,  % enlaces internos (índice, secciones)
+    urlcolor=linkblue,   % enlaces externos (href)
+    citecolor=linkblue
+}
+
 \begin{document}
 \maketitle
 
@@ -22,6 +33,25 @@ Una \alert{red neuronal} es un sistema matemático capaz de aprender ha realizar
     \centering
     \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 3/Neurona_Biologica_Artificial.png}
 \end{figure}    
+\end{frame}
+
+\begin{frame}{Grandes hitos en redes neuronales}
+\footnotesize{
+Las redes neuronales han evolucionado a través de hitos clave que han marcado su desarrollo:
+
+\begin{itemize}
+    \item \alert{1943: Neurona artificial} (McCulloch y Pitts): Primer modelo matemático inspirado en la biología
+    \item \alert{1958: Perceptrón} (Rosenblatt): Uso de funciones de activación como el umbral
+    \item \alert{1986: Retropropagación} (Rumelhart et al.): Entrenamiento efectivo de redes profundas
+    \item \alert{1989: CNNs} (LeCun et al.): Redes convolucionales para visión por computador
+    \item \alert{Inviernos de la IA}: Estancamiento. Límites técnicos/expectativas no cumplidas
+    \item \alert{2012: AlexNet}: \textbf{GPUs} y big data impulsan el aprendizaje profundo moderno
+    \item \alert{2017: Transformers} (Vaswani et al.): Nueva arquitectura para NLP.
+    \item \alert{2020s: Difusión}: Modelos generativos para imágenes y datos sintéticos
+    \item \alert{Actualidad}: Grandes modelo multimodales
+    \item \alert{Futuro}: ¿Invierno o Inteligencia artificial general?
+\end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Redes neuronales: concepto general}
@@ -44,6 +74,7 @@ Para dicha labor, existen diversos \alert{elementos} dentro de una neurona artif
 \end{column}
 \end{columns}
 \end{frame}
+
 
 \begin{frame}{Redes neuronales: bias}
 El \alert{bias} (sesgo en Español) permite que la red neuronal pueda ajustar mejor sus predicciones. 
@@ -304,10 +335,9 @@ Por otra parte, K. Hornik, M. Stinchcombe, y H. White demostraron el 1985 que co
 \end{column}
 \end{columns}
 
+\href{https://www.deeplearning.ai/ai-notes/optimization/index.html\#learning-rate}{Gradient descent un parámetro (learning rate)}
 
-\href{https://www.deeplearning.ai/ai-notes/optimization/index.html\#learning-rate}{Gradient descent un parámetro (batch size y learning rate)}
-
-\href{https://www.deeplearning.ai/ai-notes/optimization/index.html\#adjusting-gradient-descent-hyperparameters}{Gradient descent w y b} y \href{https://www.deeplearning.ai/ai-notes/optimization/index.html\#iterative-update}{Optimizadores}
+\href{https://www.deeplearning.ai/ai-notes/optimization/index.html\#adjusting-gradient-descent-hyperparameters}{Gradient descent w y b(batch size)} y \href{https://www.deeplearning.ai/ai-notes/optimization/index.html\#iterative-update}{Optimizadores}
 
 \centering
 \includegraphics[width=0.7\textwidth]{Slides/figures/Introduccion/lr.png}
@@ -353,6 +383,7 @@ Existen múltiples métodos para calcular la \alert{distancia} de la \alert{pred
 \end{equation}
 \end{frame}
 
+
 \begin{frame}{Entrenamiento de redes neuronales}
 Al realizar un entrenamiento con \alert{modelos de aprendizaje} se realiza una división del \alert{conjunto de datos} con el que se entrena. Este proceso ayuda a comprobar la \alert{fiabilidad} de la red.
 
@@ -362,11 +393,24 @@ Al realizar un entrenamiento con \alert{modelos de aprendizaje} se realiza una d
 \end{figure}
 \end{frame}
 
+
+\begin{frame}{Playground}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/Tema 3/Playground.png}
+    \caption{\href{https://playground.tensorflow.org/}{Tensorflow playground}}
+\end{figure}
+\href{https://colab.research.google.com/github/guillermoih/M-todos-Generativos/blob/main/Notebooks/1.1_01-Playground.ipynb}{Ejercicios 1 y 2 completo. Ejercicio 3 introducción a siguientes conceptos.}
+\end{frame}
+
+
 \begin{frame}{Bias-variance tradeoff}
-Existen dos \alert{métricas} de alto nivel que evalúan el rendimiento de una red neuronal:
+
+
+Existen dos \alert{conceptos fundamentales} que ayudan a analizar el rendimiento de una red neuronal:
 \begin{itemize}
-    \item \alert{Bias}: Es el error del modelo ante el conjunto de datos de \alert{entrenamiento}.
-    \item \alert{Variance}: Es el error del modelo ante el conjunto de datos de \alert{testeo} respecto los de entrenamiento. 
+    \item \alert{Bias (sesgo)}: Error sistemático que aparece cuando el modelo es demasiado simple para capturar la complejidad de los datos. Se manifiesta en un alto error incluso en el conjunto de \alert{entrenamiento}.
+    \item \alert{Variance (varianza)}: Error debido a la excesiva sensibilidad del modelo a los datos de entrenamiento. Se observa cuando existe una gran diferencia entre el error en \alert{entrenamiento} y el error en \alert{test}.
 \end{itemize}
 
 \begin{figure}
@@ -375,6 +419,8 @@ Existen dos \alert{métricas} de alto nivel que evalúan el rendimiento de una r
     \caption{\cite{BiasVariance_1}}
 \end{figure}
 \end{frame}
+
+% OJO! No es necesario que se mueva mucho para tener alta varianza.
 
 \begin{frame}{Bias-variance tradeoff}
 \begin{figure}
@@ -474,14 +520,6 @@ La principal \alert{causa} de estos problemas es usar \alert{funciones de activa
 Sucede principalmente con las funciones \alert{tanh} y \alert{sigmoid}, por lo tanto se \alert{recomienda} el uso de ReLU para capas ocultas en una red.
 \end{frame}
 
-\begin{frame}{Playground}
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{Slides/figures/Tema 3/Playground.png}
-    \caption{\href{https://playground.tensorflow.org/}{Tensorflow playground}}
-\end{figure}
-\end{frame}
-
 \begin{frame}{Notebook de ejemplo, perceptrón clasificador}
 El siguiente notebook contiene un ejemplo de clasificador usando un perceptrón multicapa como red neuronal.
 
@@ -491,7 +529,7 @@ El siguiente notebook contiene un ejemplo de clasificador usando un perceptrón 
 \end{figure}
 \begin{itemize}
     \centering
-    \item {\Large \href{https://colab.research.google.com/drive/1qzLr3sWe4Nk7LW9Jycb9vq-Offsg1yHL?usp=sharing}{1.1\_1-PerceptronClasificador.ipynb}}
+    \item {\Large \href{https://colab.research.google.com/github/guillermoih/M-todos-Generativos/blob/main/Notebooks/1.1_01-PerceptronClasificador.ipynb}{1.1\_1-PerceptronClasificador.ipynb}}
 \end{itemize}
 \end{frame}
 
@@ -508,14 +546,14 @@ La idea más \alert{básica} para procesar imágenes con redes neuronales es  tr
 \end{frame}
 
 \begin{frame}{Capa de reshape}
-La capa de \alert{keras} llamada \say{\alert{reshape}} se encarga de realizar esa transformación de \alert{matriz} a \alert{vector}.
+La capa de \alert{keras} llamada \say{\alert{reshape}} se encarga de realizar transformaciones en los tensores. Ya que solo queremos convertir la imagen en un vector \say{plano}, también podemos utilizar la capa \say{\alert{flatten}} de \alert{matriz} a \alert{vector}.
 
 Sin embargo el principal \alert{inconveniente} al tratar las imágenes de esta manera es la \alert{pérdida total} de información espacial de la imagen.
 \end{frame}
 
 
 \begin{frame}{Notebook de ejemplo, perceptrón clasificador de imágenes}
-El siguiente notebook contiene un ejemplo de clasificador de imágenes usando un perceptrón multicapa como red neuronal.
+El siguiente notebook contiene un código parcial de clasificador de imágenes usando un perceptrón multicapa como red neuronal.
 
 \begin{figure}
     \centering
@@ -523,8 +561,9 @@ El siguiente notebook contiene un ejemplo de clasificador de imágenes usando un
 \end{figure}
 \begin{itemize}
     \centering
-    \item {\Large \href{https://colab.research.google.com/drive/1h2cas9zCyUsutVJrJwR43zJMzOurunoV?usp=sharing}{1.1\_2-PerceptronImagenes.ipynb}}
+    \item {\Large \href{https://colab.research.google.com/github/guillermoih/M-todos-Generativos/blob/main/Notebooks/1.1_02-PerceptronImagenes.ipynb}{1.1\_2-PerceptronImagenes.ipynb}}
 \end{itemize}
+Si quieres usar estas redes sencillas en otros datasets puede probar con \href{https://archive.ics.uci.edu/dataset/109/wine}{Wine dataset} y con \href{https://github.com/zalandoresearch/fashion-mnist}{Fashion MNIST}.
 \end{frame}
 \addcontentsline{toc}{section}{Referencias}
 
