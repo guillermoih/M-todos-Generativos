@@ -5,6 +5,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
 \title{Redes convolucionales II}
 
+% Definir color de enlace
+\definecolor{linkblue}{RGB}{0,0,180} % un azul visible pero agradable
+
+% Configurar hyperref
+\hypersetup{
+    colorlinks=true,  % los enlaces tendrán color
+    linkcolor=linkblue,  % enlaces internos (índice, secciones)
+    urlcolor=linkblue,   % enlaces externos (href)
+    citecolor=linkblue
+}
+
 \begin{document}
 \maketitle
 
@@ -140,14 +151,20 @@ La capa de AveragePooling2D reduce la dimensión de un vector cogiendo el \alert
 \end{frame}
 
 \begin{frame}{Reducción dimensional con strides}
-Otra \alert{alternativa} para la reducción dimensional es el uso de convoluciones con \alert{strides} que no sean (1, 1). Cierta literatura apunta a esta aproximación como \say{\alert{más inteligente}} ya que se le permite a la \alert{red} que sea ella la que escoja \alert{cómo hacer} la reducción.
+Otra \alert{opción} para la reducción dimensional es el uso de convoluciones con \alert{strides} que no sean (1, 1).
 
-El principal \alert{inconveniente} es que usando este método se aumenta el número de parámetros de la red.
+\begin{itemize}
+    \item Cierta literatura apunta a esta aproximación como \say{\alert{más inteligente}} ya que se le permite a la \alert{red} que sea ella la que escoja \alert{cómo hacer} la reducción.
+    \item El principal \alert{inconveniente} es que usando este método se aumenta el número de parámetros de la red.
+    
+\end{itemize}
 
-Existe cierto debate si es conveniente que la red \alert{aprenda} ha hacer el downsampling \cite{MaxPoolingvsStrides} o usar MaxPooling \cite{sun2018fishnet}.
+
+Existe un debate abierto sobre si es preferible que la red \alert{aprenda} a realizar el \textit{downsampling} \cite{MaxPoolingvsStrides}, o si resulta más adecuado emplear técnicas como \alert{MaxPooling} \cite{sun2018fishnet}.
 
 \textit{*Normalmente el stride elegido es de (2, 2) pero hay libertad para adaptarlo a distintos casos.}
 \end{frame}
+
 
 \begin{frame}{Capa de dropout}
 La capa de \alert{dropout} es una capa de \alert{regularización} que \alert{desactiva aleatoriamente} la activación de ciertas \alert{neuronas} durante el entreno.
@@ -219,8 +236,72 @@ Para las \alert{capas ocultas} se suele utilizar la función \alert{ReLU} o \ale
     \includegraphics[width=0.4\textwidth]{Slides/figures/GoogleColab.png}
 \begin{itemize}
     \centering
-    \item {\Large \href{https://colab.research.google.com/drive/17QwnRs7P0bv6kYsbQPYIrIDjk-uL_9rd?usp=sharing}{1.2\_2-CNNEmbudo.ipynb}}
+    \item {\Large \href{https://colab.research.google.com/github/guillermoih/M-todos-Generativos/blob/main/Notebooks/1.2_03-CNNModa.ipynb}{1.2\_3-CNNModa.ipynb}}
 \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Ejercicio}
+    \centering
+    \includegraphics[width=0.4\textwidth]{Slides/figures/GoogleColab.png}
+\begin{itemize}
+    \centering
+    \item {\Large \href{https://colab.research.google.com/github/guillermoih/M-todos-Generativos/blob/main/Notebooks/1.2_04-CNNDigitos.ipynb}{1.2\_4-CNNDigitos.ipynb}}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Transfer Learning}
+
+{\Large Idea general}
+
+Usar un modelo preentrenado en un dataset grande (ej. ImageNet) para una nueva tarea.
+
+
+\begin{itemize}
+    \item Enfoques comunes
+    \begin{itemize}
+        \item \alert{Feature extraction}: congelar capas y usar sus salidas como extractor de características.
+        \item \alert{Fine-tuning}: reentrenar parcialmente algunas capas junto con las nuevas.
+    \end{itemize}
+    \item Ventajas
+    \begin{itemize}
+        \item Reduce el tiempo de entrenamiento.
+        \item Mejora los resultados con pocos datos.
+        \item Facilita el uso de arquitecturas complejas.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Ejemplo: VGG16}
+    \centering
+    \includegraphics[width=0.5\textwidth]{Slides/figures/Tema 1/image-398.png}
+    
+\begin{itemize}
+    \item VGG16
+    \begin{itemize}
+        \item Red profunda propuesta por Simonyan y Zisserman (2014). \url{https://arxiv.org/abs/1409.1556}
+        \item Basada en bloques de convoluciones en embudo y luego densa.
+    \end{itemize}
+
+    \item Uso en Transfer Learning
+    \begin{itemize}
+        \item Importar el modelo preentrenado. \alert{Congelar sus pesos}.
+        \item Sustituir densa por nueva densa.
+        \item Opcionalmente: descangelar algún filtro del final.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Ejemplo/Ejercicio}
+    \centering
+    \includegraphics[width=0.4\textwidth]{Slides/figures/GoogleColab.png}
+\begin{itemize}
+    \centering
+    \item {\Large \href{https://colab.research.google.com/github/guillermoih/M-todos-Generativos/blob/main/Notebooks/1.2_05-Cuadros.ipynb}{1.2\_05-Cuadros.ipynb}}
+    
+\end{itemize}
+
 \end{frame}
 
 \addcontentsline{toc}{section}{Referencias}
