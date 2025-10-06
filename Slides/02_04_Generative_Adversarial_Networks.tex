@@ -651,6 +651,119 @@
     
 \end{frame}
 
+\section{Métricas de evaluación de métodos generativos}
+
+\begin{frame}{La "calidad" de los datos generados}
+\textbf{¿Cómo sabemos si una GAN genera “buenas” imágenes?}
+
+A diferencia de modelos discriminativos (con métricas objetivas como accuracy o loss), los modelos generativos no tienen una métrica de evaluación directa.
+
+La función de pérdida no se correlaciona bien con la calidad percibida.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.35\textwidth]{Slides/figures/GAN/gatos.jpg}
+    \caption{Dos imágenes pueden ser igualmente \textit{probables} pero muy diferentes visualmente \cite{srivastava2017veegan}.}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Métricas tradicionales}
+\begin{itemize}
+    \item \gls{mse} o derivados loss no reflejan la percepción humana ni la diversidad del conjunto.
+\end{itemize}
+
+Necesitamos métricas que capturen al mismo tiempo:
+\begin{itemize}
+    \item \alert{\textbf{Realismo}}: Que los datos generados sean similares a los del \textit{dataset} original.
+    \item \alert{\textbf{Diversidad}}: Que los datos generados no sean siempre iguales.
+    \item \alert{\textbf{Originalidad}}: Que los datos generados no sean copias del dataset.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Usando un modelo auxiliar}
+La principal solución es utilizar un \alert{modelo externo pre-entrenado} que evalue la calidad de los datos generados.
+
+De esta manera se analizará el \alert{comportamiento} del modelo ante datos generados.
+
+\begin{itemize}
+    \item Se busca que el comportamiento del \alert{dataset generado} sea realista
+    \item El modelo pre-entrenado \alert{no entrena ni sabe nada} de los datos generados
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Usando un modelo auxiliar}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/GAN/Auxiliar_Model_Metrics.png}
+\end{figure}
+
+\textit{*normalmente se usa como modelo pre-entrenado la red \textbf{Inceptionv3} \cite{szegedy2015rethinking} entrenada con el dataset Imagenet}
+\end{frame}
+
+\begin{frame}{\gls{is} \cite{salimans2016improved}}
+\begin{itemize}
+    \item \alert{\textbf{Definición}}
+
+    \begin{equation}
+        IS=exp(E_x[KL(p(y∣x)∣∣p(y))])
+    \end{equation}
+
+    \item \alert{$p(y∣x)$}: Predicciones de la red para los datos generados
+    \item \alert{$p(y)$}: Distribución de etiquetas predichas por el modelo
+\end{itemize}
+Se busca que las \alert{predicciones} sean de una \alert{clase concreta}. Lo que significaría que la imagen es \alert{realista}.
+\end{frame}
+
+\begin{frame}{Características de la \gls{is} \cite{salimans2016improved}}
+\begin{itemize}
+    \item \alert{Fácil de calcular}
+    \item No mide \alert{similitud} con los datos reales, sólo tiene en cuenta los generados
+    \item \alert{Depende del clasificador}
+    \begin{itemize}
+        \item Funciona mejor cuanto más similar sea el dataset a imagenet
+        \begin{itemize}
+            \item Que es un dataset de fotos reales
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{\gls{fid} \cite{heusel2017gans}}
+\begin{itemize}
+    \item \alert{\textbf{Definición}}
+
+    \begin{equation}
+        FID=∣∣\mu_r −\mu_g ∣∣^2+Tr(\Sigma_r +\Sigma_g −2(\Sigma_r \Sigma_g )^{1/2})
+    \end{equation}
+
+    \item Compara las \alert{distribuciones} (media $\mu$ y covarianza $\Sigma$) de features de Inception entre datos reales y generados
+    \item Las features son las salidas de una de \alert{las últimas capas} de InceptionV3, normalmente la penúltima
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Características de la \gls{fid} \cite{heusel2017gans}}
+\begin{itemize}
+    \item Compara la \alert{distribución de datos real} y la \alert{generada}
+    \item Mide \alert{realismo y diversidad}
+    \item Sensible al tamaño de la muestra
+    \item Supone que las predicciones se organizan con una \alert{distribución gausiana}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{\gls{kid} \cite{binkowski2018demystifying}}
+\begin{itemize}
+    \item \alert{\textbf{Definición}}
+
+    \begin{equation}
+        KID=MMD^2(\phi(x_r),\phi(x_g))
+    \end{equation}
+    
+    \item Calcula la \gls{mmd} entre las features de Inceptionv3
+    \item De esta manera no se \alert{asume} nada sobre las distribuciones de las features
+    \item Es especuialmente útil para muestras pequeñas
+\end{itemize}
+\end{frame}
+
 \section{\gls{gan}: Aplicaciones}
 
 \begin{frame}{\gls{gan} en el mundo real}
