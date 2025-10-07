@@ -1,0 +1,46 @@
+\begin{thebibliography}{1}
+
+\bibitem{mcculloch1943logical}
+Warren~S McCulloch and Walter Pitts.
+\newblock A logical calculus of the ideas immanent in nervous activity.
+\newblock {\em The bulletin of mathematical biophysics}, 5(4):115--133, 1943.
+
+\bibitem{Activations}
+Data Science~Interview Preparation.
+\newblock Activation functions image.
+\newblock
+  https://www.datasciencepreparation.com/blog/articles/what-is-an-activation-function-what-are-commonly-used-activation-functions/.
+\newblock [Online; accessed August, 2022].
+
+\bibitem{hornik1989multilayer}
+Kurt Hornik, Maxwell Stinchcombe, and Halbert White.
+\newblock Multilayer feedforward networks are universal approximators.
+\newblock {\em Neural networks}, 2(5):359--366, 1989.
+
+\bibitem{BiasVariance_1}
+The~Machine Learners.
+\newblock Bias variance tradeoff image.
+\newblock https://www.themachinelearners.com/tradeoff-bias-variance/.
+\newblock [Online; accessed August, 2022].
+
+\bibitem{BiasVariance}
+endtoend.ai.
+\newblock Bias variance tradeoff image.
+\newblock
+  https://www.endtoend.ai/blog/bias-variance-tradeoff-in-reinforcement-learning/.
+\newblock [Online; accessed August, 2022].
+
+\bibitem{GradienExplosion}
+acrosson (GitHub).
+\newblock Gradient explosion image.
+\newblock https://github.com/NVIDIA/waveglow/issues/122.
+\newblock [Online; accessed August, 2022].
+
+\bibitem{GradienVanishing}
+Jason Brownlee (Machine~Learning Mastery).
+\newblock Gradient vanishing image.
+\newblock
+  https://machinelearningmastery.com/how-to-fix-vanishing-gradients-using-the-rectified-linear-activation-function/.
+\newblock [Online; accessed August, 2022].
+
+\end{thebibliography}

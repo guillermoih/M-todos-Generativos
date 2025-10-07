@@ -1,0 +1,159 @@
+\begin{thebibliography}{10}
+
+\bibitem{goodfellow2014generative}
+Ian Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley,
+  Sherjil Ozair, Aaron Courville, and Yoshua Bengio.
+\newblock Generative adversarial nets.
+\newblock {\em Advances in neural information processing systems}, 27, 2014.
+
+\bibitem{cournot1897researches}
+AA~Cournot and Augustin Cournot.
+\newblock Researches into the mathematical principles of the theory of wealth.
+\newblock 1897.
+
+\bibitem{srivastava2017veegan}
+Akash Srivastava, Lazar Valkov, Chris Russell, Michael~U Gutmann, and Charles
+  Sutton.
+\newblock Veegan: Reducing mode collapse in gans using implicit variational
+  learning.
+\newblock {\em Advances in neural information processing systems}, 30, 2017.
+
+\bibitem{szegedy2015rethinking}
+Christian Szegedy, Vincent Vanhoucke, Sergey Ioffe, Jonathon Shlens, and
+  Zbigniew Wojna.
+\newblock Rethinking the inception architecture for computer vision (2015).
+\newblock {\em arXiv preprint arXiv:1512.00567}, 2015.
+
+\bibitem{salimans2016improved}
+Tim Salimans, Ian Goodfellow, Wojciech Zaremba, Vicki Cheung, Alec Radford, and
+  Xi~Chen.
+\newblock Improved techniques for training gans.
+\newblock {\em Advances in neural information processing systems}, 29, 2016.
+
+\bibitem{heusel2017gans}
+Martin Heusel, Hubert Ramsauer, Thomas Unterthiner, Bernhard Nessler, and Sepp
+  Hochreiter.
+\newblock Gans trained by a two time-scale update rule converge to a local nash
+  equilibrium.
+\newblock {\em Advances in neural information processing systems}, 30, 2017.
+
+\bibitem{binkowski2018demystifying}
+Miko{\l}aj Bi{\'n}kowski, Danica~J Sutherland, Michael Arbel, and Arthur
+  Gretton.
+\newblock Demystifying mmd gans.
+\newblock {\em arXiv preprint arXiv:1801.01401}, 2018.
+
+\bibitem{brock2018large}
+Andrew Brock, Jeff Donahue, and Karen Simonyan.
+\newblock Large scale gan training for high fidelity natural image synthesis.
+\newblock {\em arXiv preprint arXiv:1809.11096}, 2018.
+
+\bibitem{karras2021alias}
+Tero Karras, Miika Aittala, Samuli Laine, Erik H{\"a}rk{\"o}nen, Janne
+  Hellsten, Jaakko Lehtinen, and Timo Aila.
+\newblock Alias-free generative adversarial networks.
+\newblock {\em Advances in Neural Information Processing Systems}, 34:852--863,
+  2021.
+
+\bibitem{dash2017tac}
+Ayushman Dash, John Cristian~Borges Gamboa, Sheraz Ahmed, Marcus Liwicki, and
+  Muhammad~Zeshan Afzal.
+\newblock Tac-gan-text conditioned auxiliary classifier generative adversarial
+  network.
+\newblock {\em arXiv preprint arXiv:1703.06412}, 2017.
+
+\bibitem{zhu2017unpaired}
+Jun-Yan Zhu, Taesung Park, Phillip Isola, and Alexei~A Efros.
+\newblock Unpaired image-to-image translation using cycle-consistent
+  adversarial networks.
+\newblock In {\em Proceedings of the IEEE international conference on computer
+  vision}, pages 2223--2232, 2017.
+
+\bibitem{odena2016conditional}
+A~Odena, C~Olah, and J~Shlens.
+\newblock Conditional image synthesis with auxiliary classi er gans arxiv
+  e-prints.(oct.
+\newblock {\em arXiv preprint stat.ML/1610.09585}, 2016.
+
+\bibitem{lecun1998mnist}
+Yann LeCun.
+\newblock The mnist database of handwritten digits.
+\newblock {\em http://yann. lecun. com/exdb/mnist/}, 1998.
+
+\bibitem{isola2017image}
+Phillip Isola, Jun-Yan Zhu, Tinghui Zhou, and Alexei~A Efros.
+\newblock Image-to-image translation with conditional adversarial networks.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 1125--1134, 2017.
+
+\bibitem{park2019semantic}
+Taesung Park, Ming-Yu Liu, Ting-Chun Wang, and Jun-Yan Zhu.
+\newblock Semantic image synthesis with spatially-adaptive normalization.
+\newblock In {\em Proceedings of the IEEE/CVF conference on computer vision and
+  pattern recognition}, pages 2337--2346, 2019.
+
+\bibitem{mirza2014conditional}
+Mehdi Mirza and Simon Osindero.
+\newblock Conditional generative adversarial nets.
+\newblock {\em arXiv preprint arXiv:1411.1784}, 2014.
+
+\bibitem{kim2017learning}
+Taeksoo Kim, Moonsu Cha, Hyunsoo Kim, Jung~Kwon Lee, and Jiwon Kim.
+\newblock Learning to discover cross-domain relations with generative
+  adversarial networks.
+\newblock In {\em International conference on machine learning}, pages
+  1857--1865. PMLR, 2017.
+
+\bibitem{kancharagunta2019csgan}
+Kishan~Babu Kancharagunta and Shiv~Ram Dubey.
+\newblock Csgan: Cyclic-synthesized generative adversarial networks for
+  image-to-image transformation.
+\newblock {\em arXiv preprint arXiv:1901.03554}, 2019.
+
+\bibitem{radford2015unsupervised}
+Alec Radford, Luke Metz, and Soumith Chintala.
+\newblock Unsupervised representation learning with deep convolutional
+  generative adversarial networks.
+\newblock {\em arXiv preprint arXiv:1511.06434}, 2015.
+
+\bibitem{karras2017progressive}
+Tero Karras, Timo Aila, Samuli Laine, and Jaakko Lehtinen.
+\newblock Progressive growing of gans for improved quality, stability, and
+  variation.
+\newblock {\em arXiv preprint arXiv:1710.10196}, 2017.
+
+\bibitem{karras2018style}
+Tero Karras, Samuli Laine, and Timo Aila.
+\newblock A style-based generator architecture for generative adversarial
+  networks. arxiv e-prints.
+\newblock {\em arXiv preprint arXiv:1812.04948}, 2018.
+
+\bibitem{ledig2017photo}
+Christian Ledig, Lucas Theis, Ferenc Husz{\'a}r, Jose Caballero, Andrew
+  Cunningham, Alejandro Acosta, Andrew Aitken, Alykhan Tejani, Johannes Totz,
+  Zehan Wang, et~al.
+\newblock Photo-realistic single image super-resolution using a generative
+  adversarial network.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 4681--4690, 2017.
+
+\bibitem{liu2021super}
+Baozhong Liu and Ji~Chen.
+\newblock A super resolution algorithm based on attention mechanism and srgan
+  network.
+\newblock {\em IEEE Access}, 9:139138--139145, 2021.
+
+\bibitem{cao2021weighted}
+Hangpu Cao and Sicheng Mi.
+\newblock Weighted srgan and reconstruction loss analysis for accurate image
+  super resolution.
+\newblock In {\em Journal of Physics: Conference Series}, volume 1903, page
+  012050. IOP Publishing, 2021.
+
+\bibitem{liu2021dynamically}
+Lanlan Liu, Yuting Zhang, Jia Deng, and Stefano Soatto.
+\newblock Dynamically grown generative adversarial networks.
+\newblock In {\em Proceedings of the AAAI Conference on Artificial
+  Intelligence}, volume~35, pages 8680--8687, 2021.
+
+\end{thebibliography}
