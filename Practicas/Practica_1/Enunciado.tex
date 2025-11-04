@@ -1,0 +1,93 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=3.5cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[newfloat]{minted}
+\usepackage[nolist]{acronym}
+\usepackage{glossaries}
+\usepackage[
+    type={CC},
+    modifier={by-nc-sa},
+    version={3.0},
+]{doclicense}
+
+
+
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.6pt}
+
+\pagestyle{fancy}
+\setlength\headheight{50pt}
+\lhead{\includegraphics[height=1.5cm]{Practicas/figures/Practica_1/logos/upm_logo}}
+\chead{Métodos generativos\\\vspace{.5em} Práctica 1\\\vspace{-.1em}}
+\rhead{\includegraphics[height=1.5cm]{Practicas/figures/Practica_1/logos/etsisi_logo}}
+\lfoot{\textbf{Tema 2 y 3:} Arquitecturas de metodos generativos}
+\cfoot{}
+\rfoot{\thepage}
+
+\parskip 1.1ex % paragraph spacing
+\newglossaryentry{AE}{name={AE},description={Autoencoder}}
+\newglossaryentry{VAE}{name={VAE},description={Variational Autoencoder}}
+\newglossaryentry{GAN}{name={GAN},description={Generative Adversarial Network}}
+
+
+\begin{document}
+
+\section*{Normativa}
+
+\begin{itemize}
+    \item La práctica se realizará en grupos de 2 alumnos.
+    \item Si se detecta cualquier sospecha de copia conllevará un 0.
+    \item Es obligatorio completar todos los apartados para poder participar en la competición final.
+    \item Los resultados obtenidos y presentados deben ser producto original del trabajo del alumno.
+    \item No se podrán utilizar modelos entrenados con la técnica de \textit{fine-tunning} ni arquitecturas distintas a las vistas en clase.
+\end{itemize}
+
+\section{Objetivo de la práctica}
+\textbf{Dataset:} Para la realización de la práctica y la presentación de los resultados se va a utilizar un dataset homogéneo de caras de animación japonesa, que nos permitirá generar nuestras propias waifus. \href{https://www.kaggle.com/datasets/splcher/animefacedataset}{\textbf{Anime Face Dataset}} de Spencer Churchill, consta de más de 63k de imágenes a color cuyas dimensiones varían de 90*90 $\sim$ 120*120 píxeles.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=.9\linewidth]{Practicas/figures/Practica_1/figs/dataset-cover.jpg}
+    \caption{Anime Face Dataset}
+    \label{fig:placeholder}
+\end{figure}
+
+
+\textbf{Ejercicio 1a:} Utilizando cada uno de los modelos de redes neuronales generativos que se lista a continuación y  el dataset citado anteriormente, entrene un modelo capaz de generar imágenes parecidas al dataset para cada arquitectura.
+\begin{itemize}
+    \item \gls{AE}: 2 puntos (entrenamiento e inferencia)
+    \item \gls{VAE}: 2 puntos (entrenamiento e inferencia)
+    \item \gls{GAN}: 2 puntos (entrenamiento e inferencia)
+\end{itemize}
+
+\textbf{Ejercicio 1b:} Para cada modelo y con los resultados obtenidos, explique y justifique los resultados del entrenamiento. Para ello habrá que explicar por separado el funcionamiento y la arquitectura de cada red utilizada así como los resultados obtenidos, tanto si son buenos como si son malos. \textbf{\textit{Se valorará positivamente una mirada crítica a la hora de redactar este apartado.}}
+Se calificará con 1 punto para cada explicación de cada modelo.
+
+\textbf{Ejercicio 2:} Elija uno de los modelos utilizados en el apartado anterior y vamos a realizar una competición entre todos los alumnos de este curso. Para ello, vamos a utilizar las herramientas que nos ofrece la plataforma de Kaggle (URL: \href{https://www.kaggle.com/competitions/mg-practica-1-generando-imagenes/data}{MG: Practica 1 - Generando imagenes}, en el enlace encontrareis la competición entre vosotros y las puntuaciones obtenidas en cada subida. El punto de este apartado lo conseguirán solo los 3 mejores resultados al finalizar la competición.
+
+\section{Competición de Kaggle}
+Asociada a la práctica hay disponible una competición de Kaggle de generación de caras de anime de 64x64 píxeles. Dicha competición evaluará la calidad de las imágenes generadas siguiendo una de las métricas de evaluación de los métodos generativos: la Fréchet Inception Distance (FID), en la que cuanto menor sea el valor, mejores serán las imágenes.
+
+Para participar, cada alumno deberá subir a Kaggle un archivo .csv con las imágenes generadas por un método desarrollado de entre los 3 mencionados en el Ejercicio 1a. La elección del método con el que se participa es libre por parte del alumno.
+
+Dicho .csv contendrá una fila por imagen generada, y una columna por píxel dentro de la imagen. Cada participación deberá constar de 200 imágenes generadas. Por lo tanto las dimensiones del .csv deberán ser 200 filas y 4.097 columnas (incluyendo la columna ID que Kaggle fuerza a utilizar). En Moodle hay disponible un .csv de referencia por cualquier duda que pueda surgir.
+
+\begin{itemize}
+    \item \textbf{URL Kaggle:} \href{https://www.kaggle.com/t/d9ea5cb8d5223e610a4ea35551a85915}{https://www.kaggle.com/t/d9ea5cb8d5223e610a4ea35551a85915}
+\end{itemize}
+
+\section{Entrega en Moodle}
+Cada alumno deberá subir a Moodle un archivo .pdf explicando la lógica seguida a la hora de diseñar, entrenar y evaluar los modelos generados. Para ello es imprescindible que se realice una explicación lógica y consecuente con los fundamentos vistos en la asignatura sobre cada decisión tomada.
+
+Además se deberán subir los notebooks correspondientes para los entrenos realizados, como prueba del funcionamiento de lo anteriormente descrito.
+
+Asimismo, para poder ser evaluada, la entrega deberá llevar asociada una participación en la competición de Kaggle previamente descrita.
+\end{document}

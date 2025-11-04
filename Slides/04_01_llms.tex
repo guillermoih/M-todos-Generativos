@@ -1,0 +1,704 @@
+\input{Slides/include/preamble.tex}
+\input{Slides/include/glossary.tex}
+\input{Slides/include/data.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+\title{Del Transformer Original al Ecosistema Moderno}
+
+\begin{document}
+\maketitle
+
+\begin{frame}{Contenidos}
+  \begin{enumerate}
+      \item Introducción
+      \item Auto-encoders (AEs)
+      \item{Auto-encoders Variacionales (VAEs)}
+      \item{Generative Adversarial Networks (GANs)}
+      \item{Transformers}
+      \item{\textbf{Del Transformer Original al Ecosistema Moderno}}
+      \item{Diffusion Models}
+    \end{enumerate}
+\end{frame}
+
+\section{Evolución y Variantes de Transformers}
+
+
+\begin{frame}{Recap: ¿Por qué funcionó tan bien el transformer original?}
+
+\begin{columns}
+\column{0.6\textwidth}
+\begin{itemize}
+    \item \textbf{Atención}: mecanismo que facilita capturar dependencias a largo plazo sin recurrencia
+    \item \textbf{Paralelización}: eliminación de dependencias secuenciales
+    \item \textbf{Escalabilidad}: arquitectura capaz de aprovechar grandes cantidades de datos
+    \item \textbf{Transferibilidad}: representaciones aprendidas útiles para múltiples tareas
+\end{itemize}
+\column{0.4\textwidth}
+\vspace{0.2em}
+\includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch.png}
+\end{columns}
+
+Estos principios han dado lugar a tres familias arquitectónicas principales...
+
+\end{frame}
+
+\begin{frame}{Las tres familias arquitectónicas}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.65\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch5.png}
+    \caption{De este diseño original se derivan tres familias: los modelos que entienden (encoder-only), los que generan (decoder-only) y los que traducen de una representación a otra (encoder-decoder).}
+\end{figure}
+\vspace{-0.4cm}
+\begin{itemize}
+    \item \textbf{Encoder-only}: solo la parte izquierda (encoders apilados)
+    \item \textbf{Decoder-only}: solo la parte derecha (decoders apilados), 
+    \begin{itemize}
+        \item sin cross-attention pero con masked-attention
+    \end{itemize}
+    \item \textbf{Encoder-decoder}: la arquitectura completa
+\end{itemize}
+
+\end{frame}
+
+
+
+% ============================================================
+% Fases de Entrenamiento
+% ============================================================
+
+
+\section{Fases entrenamiento, tareas y modelos de ejemplos}
+
+\begin{frame}{Tareas: Upstream vs Downstream}
+
+\textbf{Pretraining} (conocimiento general) → \textbf{Fine-tuning} (tarea específica)
+
+\vspace{0.5em}
+\textbf{Upstream Task (Tarea general)}
+\begin{itemize}
+    \item Objetivo \textbf{inicial} del entrenamiento del modelo base
+    \item Grandes volúmenes de datos, principalmente \textbf{no etiquetados}
+    \item Aprendizaje \textbf{auto-supervisado o con supervisión débil}
+    \item El modelo adquiere patrones lingüísticos y conocimiento general del mundo
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Downstream Task (Tarea específica)}
+\begin{itemize}
+    \item Tarea \textbf{final} o aplicación concreta
+    \item Datos más limitados, normalmente \textbf{etiquetados}
+    \item Aprendizaje \textbf{supervisado o basado en instrucciones}
+    \item El modelo se adapta al dominio o tarea de interés
+\end{itemize}
+
+\end{frame}
+
+\note{
+En la práctica, el upstream corresponde a la fase de aprendizaje general (donde el modelo aprende a predecir texto, llenar huecos o relacionar tokens), mientras que el downstream se refiere a las adaptaciones o especializaciones: clasificación, resumen, QA, etc.
+
+Entre ambos mundos hay técnicas intermedias como el continued pretraining o el instruction tuning.
+
+Decimos ``principalmente no etiquetados'' y ``normalmente etiquetados'' porque hoy existen variantes que no encajan del todo en esas categorías: por ejemplo, el pretraining puede incluir datos con supervisión débil (como tareas contrastivas o de emparejamiento imagen-texto), y el fine-tuning puede realizarse con datos sintéticos o generados por modelos (instruction tuning, RLHF) en lugar de conjuntos etiquetados manualmente.
+}
+
+
+\begin{frame}{Tareas: otras estrategias}
+
+\textbf{Continued pretraining / Domain Adaptation}
+    \begin{itemize}
+        \item Corpus de dominio específico sin etiquetar
+        \item Mismo \textbf{tipo} de objetivo: aprender más sobre el lenguaje pero con datos especializados
+        \item Adapta vocabulario y conocimiento del dominio
+        \item Ejemplo: textos médicos, legales, etc.
+    \end{itemize}
+
+\textbf{Aprendizaje sobre las tareas en el \textbf{contexto} (In-context learning)}
+\begin{itemize} 
+    \item Grandes modelos del lenguaje
+    \item Grandes ventanas de contexto
+    \item Aprender de la tarea sin modificar pesos.
+    \item Ejemplo: zero-shot, few-shot, etc.
+\end{itemize}
+
+\textbf{Generación Aumentada por Recuperación (\textbf{RAG})}
+\begin{itemize}
+    \item Vectorización de conocimiento
+    \item Inyección en el contexto
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Taxonomía de Tareas: Auto-supervisadas (sin etiquetas)}
+
+\textbf{Sin etiquetas específicas:}
+
+\begin{description}
+    \item[MLM] \textit{Masked Language Modeling}
+    \item[-] Predecir tokens enmascarados usando contexto bidireccional. 
+    \item[-] \textbf{Ejemplo:} "El gato está \_\_\_ la alfombra" → "sobre".
+    
+    \item[CLM] \textit{Causal Language Modeling}
+    \item[-]Predecir el siguiente token (autoregresivo).  
+    \item[-]\textbf{Ejemplo:} "El clima está" → "soleado".
+    
+    \item[NSP] Next Sentence Prediction — predecir si una oración sigue a otra en el texto original.
+    \item[-] \textbf{Ejemplo:} 
+    \begin{itemize}
+        \item A: "Juan salió de casa."
+        \item B: "Luego compró pan."
+        \item Etiqueta: Verdadero (sí son consecutivas).
+    \end{itemize}
+\end{description}
+
+\end{frame}
+
+
+\begin{frame}{Taxonomía de Tareas: Auto-supervisadas (sin etiquetas)}
+
+\begin{description}
+
+    \item[SOP] \textit{Sentence Order Prediction}
+    \item[-] Determinar el orden correcto de oraciones.  
+    \item[-] \textbf{Ejemplo:} "Juan salió. Luego compró pan." vs "Luego compró pan. Juan salió."
+    
+    \item[RTD] \textit{Replaced Token Detection}
+    \item[-] Detectar tokens falsos (ELECTRA).  
+    \item[-] \textbf{Ejemplo:} "El perro comió pizza" → detectar que "pizza" es improbable.
+    
+    \item[Span Corruption]  
+    \item[-] Predecir secuencias enmascaradas.  
+    \item[-] \textbf{Ejemplo:} "El \_\_\_ en el jardín \_\_\_ muy feliz."
+    \item[-] seq1: perro corre; seq2: está.
+\end{description}
+
+\end{frame}
+
+
+
+\begin{frame}{Taxonomía de Tareas: Supervisadas (Fine-tuning)}
+
+\textbf{Con etiquetas específicas:}
+
+\begin{description}
+    \item[Text Classification] Categorizar texto completo.  
+    \item[-] \textbf{Ejemplo:} "Este producto es excelente"
+    \item[-] Sentimiento: positivo.
+    
+    \item[Token Classification] Etiquetar cada token.  
+    \item[-] \textbf{Ejemplo NER:} "Barack Obama nació en Hawái"
+    \item[-] [Persona: Barack Obama], [Lugar: Hawái].
+    \item[-] \textbf{Ejemplo POS}: Part-of-Speech tagging (sustantivos, verbos, etc.)
+     
+    \item[Question Answering] Responder preguntas basadas en contexto.  
+    \item[-] \textbf{Ejemplo extractivo:}
+    \item[-] "Obama fue el presid... nació en Hawái, en la ... ¿Dónde nació Obama?"
+    \item[-] Respuesta: "Hawái".
+\end{description}
+
+\end{frame}
+
+
+\begin{frame}{Taxonomía de Tareas: Generación y Transformación}
+
+\begin{description}
+    \item[Summarization] Resumir texto largo.  
+    \item[-] \textbf{Ejemplo:} Artículo
+    \item[-] "Resumen breve".
+
+    
+    \item[Paraphrasing] Reformular manteniendo significado.  
+    \item[-] \textbf{Ejemplo:} "Hace frío"
+    \item[-] "La temperatura es baja".
+    
+    \item[Dialogue] Responder en conversación.  
+    \item[-] \textbf{Ejemplo:} Usuario: "¿Cómo estás?"
+    \item[-] Modelo: "Muy bien, gracias".
+
+    \item[Translation] Traducir idiomas.  
+    \item[-] \textbf{Ejemplo:} "Hello world"
+    \item[-] "Hola mundo".
+\end{description}
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Tareas: resumen}
+
+\textbf{Upstream Tasks (Pretraining – aprendizaje general)}
+\begin{itemize}
+  \item \textbf{Auto-supervisadas:} MLM, CLM, NSP, SOP, RTD, Span Corruption
+  \item Aprender representaciones y conocimiento general del lenguaje
+\end{itemize}
+
+\textbf{Continued Pretraining / Domain Adaptation}
+\begin{itemize}
+  \item \textbf{Auto-supervisadas:} sobre corpus especializado.
+  \item Ejemplo: GPT -> Generamos LegalGPT o MedicalGPT
+\end{itemize}
+
+\textbf{Downstream Tasks (Fine-tuning o uso contextual)}
+\begin{itemize}
+  \item \textbf{Supervisadas:} Text / Token Classification, QA, Summarization, Paraphrasing, Dialogue, Translation
+  \item \textbf{Sin actualización de pesos:} In-context Learning (zero-shot, few-shot)
+\end{itemize}
+
+\textbf{Otras Estrategias:}
+\begin{itemize}
+    \item RAG (Retrieval-Augmented Generation)
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Tareas: resumen}
+
+
+\begin{block}{Analogía educativa}
+
+Pensemos en el modelo como una persona que aprende. \\[0.5em]
+
+\textbf{Pretraining:} la etapa escolar. Aprende a leer, escribir y el uso del lenguaje.  
+No hay tareas concretas, solo comprensión general del lenguaje y del mundo. \\[0.5em]
+
+\textbf{Domain adaptation:} la universidad. Se especializa en un campo (medicina, derecho, programación)
+Aprende con textos del dominio, pero sigue sin etiquetas. \\[0.5em]
+
+\textbf{Fine-tuning:} el trabajo. Aprende una tarea concreta con ejemplos reales.  
+Ya no estudia teoría: aplica lo aprendido para resolver problemas específicos. \textbf{Ejemplos:} un médico que aprende a diagnosticar, o un abogado que redacta demandas
+
+\end{block}
+\end{frame}
+
+
+\section{Ejemplos de modelos}
+
+
+\begin{frame}{Familia 1: Encoder-only — BERT}
+
+\textbf{BERT}: \textit{Bidirectional Encoder Representations from Transformers}
+
+\textbf{Características principales}
+\begin{itemize}
+    \item \textbf{Arquitectura:} sólo usa \textit{encoders} del Transformer
+    \item \textbf{Bidireccionalidad:} cada token ve todo el contexto (izquierda y derecha)
+    \item \textbf{Objetivo de entrenamiento:} 
+    \textit{Masked Language Modeling (MLM)} y \textit{Next Sentence Prediction (NSP)}
+    \item Produce \textbf{representaciones contextuales} ricas
+\end{itemize}
+
+\centering
+\includegraphics[width=0.75\textwidth]{Slides/figures/llm/bert.png}
+
+\end{frame}
+
+
+\begin{frame}{Entrenamiento de BERT (Pre-training)}
+
+\textbf{Objetivo:} aprender representaciones lingüísticas generales a partir de grandes corpus sin supervisión.
+
+\textbf{Datos de entrenamiento}: \textit{BooksCorpus} y \textit{Wikipedia} en inglés
+
+\textbf{Tareas de pre-entrenamiento}
+\begin{itemize}
+    \item Ambas cabezas (MLM y NSP) se entrenan en paralelo $L = L_{\text{MLM}} + L_{\text{NSP}}$
+
+    \item \textbf{Masked Language Modeling (MLM)}  
+    \begin{itemize}
+        \item Se selecciona aleatoriamente el \textbf{15\% de los tokens} para intentar predecirlos.
+        \item De esos tokens seleccionados:
+        \begin{itemize}
+            \item 80\% se reemplazan por \texttt{[MASK]}
+            \item 10\% se reemplazan por un token aleatorio
+            \item 10\% se dejan sin modificar (eliminar dependencia de \texttt{[MASK]})
+            % Oye, aquí tienes una oración normal. Pero aunque la palabra esté visible, quiero que igualmente trates de predecirla.
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Next Sentence Prediction (NSP)}  
+    \begin{itemize}
+        \item 50\% de los pares son oraciones consecutivas (\textit{IsNext})
+        \item 50\% son oraciones no relacionadas (\textit{NotNext})
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Representaciones y entrenamiento de BERT}
+
+\textbf{El token [CLS]} Se añade al inicio de la secuencia
+\begin{itemize}
+    \item Su vector final \textbf{resume el significado global} del texto.
+    \item Se usa para tareas de clasificación (\textit{NSP}, análisis de sentimiento, etc.).
+\end{itemize}
+
+\textbf{Embeddings por token}
+\begin{itemize}
+    \item Cada token obtiene una representación contextual completa.
+    \item Útiles para tareas de secuencia (NER, QA, POS tagging).
+\end{itemize}
+
+
+\begin{block}{Ejemplo}
+\vspace{0.2cm}
+\small
+\texttt{Input: "El [MASK] duerme. Está [MASK]."}\\
+\texttt{ Objetivo MLM: predecir "gato", "cansado"}\\[0.3em]
+\texttt{ Objetivo NSP: IsNext}\\
+\vspace{0.2cm}
+\texttt{Input: "El [MASK] duerme. Los trenes son [MASK]."}\\
+\texttt{ Objetivo MLM: predecir "gato", "rápidos"}\\[0.3em]
+\texttt{ Objetivo NSP: NotNext}\\
+\end{block}
+
+\end{frame}
+
+
+
+\begin{frame}{Familia 2: Decoder-only — GPT-2}
+
+\textbf{GPT-2}: \textit{Generative Pre-trained Transformer 2}
+
+\begin{columns}[T]
+\column{0.55\textwidth}
+
+\textbf{Características principales}
+\begin{itemize}
+    \item Usa solo la parte \textbf{decoder} del Transformer.
+    \item Entrenamiento \textbf{autoregresivo}: predice el siguiente token dado el contexto previo.
+    \item Objetivo de entrenamiento: \textbf{Causal Language Modeling (CLM)}.
+    \item Atención \textbf{unidireccional}: cada token solo ve los anteriores.
+\end{itemize}
+
+\column{0.45\textwidth}
+\centering
+\includegraphics[width=1\textwidth]{Slides/figures/llm/gpt2.png}
+\href{https://medium.com/@vipul.koti333/from-theory-to-code-step-by-step-implementation-and-code-breakdown-of-gpt-2-model-7bde8d5cecda}{Link a fuente de imagen} \\
+¡Ojo! Masked MHA
+\end{columns}
+
+\vspace{0.5cm}
+
+\textbf{GPT-2}: \textit{¡Ojo! se entrena en paralelo. En inferencia se va token a token.}
+
+\end{frame}
+
+
+
+\begin{frame}{Generación con GPT-2}
+
+\textbf{Objetivo:} generar texto coherente y fluido, un token a la vez.
+
+\textbf{Durante la generación}
+\begin{itemize}
+    \item El modelo calcula la probabilidad de cada token posible:
+    \[
+    P(x_t | x_{<t})
+    \]
+    \item Se elige el siguiente token según una estrategia de muestreo.
+    \item El proceso continúa hasta alcanzar un token de parada o el límite de longitud.
+\end{itemize}
+
+\textbf{Estrategias de muestreo}
+\begin{itemize}
+    \item \textbf{Greedy}: elige siempre el token más probable (poco creativo).
+    \item \textbf{Sampling}: elige aleatoriamente según la distribución de probabilidad.
+    \item \textbf{Top-$k$ / Nucleus (Top-$p$)}: limita el muestreo a los tokens más probables.
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Generación con GPT-2}
+
+\begin{block}{Ejemplo de generación}
+\small
+\texttt{Input: "El gato duerme en"} $\rightarrow$ \texttt{"el sofá."}\\[0.3em]
+\texttt{Input: "La IA transformará"} $\rightarrow$ \texttt{"la educación en el futuro."}
+\end{block}
+
+\vspace{0.4em}
+
+\begin{block}{Temperatura y creatividad}
+\small
+Controla la aleatoriedad en el muestreo:\\
+\[
+P_i' = \frac{\exp(\log P_i / T)}{\sum_j \exp(\log P_j / T)}
+\]
+\textbf{Temperatura baja} $(T<1)$ → texto predecible\\
+\textbf{Temperatura alta} $(T>1)$ → texto más variado
+\end{block}
+\textbf{Casos de uso}:
+\begin{itemize}
+    \item Resumen de textos
+    \item Paráfrasis
+    \item Question Answering generativo
+    \item Traducción automática (También aunque se usan más enc-dec) 
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Familia 3: Encoder–Decoder - T5}
+
+\textbf{T5}: \textit{Text-To-Text Transfer Transformer}
+
+\textbf{Características principales}:
+\begin{itemize}
+    \item \textbf{Arquitectura completa}: encoder bidireccional + decoder autoregresivo.
+    \item Entrenamiento basado en \textbf{denoising}: el modelo aprende a reconstruir texto corrupto.
+    \item Formulación unificada: todo se expresa como una tarea \textbf{text-to-text}.
+    \item Máxima \textbf{flexibilidad} para tareas de tipo seq2seq.
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Familia 3: Encoder–Decoder - T5}
+
+\centering
+\includegraphics[width=1\textwidth]{Slides/figures/llm/t5.png}
+
+
+\textbf{Casos de uso}:
+\begin{itemize}
+    \item Traducción automática
+    \item Resumen de textos
+    \item Paráfrasis y reformulación
+    \item Question Answering generativo
+\end{itemize}
+
+% Corpus of Linguistic Acceptability
+% Semantic Textual Similarity Benchmark
+
+\end{frame}
+
+
+
+\begin{frame}{Comparación de las tres familias}
+
+\begin{table}[]
+\centering
+\small
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Familia} & \textbf{Atención} & \textbf{Objetivo} & \textbf{Uso principal} \\ \hline
+Encoder-only & Bidireccional & MLM & Comprensión \\ \hline
+Decoder-only & Causal & CLM & Generación \\ \hline
+Encoder-decoder & Ambas & Seq2seq & Transformación \\ \hline
+\end{tabular}
+\end{table}
+
+\vspace{1em}
+
+\begin{block}{Regla general}
+\begin{itemize}
+    \item ¿Necesitas \textbf{entender}? → Encoder-only
+    \item ¿Necesitas \textbf{generar}? → Decoder-only
+    \item ¿Necesitas \textbf{transformar}? → Encoder-decoder
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+
+\section{Conceptos Clave del Ecosistema}
+
+
+
+\begin{frame}{Paradigmas de Aprendizaje}
+
+\textbf{1. Transfer Learning: Pretraining + Fine-tuning}
+\begin{itemize}
+    \item Entrenamiento en dos fases
+    \item Modifica los parámetros del modelo
+    \item Requiere dataset de la tarea objetivo
+    \item Ejemplo: BERT pre-entrenado -> fine-tuned para clasificación de sentimiento
+    \item Ejemplo: BERT pre-entrenado -> Domain adaptation "legal" -> fine-tuned para clasificación de posibles veredictos
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{2. In-Context Learning (emergente en modelos grandes)}
+\begin{itemize}
+    \item Solo disponible en modelos suficientemente grandes
+    \item Ventana grande, conocimiento amplio
+    \item \textbf{No modifica} los parámetros del modelo
+    \item Aprende de los ejemplos en el prompt
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{In-Context Learning: Zero-shot y Few-shot}
+
+\textbf{Zero-shot}: Sin ejemplos
+\begin{block}{}
+\small
+\texttt{Classify the sentiment of this text: "I love this product!"}
+
+\texttt{Answer: Positive}
+\end{block}
+
+\vspace{0.5em}
+
+\textbf{Few-shot}: Con pocos ejemplos (2-5 típicamente)
+\begin{block}{}
+\small
+\texttt{Classify sentiment:}
+
+\texttt{Text: "Great service!" → Positive}
+
+\texttt{Text: "Terrible experience." → Negative}
+
+\texttt{Text: "I love this!" → ?}
+\end{block}
+
+\vspace{0.5em}
+
+\begin{alertblock}{Diferencia clave}
+In-context learning NO actualiza parámetros, solo usa el contexto del prompt.
+\end{alertblock}
+
+\end{frame}
+
+\begin{frame}{Prompt Engineering}
+
+\begin{itemize}
+    \item \textbf{Disciplina} que surgió con el auge de los LLMs
+    \item Técnicas principales:
+    \begin{itemize}
+        \item \textbf{Instruction prompting}: instrucciones claras y específicas
+        \item \textbf{Few-shot prompting}: proporcionar ejemplos
+        \item \textbf{Chain-of-thought}: pedir razonamiento paso a paso
+        \item \textbf{Role prompting}: asignar un rol al modelo
+    \end{itemize}
+    \item Arte y ciencia de diseñar instrucciones efectivas
+    \begin{itemize}
+        \item CoT -> Modelos razonadores
+    \end{itemize}
+    \item El prompt adecuado puede marcar la diferencia entre éxito y fracaso
+\end{itemize}
+
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Chain of Thought (CoT) y Modelos razonadores}
+
+\small
+\textbf{Chain of Thought:} Pedir al modelo que piense y haga explícito el razonamiento intermedio de una respuesta/tarea.  
+
+\begin{itemize}
+    \item \textbf{Resultado:} En lugar de dar directamente la respuesta final, el modelo genera una secuencia de pasos lógicos antes de llegar a la solución.
+    \item \textbf{Ejemplo:} Para resolver un problema matemático, el modelo escribe los cálculos y justificaciones antes de dar el resultado.
+    \item \textbf{Objetivo:} Mejorar la precisión en tareas complejas (matemáticas, lógica, planificación) al permitir que el modelo “razone” de forma estructurada.
+\end{itemize}
+
+\textbf{Modelos razonadores:} Modelos diseñados y optimizados específicamente para razonar de forma más profunda y fiable. \textbf{Técnicas empleadas:}
+\begin{itemize}
+    \item \textbf{Entrenamiento con CoT:} aprenden a generar pasos intermedios.
+    \item \textbf{Self-Consistency:} generan varias cadenas de razonamiento y eligen la más coherente.
+    \item \textbf{Verificación interna:} el modelo revisa sus propios pasos antes de responder.
+\end{itemize}
+
+\end{frame}
+
+
+\section{Herramientas: Hugging Face}
+
+\begin{frame}{Hugging Face Hub: El GitHub de los modelos}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{¿Qué es Hugging Face Hub?}
+\begin{itemize}
+    \item Plataforma centralizada para compartir:
+    \begin{itemize}
+        \item Modelos pre-entrenados (180,000+)
+        \item Datasets
+        \item Spaces (demos interactivas)
+    \end{itemize}
+    \item \textbf{Model cards}: documentación estandarizada
+    \begin{itemize}
+        \item Arquitectura y tamaño
+        \item Dataset de entrenamiento
+        \item Métricas de rendimiento
+        \item Limitaciones conocidas
+        \item Consideraciones éticas
+    \end{itemize}
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Biblioteca transformers}
+\begin{itemize}
+    \item Abstracción unificada
+    \item Mismo código para todos los modelos
+    \item API simple:
+\end{itemize}
+
+\begin{block}{}
+\tiny
+\texttt{from transformers import pipeline}
+
+\texttt{classifier = pipeline("sentiment-analysis")}
+
+\texttt{result = classifier("I love this!")}
+\end{block}
+
+\end{columns}
+
+\end{frame}
+
+
+
+
+
+
+\section{Notebook aplicando conceptos}
+
+
+
+\begin{exercise}
+\href{https://colab.research.google.com/}{Práctica: Explorando herramientas y arquitecturas}
+
+\end{exercise}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Recursos}
+\begin{itemize}
+    \item Hugging Face Hub: \url{https://huggingface.co/models}
+    \item Transformers Documentation: \url{https://huggingface.co/docs/transformers}
+    \item Ollama: \url{https://ollama.ai/}
+    \item The Illustrated Transformer: \url{http://jalammar.github.io/illustrated-transformer/}
+    \item Prompt Engineering Guide: \url{https://www.promptingguide.ai/}
+\end{itemize}
+\end{frame}
+
+\appendix
+
+\begin{frame}<presentation:0>{License}
+    \begin{block}{Tema \texttt{slides-upm}. Puedes obtener sus fuentes en}
+        \begin{center}\url{http://gitlab.com/blazaid/slides-upm}\end{center}
+    \end{block}
+  
+    Tanto esta presentación como el tema están licenciados bajo \href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons
+  Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)}.
+    \begin{center}\ccbysa\end{center}
+\end{frame}
+
+\end{document}

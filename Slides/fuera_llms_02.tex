@@ -1,0 +1,1059 @@
+\input{Slides/include/preamble.tex}
+\input{Slides/include/glossary.tex}
+\input{Slides/include/data.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+\title{De la Investigación a la Producción: Fine-tuning y Optimización}
+
+\begin{document}
+\maketitle
+
+\begin{frame}{Contenidos}
+  \begin{enumerate}
+      \item Introducción
+      \item Auto-encoders (AEs)
+      \item{Auto-encoders Variacionales (VAEs)}
+      \item{Generative Adversarial Networks (GANs)}
+      \item{Transformers}
+      \item{\textbf{Del Transformer Original al Ecosistema Moderno}}
+      \item{Diffusion Models}
+    \end{enumerate}
+\end{frame}
+
+\section{Fine-tuning y Transfer Learning}
+
+\begin{frame}{Recordatorio: Transfer Learning}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch5.png}
+\end{figure}
+
+\textbf{Transfer Learning} = Pretraining + Fine-tuning
+
+\begin{itemize}
+    \item \textbf{Pretraining}: aprender representaciones generales (upstream task)
+    \item \textbf{Fine-tuning}: adaptar a tarea específica (downstream task)
+\end{itemize}
+
+Pero... ¿cómo hacer fine-tuning de forma eficiente?
+
+\end{frame}
+
+\begin{frame}{Full Fine-tuning: La Aproximación Tradicional}
+
+\textbf{¿Qué es?}
+\begin{itemize}
+    \item Actualizar \textbf{todos los parámetros} del modelo pre-entrenado
+    \item Usar datos etiquetados de la tarea objetivo
+    \item Entrenar con learning rate bajo (no olvidar conocimiento previo)
+\end{itemize}
+
+\vspace{0.5em}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Ventajas} ✓
+\begin{itemize}
+    \item Máximo rendimiento posible
+    \item Simple de implementar
+    \item Flexibilidad total
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Desventajas} ✗
+\begin{itemize}
+    \item Alto coste computacional
+    \item Necesita más datos
+    \item Riesgo de overfitting
+    \item Catastrophic forgetting
+\end{itemize}
+
+\end{columns}
+
+\vspace{1em}
+
+\begin{alertblock}{Problema principal}
+BERT-base: 110M parámetros → guardar modelo completo para cada tarea
+\end{alertblock}
+
+\end{frame}
+
+\begin{frame}{Parameter-Efficient Fine-Tuning (PEFT)}
+
+\textbf{Idea central}: ¿Y si solo entrenamos una \textbf{pequeña parte} del modelo?
+
+\vspace{0.5em}
+
+\begin{block}{Ventajas de PEFT}
+\begin{itemize}
+    \item Menos memoria durante entrenamiento
+    \item Menos datos necesarios
+    \item Entrenamiento más rápido
+    \item Evita catastrophic forgetting
+    \item Múltiples tareas con mismo modelo base
+\end{itemize}
+\end{block}
+
+\vspace{0.5em}
+
+\textbf{Principales técnicas}:
+\begin{enumerate}
+    \item \textbf{LoRA} (Low-Rank Adaptation)
+    \item \textbf{Adapters}
+    \item \textbf{Prompt Tuning / Prefix Tuning}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{LoRA: Low-Rank Adaptation}
+
+\begin{columns}
+\column{0.6\textwidth}
+\textbf{Idea clave}:
+\begin{itemize}
+    \item Los pesos pre-entrenados permanecen \textbf{congelados}
+    \item Añadimos matrices de \textbf{bajo rango} $A$ y $B$
+    \item Solo entrenamos $A$ y $B$
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Matemáticamente}:
+\begin{align*}
+h &= W_0 x + \Delta W x \\
+\Delta W &= BA
+\end{align*}
+
+donde $B \in \mathbb{R}^{d \times r}$, $A \in \mathbb{R}^{r \times k}$, y $r \ll d$
+
+\vspace{0.5em}
+
+\textbf{Hiperparámetros}:
+\begin{itemize}
+    \item $r$: rank (típicamente 8, 16, 32)
+    \item $\alpha$: scaling factor
+\end{itemize}
+
+\column{0.4\textwidth}
+\begin{figure}
+    \centering
+    %\includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/lora-diagram.png}
+    \caption{Esquema de LoRA}
+\end{figure}
+
+\vspace{0.5em}
+
+\begin{exampleblock}{Ejemplo}
+\small
+GPT-3 (175B parámetros)
+
+LoRA: solo 37M parámetros entrenables (0.02\%)
+\end{exampleblock}
+
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{Adapters: Módulos Insertables}
+
+\begin{columns}
+\column{0.6\textwidth}
+\textbf{Arquitectura}:
+\begin{itemize}
+    \item Insertar \textbf{módulos pequeños} entre capas del transformer
+    \item Estructura típica: down-projection → activation → up-projection
+    \item Solo entrenar los adapters
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Características}:
+\begin{itemize}
+    \item Bottleneck architecture (reducir dimensión)
+    \item Residual connection
+    \item Típicamente $<5\%$ de parámetros del modelo
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Ventajas}:
+\begin{itemize}
+    \item Modular: fácil añadir/quitar
+    \item Un modelo base, múltiples adapters
+\end{itemize}
+
+\column{0.4\textwidth}
+\begin{figure}
+    \centering
+    %\includegraphics[width=0.9\textwidth]{Slides/figures/02_Metodos_Generativos/adapter-diagram.png}
+    \caption{Adapter entre capas}
+\end{figure}
+
+\begin{block}{Comparación}
+\small
+\textbf{LoRA}: modifica pesos existentes
+
+\textbf{Adapters}: añade nuevas capas
+\end{block}
+
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{Prompt Tuning / Prefix Tuning}
+
+\begin{columns}
+\column{0.6\textwidth}
+\textbf{Concepto}:
+\begin{itemize}
+    \item En lugar de entrenar pesos del modelo...
+    \item Entrenar \textbf{embeddings continuos} que se añaden al input
+    \item Modelo completamente congelado
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Tipos}:
+\begin{itemize}
+    \item \textbf{Prompt Tuning}: soft prompts al inicio
+    \item \textbf{Prefix Tuning}: vectores en cada capa
+    \item \textbf{P-Tuning v2}: más sofisticado
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Extremadamente eficiente}:
+\begin{itemize}
+    \item $<0.1\%$ de parámetros entrenables
+    \item Ideal para modelos muy grandes
+\end{itemize}
+
+\column{0.4\textwidth}
+\begin{exampleblock}{Ejemplo}
+\small
+Input original:
+\texttt{Classify: [text]}
+
+\vspace{0.3em}
+Con prompt tuning:
+\texttt{[P1][P2][P3] Classify: [text]}
+
+donde $[P_i]$ son vectores entrenables
+\end{exampleblock}
+
+\vspace{0.5em}
+
+\begin{alertblock}{Nota}
+\small
+Diferentes de los "prompts" que escribimos. Estos son vectores continuos, no texto.
+\end{alertblock}
+
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{Comparación de Métodos PEFT}
+
+\begin{table}[]
+\centering
+\small
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Método} & \textbf{Params} & \textbf{Rendimiento} & \textbf{Velocidad} & \textbf{Memoria} \\ \hline
+Full Fine-tuning & 100\% & ★★★★★ & ★★ & ★★ \\ \hline
+LoRA & 0.1-1\% & ★★★★ & ★★★★ & ★★★★★ \\ \hline
+Adapters & 2-5\% & ★★★★ & ★★★ & ★★★★ \\ \hline
+Prompt Tuning & <0.1\% & ★★★ & ★★★★★ & ★★★★★ \\ \hline
+\end{tabular}
+\end{table}
+
+\vspace{1em}
+
+\begin{block}{Recomendación práctica}
+\begin{itemize}
+    \item \textbf{Full fine-tuning}: si tienes recursos y datos abundantes
+    \item \textbf{LoRA}: mejor balance general (nuestra recomendación)
+    \item \textbf{Adapters}: si necesitas múltiples tareas
+    \item \textbf{Prompt Tuning}: para modelos gigantes (>100B params)
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Casos de Uso: Fine-tuning en la Práctica}
+
+\textbf{1. Clasificación específica de dominio}
+\begin{itemize}
+    \item Ejemplo: análisis de sentimiento de reviews médicas
+    \item Base: BERT o RoBERTa
+    \item Método: LoRA con $r=16$
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{2. Question Answering en documentos corporativos}
+\begin{itemize}
+    \item Base: T5 o BERT (QA)
+    \item Datos: preguntas-respuestas del dominio
+    \item Método: Full fine-tuning o LoRA
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{3. Resumen de artículos científicos}
+\begin{itemize}
+    \item Base: BART o T5
+    \item Datos: papers + abstracts
+    \item Método: LoRA (memoria limitada)
+\end{itemize}
+
+\vspace{0.5em}
+
+\begin{alertblock}{Consideración importante}
+Siempre evaluar en conjunto de test para evitar overfitting
+\end{alertblock}
+
+\end{frame}
+
+\section{Optimización y Eficiencia}
+
+\begin{frame}{Knowledge Distillation: Teacher-Student}
+
+\begin{columns}
+\column{0.6\textwidth}
+\textbf{Objetivo}: Transferir conocimiento de un modelo grande (teacher) a uno pequeño (student)
+
+\vspace{0.5em}
+
+\textbf{Proceso}:
+\begin{enumerate}
+    \item Entrenar modelo grande (teacher)
+    \item Usar outputs del teacher como "soft targets"
+    \item Entrenar modelo pequeño (student) para imitarlo
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{¿Por qué funciona?}
+\begin{itemize}
+    \item Las probabilidades suaves contienen más información
+    \item El student aprende relaciones entre clases
+    \item No solo la clase correcta, sino las similitudes
+\end{itemize}
+
+\column{0.4\textwidth}
+\begin{figure}
+    \centering
+    %\includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/distillation-diagram.png}
+    \caption{Knowledge Distillation}
+\end{figure}
+
+\begin{exampleblock}{Caso de éxito}
+\small
+\textbf{DistilBERT}
+\begin{itemize}
+    \item 40\% menos parámetros
+    \item 60\% más rápido
+    \item 97\% del rendimiento de BERT
+\end{itemize}
+\end{exampleblock}
+
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{Knowledge Distillation: Función de Pérdida}
+
+\textbf{Pérdida combinada}:
+\begin{align*}
+\mathcal{L} = \alpha \cdot \mathcal{L}_{CE}(\text{hard targets}) + (1-\alpha) \cdot \mathcal{L}_{KL}(\text{soft targets})
+\end{align*}
+
+donde:
+\begin{itemize}
+    \item $\mathcal{L}_{CE}$: cross-entropy con etiquetas reales
+    \item $\mathcal{L}_{KL}$: KL-divergence con distribución del teacher
+    \item $\alpha$: balance entre ambas pérdidas
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Soft targets con temperatura}:
+\begin{align*}
+p_i = \frac{\exp(z_i / T)}{\sum_j \exp(z_j / T)}
+\end{align*}
+
+donde $T$ (temperatura) suaviza la distribución
+
+\vspace{0.5em}
+
+\begin{block}{Intuición}
+$T > 1$ → distribución más suave → más información sobre similitudes entre clases
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Quantization: Reduciendo Precisión}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Idea}: Representar pesos con menos bits
+
+\vspace{0.5em}
+
+\textbf{Tipos de precisión}:
+\begin{itemize}
+    \item \textbf{FP32}: 32 bits (full precision)
+    \item \textbf{FP16}: 16 bits (half precision)
+    \item \textbf{INT8}: 8 bits (integer)
+    \item \textbf{INT4}: 4 bits (muy agresivo)
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Beneficios}:
+\begin{itemize}
+    \item Menos memoria (4x con INT8)
+    \item Inferencia más rápida (2-4x)
+    \item Importante para deployment
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{table}[]
+\centering
+\small
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Tipo} & \textbf{Memoria} & \textbf{Velocidad} \\ \hline
+FP32 & 1x & 1x \\ \hline
+FP16 & 0.5x & 1.5-2x \\ \hline
+INT8 & 0.25x & 2-4x \\ \hline
+INT4 & 0.125x & 3-6x \\ \hline
+\end{tabular}
+\end{table}
+
+\vspace{0.5em}
+
+\begin{alertblock}{Trade-off}
+Menor precisión → posible pérdida de calidad
+
+En la práctica: INT8 funciona muy bien
+\end{alertblock}
+
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{QLoRA: Quantization + LoRA}
+
+\begin{columns}
+\column{0.6\textwidth}
+\textbf{Innovación}: Combinar lo mejor de ambos mundos
+
+\vspace{0.5em}
+
+\textbf{Cómo funciona}:
+\begin{enumerate}
+    \item Cargar modelo base en \textbf{4-bit} (quantizado)
+    \item Añadir \textbf{adaptadores LoRA} en precisión normal
+    \item Fine-tunear solo los adaptadores
+    \item Resultado: modelo cuantizado + adaptadores entrenados
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{Ventajas}:
+\begin{itemize}
+    \item Memoria mínima durante entrenamiento
+    \item Permite fine-tunear modelos gigantes (65B+) en una GPU
+    \item Rendimiento competitivo con full fine-tuning
+\end{itemize}
+
+\column{0.4\textwidth}
+\begin{exampleblock}{Ejemplo impactante}
+\small
+\textbf{LLaMA-65B}
+
+Sin QLoRA:
+\begin{itemize}
+    \item 130 GB VRAM
+    \item Imposible en 1 GPU
+\end{itemize}
+
+Con QLoRA:
+\begin{itemize}
+    \item 48 GB VRAM
+    \item Cabe en A100 (80GB)
+\end{itemize}
+\end{exampleblock}
+
+\vspace{0.5em}
+
+\begin{block}{Paper clave}
+\small
+"QLoRA: Efficient Finetuning of Quantized LLMs" (2023)
+\end{block}
+
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{Otras Técnicas de Optimización}
+
+\textbf{1. Pruning (Poda)}
+\begin{itemize}
+    \item Eliminar conexiones/neuronas poco importantes
+    \item Structured vs. Unstructured pruning
+    \item Puede reducir hasta 90\% de parámetros con pérdida mínima
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{2. Weight Sharing}
+\begin{itemize}
+    \item Compartir pesos entre capas (ej: ALBERT)
+    \item Reduce parámetros sin reducir profundidad
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{3. Mixed Precision Training}
+\begin{itemize}
+    \item FP16 para forward/backward pass
+    \item FP32 para actualización de pesos
+    \item 2x más rápido, misma precisión
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{4. Gradient Checkpointing}
+\begin{itemize}
+    \item Trade-off: memoria ↔ velocidad
+    \item Recomputar activaciones en lugar de guardarlas
+\end{itemize}
+
+\end{frame}
+
+\section{RLHF y Modelos Instructivos}
+
+\begin{frame}{El Problema: Modelos Pre-entrenados vs. Útiles}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Modelo pre-entrenado}:
+\begin{itemize}
+    \item Predice siguiente token
+    \item No optimizado para seguir instrucciones
+    \item Puede generar contenido inapropiado
+    \item No alineado con valores humanos
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Lo que queremos}:
+\begin{itemize}
+    \item Seguir instrucciones
+    \item Ser útil
+    \item Ser honesto
+    \item Ser seguro (harmless)
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{exampleblock}{Ejemplo}
+\small
+\textbf{Prompt}: "¿Cómo hago una tortilla?"
+
+\vspace{0.3em}
+\textbf{GPT-3 base}:
+"¿Cómo hago una tortilla? ¿Cómo hago un pastel? ¿Cómo..."
+
+\vspace{0.3em}
+\textbf{ChatGPT (con RLHF)}:
+"Para hacer una tortilla necesitas: huevos, aceite, sal..."
+\end{exampleblock}
+
+\end{columns}
+
+\vspace{1em}
+
+\begin{alertblock}{Solución}
+\textbf{RLHF}: Reinforcement Learning from Human Feedback
+\end{alertblock}
+
+\end{frame}
+
+\begin{frame}{RLHF: Las Cuatro Fases}
+
+\begin{enumerate}
+    \item \textbf{Pretraining} (modelo base)
+    \begin{itemize}
+        \item Entrenamiento estándar con next-token prediction
+        \item Ejemplo: GPT-3, LLaMA base
+    \end{itemize}
+    
+    \vspace{0.3em}
+    
+    \item \textbf{Supervised Fine-Tuning (SFT)}
+    \begin{itemize}
+        \item Humanos escriben ejemplos de alta calidad
+        \item Fine-tunear el modelo con estos ejemplos
+        \item Típicamente 10K-100K ejemplos
+    \end{itemize}
+    
+    \vspace{0.3em}
+    
+    \item \textbf{Reward Modeling (RM)}
+    \begin{itemize}
+        \item Modelo genera múltiples respuestas
+        \item Humanos las rankean (mejor → peor)
+        \item Entrenar modelo de recompensa que predice rankings
+    \end{itemize}
+    
+    \vspace{0.3em}
+    
+    \item \textbf{Reinforcement Learning (PPO)}
+    \begin{itemize}
+        \item Optimizar con Proximal Policy Optimization
+        \item Maximizar recompensa según modelo RM
+        \item KL-penalty para no alejarse demasiado del SFT
+    \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{RLHF: Diagrama del Proceso}
+
+\begin{figure}
+    \centering
+    %\includegraphics[width=0.95\textwidth]{Slides/figures/02_Metodos_Generativos/rlhf-diagram.png}
+    \caption{Pipeline completo de RLHF (Fuente: OpenAI)}
+\end{figure}
+
+\begin{block}{Modelos que usan RLHF}
+ChatGPT, GPT-4, Claude, Llama 2 Chat, Mistral Instruct
+\end{block}
+
+\end{frame}
+
+\begin{frame}{RLHF: Por qué es Importante}
+
+\textbf{Impacto en la práctica}:
+\begin{itemize}
+    \item ChatGPT → explosión de uso de LLMs
+    \item Modelos más seguros y útiles
+    \item Mejor seguimiento de instrucciones
+    \item Reducción de outputs tóxicos
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Comparación} (GPT-3 vs. GPT-3.5-turbo):
+\begin{itemize}
+    \item GPT-3: modelo base
+    \item GPT-3.5-turbo: + SFT + RLHF
+    \item Diferencia dramática en utilidad
+\end{itemize}
+
+\vspace{0.5em}
+
+\begin{exampleblock}{Estadística}
+OpenAI reporta: RLHF mejora alineación en $>2x$ comparado con solo SFT
+\end{exampleblock}
+
+\end{frame}
+
+\begin{frame}{RLHF: Limitaciones y Desafíos}
+
+\textbf{1. Coste de Anotación}
+\begin{itemize}
+    \item Necesita muchas comparaciones humanas
+    \item Anotadores especializados (costoso)
+    \item Difícil de escalar
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{2. Reward Hacking}
+\begin{itemize}
+    \item El modelo aprende a "engañar" al reward model
+    \item Respuestas que parecen buenas pero son incorrectas
+    \item Sycophancy: decirle al usuario lo que quiere oír
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{3. Sesgos y Valores}
+\begin{itemize}
+    \item ¿Qué valores codificamos?
+    \item Diferentes culturas, diferentes preferencias
+    \item Riesgo de amplificar sesgos de anotadores
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{4. Alternativas en Desarrollo}
+\begin{itemize}
+    \item Constitutional AI (Anthropic)
+    \item RLAIF: RL from AI Feedback (usar LLMs para generar feedback)
+\end{itemize}
+
+\end{frame}
+
+\section{RAG y Agentes}
+
+\begin{frame}{El Problema del Conocimiento Estático}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Limitaciones de los LLMs}:
+\begin{itemize}
+    \item Conocimiento "congelado" en el entrenamiento
+    \item No saben eventos recientes
+    \item No tienen acceso a info privada/corporativa
+    \item Pueden "alucinar" información
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Ejemplo}:
+\begin{itemize}
+    \item GPT-4 (cutoff: sep 2021)
+    \item Pregunta: "¿Quién ganó el Mundial 2022?"
+    \item Respuesta: no lo sabe
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{alertblock}{Solución}
+\textbf{RAG}: Retrieval-Augmented Generation
+
+\vspace{0.3em}
+Darle al modelo acceso a información externa
+\end{alertblock}
+
+\vspace{0.5em}
+
+\begin{exampleblock}{Casos de uso}
+\begin{itemize}
+    \item QA sobre documentación
+    \item Chat con PDFs
+    \item Búsqueda semántica
+    \item Knowledge bases corporativas
+\end{itemize}
+\end{exampleblock}
+
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{RAG: Arquitectura}
+
+\begin{figure}
+    \centering
+%    \includegraphics[width=0.9\textwidth]{Slides/figures/02_Metodos_Generativos/rag-architecture.png}
+    \caption{Arquitectura típica de RAG}
+\end{figure}
+
+\textbf{Componentes}:
+\begin{enumerate}
+    \item \textbf{Knowledge Base}: documentos, artículos, base de datos
+    \item \textbf{Retriever}: busca documentos relevantes (encoder, sentence-transformers)
+    \item \textbf{Generator}: genera respuesta usando contexto (LLM, T5, GPT)
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{RAG: ¿Cómo Funciona?}
+
+\textbf{Pipeline paso a paso}:
+
+\vspace{0.5em}
+
+\begin{enumerate}
+    \item \textbf{Indexación} (offline):
+    \begin{itemize}
+        \item Procesar documentos
+        \item Generar embeddings (ej: sentence-transformers)
+        \item Guardar en vector database (FAISS, Pinecone, Weaviate)
+    \end{itemize}
+    
+    \vspace{0.3em}
+    
+    \item \textbf{Retrieval} (online):
+    \begin{itemize}
+        \item Usuario hace pregunta
+        \item Convertir pregunta a embedding
+        \item Buscar documentos más similares (cosine similarity, etc.)
+    \end{itemize}
+    
+    \vspace{0.3em}
+    
+    \item \textbf{Generation} (online):
+    \begin{itemize}
+        \item Construir prompt: pregunta + contexto recuperado
+        \item LLM genera respuesta basada en contexto
+    \end{itemize}
+\end{enumerate}
+
+\vspace{0.5em}
+
+\begin{block}{Clave}
+El modelo no "memoriza" información, la \textbf{busca y usa} cuando la necesita
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]{RAG: Ejemplo de Prompt}
+
+\begin{block}{Prompt construido por RAG}
+\small
+\begin{verbatim}
+Use the following context to answer the question.
+
+Context:
+[Documento 1]: Los transformers fueron introducidos 
+en 2017 en el paper "Attention is All You Need"...
+
+[Documento 2]: BERT es un modelo encoder-only que 
+usa masked language modeling...
+
+Question: ¿Cuándo se inventaron los transformers?
+
+Answer:
+\end{verbatim}
+\end{block}
+
+\vspace{0.5em}
+
+\textbf{Ventajas}:
+\begin{itemize}
+    \item Respuestas basadas en fuentes verificables
+    \item Actualización fácil (actualizar base de datos, no reentrenar)
+    \item Reduce alucinaciones
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{RAG: Consideraciones Técnicas}
+
+\textbf{Retriever}:
+\begin{itemize}
+    \item \textbf{Dense retrieval}: embeddings (BERT, sentence-transformers)
+    \item \textbf{Sparse retrieval}: BM25, TF-IDF
+    \item \textbf{Hybrid}: combinar ambos
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Chunking Strategy}:
+\begin{itemize}
+    \item ¿Cuánto texto por chunk? (típicamente 200-500 tokens)
+    \item ¿Overlapping? (mejor capturar contexto)
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Vector Databases}:
+\begin{itemize}
+    \item FAISS (Facebook): in-memory, muy rápido
+    \item Pinecone, Weaviate, Milvus: managed, escalables
+    \item ChromaDB: simple, open-source
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Trade-offs}:
+\begin{itemize}
+    \item Más documentos recuperados → más contexto pero más coste
+    \item Calidad de retrieval crítica para calidad de respuesta
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Agentes LLM: Introducción}
+
+\begin{columns}
+\column{0.6\textwidth}
+\textbf{¿Qué es un agente?}
+\begin{itemize}
+    \item LLM como "cerebro" que decide acciones
+    \item Capacidad de usar \textbf{herramientas externas}
+    \item Loop de razonamiento → acción → observación
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Herramientas típicas}:
+\begin{itemize}
+    \item Calculadora
+    \item Búsqueda web (Google, Wikipedia)
+    \item APIs (weather, stock prices, etc.)
+    \item Ejecutar código (Python REPL)
+    \item Acceso a bases de datos
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Arquitecturas}:
+\begin{itemize}
+    \item \textbf{ReAct}: Reasoning + Acting
+    \item \textbf{Plan-and-Execute}: planificar primero, luego ejecutar
+\end{itemize}
+
+\column{0.4\textwidth}
+\begin{exampleblock}{Ejemplo}
+\small
+\textbf{Pregunta}: "¿Cuál es la raíz cuadrada de 1764?"
+
+\vspace{0.3em}
+\textbf{Agente}:
+\begin{enumerate}
+    \item Reconoce que necesita cálculo
+    \item Usa herramienta "calculadora"
+    \item Obtiene resultado: 42
+    \item Responde al usuario
+\end{enumerate}
+\end{exampleblock}
+
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{Agentes: ReAct Pattern}
+
+\textbf{ReAct}: Reasoning + Acting (interleaved)
+
+\vspace{0.5em}
+
+\begin{block}{Ejemplo de trace}
+\small
+\textbf{Question}: What is the elevation of the highest point in California?
+
+\vspace{0.3em}
+\textbf{Thought 1}: I need to search for the highest point in California
+
+\textbf{Action 1}: Search[highest point in California]
+
+\textbf{Observation 1}: Mount Whitney is the highest point...
+
+\vspace{0.3em}
+\textbf{Thought 2}: Now I need to find its elevation
+
+\textbf{Action 2}: Search[Mount Whitney elevation]
+
+\textbf{Observation 2}: 4,421 meters
+
+\vspace{0.3em}
+\textbf{Thought 3}: I have the answer
+
+\textbf{Action 3}: Finish[4,421 meters]
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Frameworks para Agentes}
+
+\textbf{1. LangChain}
+\begin{itemize}
+    \item Framework más popular
+    \item Abstrae agents, chains, tools
+    \item Gran ecosistema de integraciones
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{2. LlamaIndex}
+\begin{itemize}
+    \item Especializado en RAG y data connectors
+    \item Indexación y query de documentos
+    \item Múltiples estrategias de retrieval
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{3. Otros}
+\begin{itemize}
+    \item AutoGPT, BabyAGI: agentes autónomos
+    \item Semantic Kernel (Microsoft)
+    \item Haystack
+\end{itemize}
+
+\vspace{0.5em}
+
+\begin{alertblock}{Nota}
+Campo muy activo, nuevas herramientas cada mes
+\end{alertblock}
+
+\end{frame}
+
+\begin{frame}{Agentes: Limitaciones}
+
+\textbf{Desafíos actuales}:
+\begin{itemize}
+    \item \textbf{Confiabilidad}: pueden fallar o entrar en loops
+    \item \textbf{Coste}: muchas llamadas a LLM ($\$$)
+    \item \textbf{Latencia}: múltiples pasos → respuesta lenta
+    \item \textbf{Evaluación}: difícil medir rendimiento
+    \item \textbf{Seguridad}: ejecución de código, acceso a APIs
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Buenas prácticas}:
+\begin{itemize}
+    \item Limitar número de pasos
+    \item Validar acciones antes de ejecutar
+    \item Logging detallado para debugging
+    \item Empezar simple, añadir complejidad gradualmente
+\end{itemize}
+
+\vspace{0.5em}
+
+\begin{block}{Estado actual (2024-2025)}
+Prometedores para casos de uso específicos, pero aún no "production-ready" para casos generales
+\end{block}
+
+\end{frame}
+
+\begin{exercise}
+\href{https://colab.research.google.com/}{Práctica: Fine-tuning y Optimización}
+
+En este notebook exploraremos:
+\begin{itemize}
+    \item Full fine-tuning (baseline)
+    \item PEFT con LoRA
+    \item Quantization (INT8)
+    \item QLoRA (bonus)
+    \item Mini RAG (conceptual)
+\end{itemize}
+
+Compararemos: parámetros entrenables, tiempo, memoria, y accuracy.
+\end{exercise}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Recursos}
+\begin{itemize}
+    \item PEFT Library: \url{https://github.com/huggingface/peft}
+    \item LoRA Paper: \url{https://arxiv.org/abs/2106.09685}
+    \item QLoRA Paper: \url{https://arxiv.org/abs/2305.14314}
+    \item RLHF Blog (OpenAI): \url{https://openai.com/research/learning-from-human-preferences}
+    \item LangChain: \url{https://www.langchain.com/}
+    \item LlamaIndex: \url{https://www.llamaindex.ai/}
+    \item RAG Survey: \url{https://arxiv.org/abs/2312.10997}
+\end{itemize}
+\end{frame}
+
+\appendix
+
+\begin{frame}<presentation:0>{License}
+    \begin{block}{Tema \texttt{slides-upm}. Puedes obtener sus fuentes en}
+        \begin{center}\url{http://gitlab.com/blazaid/slides-upm}\end{center}
+    \end{block}
+  
+    Tanto esta presentación como el tema están licenciados bajo \href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons
+  Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)}.
+    \begin{center}\ccbysa\end{center}
+\end{frame}
+
+\end{document}
