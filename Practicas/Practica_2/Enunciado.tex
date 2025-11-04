@@ -1,0 +1,140 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=3.5cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[newfloat]{minted}
+\usepackage[nolist]{acronym}
+\usepackage{glossaries}
+\usepackage[
+    type={CC},
+    modifier={by-nc-sa},
+    version={3.0},
+]{doclicense}
+
+
+
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.6pt}
+
+\pagestyle{fancy}
+\setlength\headheight{50pt}
+\lhead{\includegraphics[height=1.5cm]{Practicas/figures/Practica_1/logos/upm_logo}}
+\chead{Métodos generativos\\\vspace{.5em} Práctica 2\\\vspace{-.1em}}
+\rhead{\includegraphics[height=1.5cm]{Practicas/figures/Practica_1/logos/etsisi_logo}}
+\lfoot{\textbf{Tema 4:} XXXX}
+\cfoot{}
+\rfoot{\thepage}
+
+\begin{document}
+
+\section*{Normativa}
+
+\begin{itemize}
+    \item La práctica se realizará en grupos de 2 alumnos.
+    \item Si se detecta cualquier sospecha de copia conllevará un 0.
+    \item Es obligatorio completar todos los apartados para poder participar en la evaluación final.
+    \item Los resultados obtenidos y presentados deben ser producto original del trabajo de los estudiantes.
+    \item Los notebook deberán ser creados por los estudiantes. Deberán contener celdas de documentación.
+\end{itemize}
+
+\section{Objetivo de la práctica}
+
+En esta práctica se abordarán dos partes diferenciadas pero complementarias:
+\begin{enumerate}
+    \item \textbf{Fine-tuning mediante LoRA (Low-Rank Adaptation)} sobre modelos preentrenados.
+    \item \textbf{RAG (Retrieval-Augmented Generation)} para integrar recuperación de conocimiento con generación.
+\end{enumerate}
+
+Cada bloque tendrá una valoración de \textbf{5 puntos}, según la rúbrica especificada en cada apartado.
+
+\section{Parte I: Fine-tuning con LoRA (5 puntos)}
+
+\subsection*{Descripción general}
+El objetivo de esta parte es realizar el ajuste fino de modelos de lenguaje utilizando la técnica \textit{Low-Rank Adaptation (LoRA)} sobre un dataset elegido por el alumno.
+
+\subsection*{Tareas a realizar}
+\begin{enumerate}
+    \item \textbf{Selección del dataset:}  
+    Elija un dataset adecuado (preferiblemente de texto, no visto en clase) y justifique brevemente su elección.
+    
+    \item \textbf{Selección de modelos:}  
+    Elija dos modelos distintos desde Hugging Face a los usando en los notebooks de ejemplo.
+    
+    \item \textbf{Análisis de los modelos:}  
+    Compare y analice ambos modelos, considerando:
+    \begin{itemize}
+        \item Número de parámetros
+        \item Arquitectura base
+        \item Licencia
+        \item Peso y tamaño del modelo
+        \item Técnicas de preentrenamiento utilizadas
+    \end{itemize}
+    
+    \item \textbf{Fine-tuning con LoRA:}  
+    Entrene ambos modelos sobre el dataset seleccionado utilizando la técnica \textit{LoRA}.  
+    Puede usar bibliotecas como \texttt{PEFT} o \texttt{transformers}.
+    
+    \item \textbf{Evaluación de resultados:}  
+    Compare el rendimiento de ambos modelos tras el ajuste fino.  
+    Justifique cuál de los dos obtiene mejores resultados y por qué.
+\end{enumerate}
+
+\subsection*{Rúbrica de evaluación}
+\begin{itemize}
+    \item Dataset original (no visto en clase): \textbf{Obligatorio}
+    \item Análisis en profundidad de los modelos (parámetros, licencias, pesos, técnicas, etc.): \textbf{1 puntos}
+    \item Entrenamiento LoRA 1 correctamente implementado: \textbf{1 puntos}
+    \item Entrenamiento LoRA 2 correctamente implementado: \textbf{1 puntos}
+    \item Análisis crítico y justificación de resultados: \textbf{2 punto}
+\end{itemize}
+
+\section{Parte II: Recuperación Asistida (RAG) (5 puntos)}
+
+\subsection*{Descripción general}
+El objetivo de esta parte es integrar recuperación de información con generación mediante la arquitectura RAG. El alumno deberá implementar y comparar dos configuraciones distintas.
+
+\subsection*{Tareas a realizar}
+\begin{enumerate}
+    \item \textbf{Corpus de conocimiento:}  
+    Seleccione un corpus propio o descargado (artículos, documentación técnica, resúmenes, etc.).  
+    Elija un dominio de interés y justifique su complejidad.
+    
+    \item \textbf{Implementación 1:}  
+    Utilice un \textbf{modelo de embeddings A}  
+    y un \textbf{modelo generador A} para construir un pipeline RAG básico.
+    
+    \item \textbf{Implementación 2:}  
+    Cambie ambos modelos (embedding y generador) y repita el experimento con el mismo corpus.
+    
+    \item \textbf{Evaluación:}  
+    Realice pruebas de recuperación y generación, analizando las diferencias en precisión y coherencia de las respuestas.
+\end{enumerate}
+
+\subsection*{Rúbrica de evaluación}
+\begin{itemize}
+    \item Complejidad y originalidad del corpus: \textbf{1 punto}
+    \item Implementación 1 con dos modelos distintos: \textbf{1.5 puntos}
+    \item Implementación 2 con dos modelos distintos: \textbf{1.5 puntos}
+    \item Comparación y análisis de resultados: \textbf{1 punto}
+\end{itemize}
+
+\section{Entrega en Moodle}
+Cada grupo deberá subir a Moodle:
+\begin{itemize}
+    \item Dos archivos \textbf{.pdf} con la explicación detallada de cada proceso seguido, análisis y conclusiones.
+    \item Los \textbf{notebooks} empleados en el desarrollo de los entrenamientos y pruebas.
+\end{itemize}
+
+El informe deberá ser claro, lógico y mostrar comprensión profunda de los conceptos de fine-tuning y RAG.  
+La redacción crítica y la justificación de decisiones técnicas serán valoradas positivamente.
+
+\doclicenseThis
+
+\end{document}

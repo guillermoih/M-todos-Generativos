@@ -1,0 +1,62 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=3.5cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[newfloat]{minted}
+\usepackage[nolist]{acronym}
+\usepackage{glossaries}
+\usepackage[
+    type={CC},
+    modifier={by-nc-sa},
+    version={3.0},
+]{doclicense}
+
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.6pt}
+
+\pagestyle{fancy}
+\setlength\headheight{50pt}
+\lhead{\includegraphics[height=1.5cm]{Practicas/figures/Practica_1/logos/upm_logo}}
+\chead{Métodos generativos\\\vspace{.5em} Práctica 1\\\vspace{-.1em}}
+\rhead{\includegraphics[height=1.5cm]{Practicas/figures/Practica_1/logos/etsisi_logo}}
+\lfoot{\textbf{Tema 2 y 3:} Arquitecturas de metodos generativos}
+\cfoot{}
+\rfoot{\thepage}
+
+\parskip 1.1ex % paragraph spacing
+
+\newacronym{ae}{AE}{Autoencoder}
+\newacronym{vae}{VAE}{Variational Autoencoder}
+\newacronym{gan}{GAN}{Generative Adversarial Network}
+
+\begin{document}
+
+\section*{Normativa}
+
+\begin{itemize}
+    \item La práctica se realizará en grupos de 4-5 alumnos.
+    \item Si se detecta cualquier sospecha de copia conllevará un 0.
+    \item Los resultados obtenidos y presentados deben ser producto original del trabajo del alumno.
+\end{itemize}
+
+\section{Objetivo de la práctica}
+El propósito del proyecto es que se ponga en práctica los conocimientos adquiridos durante la asignatura. Para ello se debe desarrollar una aplicación práctica haciendo uso de los métodos vistos en clase que den solución a un problema de vuestra elección. Este proyecto debe incluir en una revisión del estado-del-arte del tema elegido.
+
+Se debe entregar todo el código fuente asociado al proyecto (o un enlace a un repositorio público con el mismo), así como un informe realizado en \LaTeX\footnote{Podéis emplear Overleaf para desarrollar el informe en \LaTeX. Tenéis disponibles distintas plantillas de la UPM desde \url{https://www.overleaf.com/gallery/tagged/upmadrid}.}.
+
+La aplicación deberá ser desarrollada usando un modelo generativo de los vistos en clase, ya sea un \gls{ae}, \gls{vae}, \gls{gan}, Diffusion model o Transformer. El modelo debe cubrir un tema interesante sobre el cuál debe proponer alguna mejora, cambio o estudio del funcionamiento del mismo. Se proporciona en Moodle una lista de temas de referencia, el cual, en caso de que se quiera escoger, debe ser consultado antes al profesor, para confirmar la disponibilidad del mismo.
+
+\section{Entrega en Moodle}
+Cada alumno deberá subir a Moodle un archivo .pdf explicando la lógica seguida a la hora de diseñar, entrenar y evaluar los modelos generados. Para ello es imprescindible que se realice una explicación lógica y consecuente con los fundamentos vistos en la asignatura sobre cada decisión tomada.
+
+El .pdf debe tener dos secciones diferenciadas: 1) estudio del estado-del-arte, donde el grupo analiza el trabajo disponible en la literatura, identificando puntos claves y fundamentos que luego posicionarán su propuesta en la investigación actual; y 2) metodología, que explicará qué se propone, el por qué, sus resultados y conclusiones.
+
+Además se deberán subir el código fuente correspondiente con la metodología propuesta, como prueba del funcionamiento de lo anteriormente descrito.
+\end{document}

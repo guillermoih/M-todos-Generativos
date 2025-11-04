@@ -1,0 +1,516 @@
+\input{Slides/include/preamble.tex}
+\input{Slides/include/glossary.tex}
+\input{Slides/include/data.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+\title{De la Investigación a la Producción: Fine-tuning eficiente y Aplicaciones RAG}
+
+\begin{document}
+\maketitle
+
+\begin{frame}{Contenidos}
+  \begin{enumerate}
+      \item Introducción
+      \item Auto-encoders (AEs)
+      \item{Auto-encoders Variacionales (VAEs)}
+      \item{Generative Adversarial Networks (GANs)}
+      \item{Transformers}
+      \item{\textbf{Del Transformer Original al Ecosistema Moderno}}
+      \item{Diffusion Models}
+    \end{enumerate}
+\end{frame}
+
+\section{Fine-tuning y Transfer Learning}
+
+
+\begin{frame}{Full Fine-tuning: la aproximación tradicional}
+
+\textbf{¿Qué es?}
+\begin{itemize}
+    \item Actualizar \textbf{todos los parámetros} del modelo pre-entrenado
+    \item Usar datos etiquetados de la tarea objetivo
+    \item Entrenar con learning rate bajo (no olvidar conocimiento previo)
+\end{itemize}
+
+\vspace{0.5em}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Ventajas}
+\begin{itemize}
+    \item Máximo rendimiento posible
+    \item Simple de implementar
+    \item Flexibilidad total
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Desventajas}
+\begin{itemize}
+    \item Alto coste computacional
+    \item Necesita más datos
+    \item Riesgo de overfitting
+    \item Catastrophic forgetting
+\end{itemize}
+
+\end{columns}
+
+\end{frame}
+
+
+\begin{frame}{Full Fine-tuning: la aproximación tradicional}
+
+\textbf{Dos problemas principales}
+
+\begin{alertblock}{1. Un modelo completo por tarea}
+BERT-base: 110M parámetros -> cada tarea requiere su propia copia del modelo.
+\end{alertblock}
+
+\begin{alertblock}{2. Coste de entrenamiento}
+Durante el entrenamiento, se actualizan todos los parámetros:
+\begin{itemize}
+    \item La memoria necesaria crece con el número total de parámetros.
+    \item Más gradientes que almacenar → mayor uso de GPU/VRAM.
+    \item Entrenamientos más lentos y costosos.
+\end{itemize}
+\end{alertblock}
+
+\end{frame}
+
+
+
+\begin{frame}{Parameter-Efficient Fine-Tuning (PEFT)}
+
+\textbf{Idea central}: ¿Y si solo entrenamos una \textbf{pequeña parte} del modelo?
+
+\begin{block}{Ventajas de PEFT}
+\begin{itemize}
+    \item Menos memoria durante entrenamiento
+    \item Entrenamiento más rápido
+    \item Evita catastrophic forgetting
+    \item Múltiples tareas con mismo modelo base
+\end{itemize}
+\end{block}
+
+\textbf{Principales métodos:}
+\begin{enumerate}
+    \item \textbf{LoRA (Low-Rank Adaptation):} se añaden matrices de bajo rango a los pesos del modelo para ajustarlos sin modificarlos directamente.
+    \item \textbf{Adapters:} se insertan pequeñas capas nuevas entre las existentes; solo estas se entrenan.
+    \item \textbf{Prompt / Prefix Tuning:} se entrenan vectores de entrada adicionales que guían al modelo, sin tocar sus parámetros internos.
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{LoRA: Low-Rank Adaptation}
+
+\textbf{Idea clave}:
+\begin{itemize}
+    \item Los pesos pre-entrenados $W_0$ permanecen \textbf{congelados}
+    \item Añadimos matrices de \textbf{bajo rango} $A$ y $B$
+    \item Solo entrenamos $A$ y $B$
+\end{itemize}
+
+\textbf{Formulación matemática:}
+\begin{align*}
+h &= W_0 x + \Delta W x \\
+\Delta W &= BA
+\end{align*}
+
+\vspace{-0.5em}
+\begin{itemize}
+    \item $x \in \mathbb{R}^k$: vector de entrada.
+    \item $h \in \mathbb{R}^d$: salida del modelo (por ejemplo, activación de una capa lineal).
+    \item $W_0 \in \mathbb{R}^{d \times k}$: pesos originales (congelados).
+    \item $B \in \mathbb{R}^{d \times r}$, $A \in \mathbb{R}^{r \times k}$: matrices entrenables de bajo rango.
+    \item $r \ll \min(d, k)$: controla cuántos parámetros nuevos se introducen.
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{LoRA: Low-Rank Adaptation}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Hiperparámetros}:
+\begin{itemize}
+    \item $r$: rank (típicamente 8, 16, 32)
+    \item $\alpha$: scaling factor
+\end{itemize}
+\column{0.5\textwidth}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/llm/peft-lora.png}
+    \caption{Esquema de LoRA}
+\end{figure}
+\end{columns}
+
+\href{Animación}{https://learnopencv.com/fine-tuning-llms-using-peft/}
+
+\begin{exampleblock}{Ejemplo}
+\small
+GPT-3 (175B parámetros)
+LoRA: solo 37M parámetros entrenables (0.02\%)
+\end{exampleblock}
+
+\end{frame}
+
+
+
+
+
+\section{Optimización y Eficiencia}
+
+\begin{frame}{Más técnicas para modelos eficientes}
+
+\textbf{Objetivo:} reducir el tamaño y el coste de los modelos sin perder demasiado rendimiento.
+
+
+\textbf{1. Knowledge Distillation}
+\begin{itemize}
+    \item Modelo grande (\textbf{teacher}) entrena a uno más pequeño (\textbf{student}).
+    \item El estudiante aprende a imitar las salidas o distribuciones del maestro.
+    \item Permite obtener modelos ligeros con un rendimiento similar.
+\end{itemize}
+
+\textbf{2. Quantization}
+\begin{itemize}
+    \item Representar los pesos con menos bits (ej. \texttt{float32} → \texttt{int8}).
+    \item Reduce tamaño del modelo y uso de memoria.
+    \item Acelera la inferencia con hardware optimizado.
+\end{itemize}
+
+\begin{alertblock}{Idea común}
+Ambas técnicas buscan modelos \textbf{más pequeños, rápidos y eficientes},  
+manteniendo un rendimiento aceptable para tareas reales.
+\end{alertblock}
+
+\end{frame}
+
+\begin{frame}{Knowledge Distillation: Teacher-Student}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/llm/kdistil.png}
+    \caption{Esquema de Knowledge Distillation}
+\end{figure}
+
+\textbf{Objetivo}: Transferir conocimiento de un modelo grande (teacher) a uno pequeño (student)
+
+
+\end{frame}
+
+\begin{frame}{Knowledge Distillation: Teacher-Student}
+
+\textbf{Proceso}:
+\begin{enumerate}
+    \item Entrenar modelo grande (teacher)
+    \item Usar outputs del teacher como "soft targets"
+    \item Entrenar modelo pequeño (student) para imitarlo
+\end{enumerate}
+
+\textbf{¿Por qué funciona?}
+\begin{itemize}
+    \item Las probabilidades suaves contienen más información
+    \item El student aprende relaciones entre clases
+    \item No solo la clase correcta, sino las similitudes
+\end{itemize}
+
+
+
+\end{frame}
+
+\begin{frame}{Knowledge Distillation: Función de Pérdida}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/llm/knowledge-distil.png}
+    \caption{Knowledge Distillation}
+\end{figure}
+
+\textbf{Pérdida combinada}:
+\begin{align*}
+\mathcal{L} = \alpha \cdot \mathcal{L}_{CE}(\text{hard targets}) + (1-\alpha) \cdot \mathcal{L}_{KL}(\text{soft targets})
+\end{align*}
+
+donde:
+\begin{itemize}
+    \item $\mathcal{L}_{CE}$: cross-entropy con etiquetas reales
+    \item $\mathcal{L}_{KL}$: KL-divergence con distribución del teacher
+    \item $\alpha$: balance entre ambas pérdidas
+\end{itemize}
+
+
+
+\end{frame}
+
+
+\begin{frame}{Knowledge Distillation: Temperatura y caso de éxito}
+
+\begin{exampleblock}{Caso de éxito}
+\textbf{DistilBERT} (Hugging Face, 2019):  
+\begin{itemize}
+    \item Modelo reducido en un 40\% de parámetros respecto a BERT-base.
+    \item Velocidad de inferencia un 60\% mayor.
+    \item Retiene el 97\% del rendimiento.
+\end{itemize}
+\end{exampleblock}
+\href{https://zilliz.com/learn/distilbert-distilled-version-of-bert}{Fuente de información}
+\end{frame}
+
+
+
+
+\begin{frame}{Quantization: Reduciendo Precisión}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Idea}: Representar pesos con menos bits
+
+\textbf{Tipos de precisión}:
+\begin{itemize}
+    \item \textbf{FP32}: 32 bits (full precision)
+    \item \textbf{FP16}: 16 bits (half precision)
+    \item \textbf{INT8}: 8 bits (integer)
+    \item \textbf{INT4}: 4 bits (muy agresivo)
+\end{itemize}
+
+\textbf{Beneficios}:
+\begin{itemize}
+    \item Menos memoria
+    \item Inferencia más rápida
+    \item Importante para deployment
+\end{itemize}
+
+\column{0.5\textwidth}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/llm/quantization.png}
+    \caption{Quantization uniforme}
+\end{figure}
+
+
+
+\end{columns}
+
+\begin{alertblock}{Trade-off}
+Menor precisión → posible pérdida de calidad
+\end{alertblock}
+
+\end{frame}
+
+\begin{frame}{QLoRA: Quantization + LoRA}
+
+\textbf{Innovación}: Combinar lo mejor de ambos mundos
+
+\textbf{Cómo funciona}:
+\begin{enumerate}
+    \item Cargar modelo base en \textbf{4-bit} (quantizado)
+    \item Añadir \textbf{adaptadores LoRA} en precisión normal
+    \item Fine-tune solo los LoRA
+    \item Resultado: modelo cuantizado + adaptadores entrenados
+\end{enumerate}
+
+
+\textbf{Ventajas}:
+\begin{itemize}
+    \item Memoria mínima durante entrenamiento
+    \item Permite fine-tune modelos gigantes (65B+) en una GPU
+    \item Rendimiento competitivo con full fine-tuning
+\end{itemize}
+
+\end{frame}
+
+
+\section{RAG}
+
+\begin{frame}{El Problema del Conocimiento Estático}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Limitaciones de los LLMs}:
+\begin{itemize}
+    \item Conocimiento "congelado" en el entrenamiento
+    \item No saben eventos recientes
+    \item No tienen acceso a info privada/corporativa
+    \item Pueden "alucinar" información
+\end{itemize}
+
+\vspace{0.5em}
+
+\textbf{Ejemplo}:
+\begin{itemize}
+    \item GPT-4 (cutoff: sep 2021)
+    \item Pregunta: "¿Quién ganó el Mundial 2022?"
+    \item Respuesta: no lo sabe
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{alertblock}{Solución}
+\textbf{RAG}: Retrieval-Augmented Generation
+
+\vspace{0.3em}
+Darle al modelo acceso a información externa
+\end{alertblock}
+
+\vspace{0.5em}
+
+\begin{exampleblock}{Casos de uso}
+\begin{itemize}
+    \item QA sobre documentación
+    \item Chat con PDFs
+    \item Búsqueda semántica
+    \item Knowledge bases corporativas
+\end{itemize}
+\end{exampleblock}
+
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{RAG: Arquitectura}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/llm/rag.png}
+    \caption{Arquitectura típica de RAG}
+\end{figure}
+
+\textbf{Componentes}:
+\begin{enumerate}
+    \item \textbf{Knowledge Base}: documentos, artículos, base de datos
+    \item \textbf{Retriever}: busca documentos relevantes (encoder, sentence-transformers)
+    \item \textbf{Generator}: genera respuesta usando contexto (LLM, T5, GPT)
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{RAG: ¿Cómo Funciona?}
+
+\textbf{Pipeline paso a paso}:
+
+\vspace{0.5em}
+
+\begin{enumerate}
+    \item \textbf{Indexación} (offline):
+    \begin{itemize}
+        \item Procesar documentos
+        \item Generar embeddings (ej: sentence-transformers)
+        \item Guardar en vector database (FAISS, Pinecone, Weaviate)
+    \end{itemize}
+    
+    \vspace{0.3em}
+    
+    \item \textbf{Retrieval} (online):
+    \begin{itemize}
+        \item Usuario hace pregunta
+        \item Convertir pregunta a embedding
+        \item Buscar documentos más similares (cosine similarity, etc.)
+    \end{itemize}
+    
+    \vspace{0.3em}
+    
+    \item \textbf{Generation} (online):
+    \begin{itemize}
+        \item Construir prompt: pregunta + contexto recuperado
+        \item LLM genera respuesta basada en contexto
+    \end{itemize}
+\end{enumerate}
+
+\vspace{0.5em}
+
+\begin{block}{Clave}
+El modelo no "memoriza" información, la \textbf{busca y usa} cuando la necesita
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]{RAG: Ejemplo de Prompt}
+
+\begin{block}{Prompt construido por RAG}
+\small
+\begin{verbatim}
+Use the following context to answer the question.
+Context:
+[Documento 1]: Los transformers fueron introducidos 
+en 2017 en el paper "Attention is All You Need"...
+[Documento 2]: BERT es un modelo encoder-only que 
+usa masked language modeling...
+
+Question: ¿Cuándo se inventaron los transformers?
+
+Answer:
+\end{verbatim}
+\end{block}
+
+\textbf{Ventajas}:
+\begin{itemize}
+    \item Respuestas basadas en fuentes verificables
+    \item Actualización fácil (actualizar base de datos, no reentrenar)
+    \item Reduce alucinaciones
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{RAG: Consideraciones Técnicas}
+
+\textbf{Retriever}:
+\begin{itemize}
+    \item \textbf{Dense retrieval}: embeddings (BERT, sentence-transformers)
+    \item \textbf{Information retrieval techniques}: TF-IDF, BM25
+    \item \textbf{Hybrid}: combinar ambos
+\end{itemize}
+
+\textbf{Chunking Strategy}:
+\begin{itemize}
+    \item ¿Cuánto texto por chunk? ¿Cuánto overlapping?
+\end{itemize}
+
+\textbf{Vector Databases}:
+\begin{itemize}
+    \item FAISS (Facebook): in-memory, muy rápido
+    \item Pinecone, Milvus: managed, escalables
+    \item ChromaDB: simple, open-source
+\end{itemize}
+
+\textbf{Trade-offs}:
+\begin{itemize}
+    \item Más documentos recuperados → más contexto pero más coste
+    \item Calidad de retrieval crítica para calidad de respuesta
+\end{itemize}
+
+\end{frame}
+
+
+\begin{exercise}
+\href{https://colab.research.google.com/}{Práctica: Fine-tuning y Aplicaciones RAG}
+
+\end{exercise}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Recursos}
+\begin{itemize}
+    \item PEFT Library: \url{https://github.com/huggingface/peft}
+    \item LoRA Paper: \url{https://arxiv.org/abs/2106.09685}
+    \item QLoRA Paper: \url{https://arxiv.org/abs/2305.14314}
+    \item RLHF Blog (OpenAI): \url{https://openai.com/research/learning-from-human-preferences}
+    \item LangChain: \url{https://www.langchain.com/}
+    \item LlamaIndex: \url{https://www.llamaindex.ai/}
+    \item RAG Survey: \url{https://arxiv.org/abs/2312.10997}
+\end{itemize}
+\end{frame}
+
+\appendix
+
+\begin{frame}<presentation:0>{License}
+    \begin{block}{Tema \texttt{slides-upm}. Puedes obtener sus fuentes en}
+        \begin{center}\url{http://gitlab.com/blazaid/slides-upm}\end{center}
+    \end{block}
+  
+    Tanto esta presentación como el tema están licenciados bajo \href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons
+  Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)}.
+    \begin{center}\ccbysa\end{center}
+\end{frame}
+
+\end{document}
