@@ -1,0 +1,69 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=3.5cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[newfloat]{minted}
+\usepackage[nolist]{acronym}
+\usepackage{glossaries}
+\usepackage[
+    type={CC},
+    modifier={by-nc-sa},
+    version={3.0},
+]{doclicense}
+
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.6pt}
+
+\pagestyle{fancy}
+\setlength\headheight{50pt}
+\lhead{\includegraphics[height=1.5cm]{Practicas/figures/Practica_1/logos/upm_logo}}
+\chead{Métodos generativos\\\vspace{.5em} Práctica 1\\\vspace{-.1em}}
+\rhead{\includegraphics[height=1.5cm]{Practicas/figures/Practica_1/logos/etsisi_logo}}
+\lfoot{\textbf{Tema 2 y 3:} Arquitecturas de metodos generativos}
+\cfoot{}
+\rfoot{\thepage}
+
+\parskip 1.1ex % paragraph spacing
+
+\newacronym{ae}{AE}{Autoencoder}
+\newacronym{vae}{VAE}{Variational Autoencoder}
+\newacronym{gan}{GAN}{Generative Adversarial Network}
+
+\begin{document}
+
+\section*{Propuesta de temas}
+
+\begin{itemize}
+    \item Unpaired domain-to-domain translation:
+    \begin{itemize}
+        \item Con \glspl{ae}, \glspl{vae}, \glspl{gan}, Modelos de Diffusion, Transformers...
+        \item Se recomienda centrarse en una arquitectura.
+    \end{itemize}
+
+    \item Ética y regulación a nivel europeo de modelos generativos.
+    \begin{itemize}
+        \item Cómo cumplirla y cómo medir cosas como sesgos de género.
+    \end{itemize}
+
+    \item Generacion de videos con Diffusion models, GANs,...
+
+    \item Generación de música.
+    
+\end{itemize}
+
+\section*{Artículos interesantes de referencia}
+
+\begin{itemize}
+    \item Ensembling of Convolutional Neural Networks (CNNs) and Vision Transformers (ViTs). Convolutional Vision Transformer (CvT) and LeViT. (Zhang, Belcheva, \& Ermakova, 2025). Y su interpretabilidad (Mienye et al., 2024b) (Djoumessi et al., 2025).
+
+    \item A novel gradient inversion attack framework to investigate privacy vulnerabilities during retinal image-based federated learning (Nielsen et al. 2025).
+
+\end{itemize}
+\end{document}
