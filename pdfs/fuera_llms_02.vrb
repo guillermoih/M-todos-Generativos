@@ -1,0 +1,29 @@
+\frametitle{RAG: Ejemplo de Prompt}
+
+\begin{block}{Prompt construido por RAG}
+\small
+\begin{verbatim}
+Use the following context to answer the question.
+
+Context:
+[Documento 1]: Los transformers fueron introducidos
+en 2017 en el paper "Attention is All You Need"...
+
+[Documento 2]: BERT es un modelo encoder-only que
+usa masked language modeling...
+
+Question: ¿Cuándo se inventaron los transformers?
+
+Answer:
+\end{verbatim}
+\end{block}
+
+\vspace{0.5em}
+
+\textbf{Ventajas}:
+\begin{itemize}
+    \item Respuestas basadas en fuentes verificables
+    \item Actualización fácil (actualizar base de datos, no reentrenar)
+    \item Reduce alucinaciones
+\end{itemize}
+

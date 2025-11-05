@@ -1,0 +1,2 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Introducción a los métodos generativos}{3}{0}{1}

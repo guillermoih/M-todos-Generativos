@@ -1,0 +1,6 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Auto-encoders (AEs)}{4}{0}{1}
+\beamer@sectionintoc {2}{Vanilla Autoencoder}{15}{0}{2}
+\beamer@sectionintoc {3}{Autoencoders Convolucionales}{19}{0}{3}
+\beamer@sectionintoc {4}{Autoencoders de Eliminación de Ruido (Denoising Autoencoders)}{23}{0}{4}
+\beamer@sectionintoc {5}{Autoencoders Apilados (Stacked autoencoders)}{27}{0}{5}

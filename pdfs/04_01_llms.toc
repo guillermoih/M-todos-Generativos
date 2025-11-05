@@ -1,0 +1,7 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Evolución y Variantes de Transformers}{3}{0}{1}
+\beamer@sectionintoc {2}{Fases entrenamiento, tareas y modelos de ejemplos}{6}{0}{2}
+\beamer@sectionintoc {3}{Ejemplos de modelos}{15}{0}{3}
+\beamer@sectionintoc {4}{Conceptos Clave del Ecosistema}{25}{0}{4}
+\beamer@sectionintoc {5}{Herramientas: Hugging Face}{30}{0}{5}
+\beamer@sectionintoc {6}{Notebook aplicando conceptos}{32}{0}{6}

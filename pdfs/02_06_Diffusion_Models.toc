@@ -1,0 +1,8 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Introducción e intuición previa}{2}{0}{1}
+\beamer@sectionintoc {2}{Sampleo de datos (difusión directa e inversa)}{6}{0}{2}
+\beamer@sectionintoc {3}{Redes neuronales y entrenamiento}{14}{0}{3}
+\beamer@sectionintoc {4}{Condicionamiento de la salida}{18}{0}{4}
+\beamer@sectionintoc {5}{Mejoras en el tiempo de inferencia}{24}{0}{5}
+\beamer@sectionintoc {6}{Ejemplos y aplicaciones}{27}{0}{6}
+\contentsline {section}{Referencias}{34}{}%

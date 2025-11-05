@@ -1,0 +1,8 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Evolución y Variantes de Transformers}{3}{0}{1}
+\beamer@sectionintoc {2}{Fases entrenamiento, tareas y modelos de ejemplos}{6}{0}{2}
+\beamer@sectionintoc {3}{Ejemplos}{15}{0}{3}
+\beamer@sectionintoc {4}{Por organizar}{25}{0}{4}
+\beamer@sectionintoc {5}{Conceptos Clave del Ecosistema}{28}{0}{5}
+\beamer@sectionintoc {6}{Herramientas}{33}{0}{6}
+\beamer@sectionintoc {7}{Limitaciones y Retos}{39}{0}{7}

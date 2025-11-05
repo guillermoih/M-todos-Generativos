@@ -1,0 +1,5 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Fine-tuning y Transfer Learning}{3}{0}{1}
+\beamer@sectionintoc {2}{Optimización y Eficiencia}{12}{0}{2}
+\beamer@sectionintoc {3}{RLHF y Modelos Instructivos}{18}{0}{3}
+\beamer@sectionintoc {4}{RAG y Agentes}{24}{0}{4}
