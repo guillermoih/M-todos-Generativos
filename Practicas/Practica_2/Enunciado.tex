@@ -28,7 +28,7 @@
 \lhead{\includegraphics[height=1.5cm]{Practicas/figures/Practica_1/logos/upm_logo}}
 \chead{Métodos generativos\\\vspace{.5em} Práctica 2\\\vspace{-.1em}}
 \rhead{\includegraphics[height=1.5cm]{Practicas/figures/Practica_1/logos/etsisi_logo}}
-\lfoot{\textbf{Tema 4:} XXXX}
+\lfoot{\textbf{Tema 4:} Adaptación y especialización de modelos}
 \cfoot{}
 \rfoot{\thepage}
 
@@ -39,9 +39,9 @@
 \begin{itemize}
     \item La práctica se realizará en grupos de 2 alumnos.
     \item Si se detecta cualquier sospecha de copia conllevará un 0.
-    \item Es obligatorio completar todos los apartados para poder participar en la evaluación final.
+    \item Es obligatorio completar los dos apartados para poder participar en la evaluación final.
     \item Los resultados obtenidos y presentados deben ser producto original del trabajo de los estudiantes.
-    \item Los notebook deberán ser creados por los estudiantes. Deberán contener celdas de documentación.
+    \item Los notebook deberán contener celdas de documentación.
 \end{itemize}
 
 \section{Objetivo de la práctica}
@@ -65,21 +65,18 @@ El objetivo de esta parte es realizar el ajuste fino de modelos de lenguaje util
     Elija un dataset adecuado (preferiblemente de texto, no visto en clase) y justifique brevemente su elección.
     
     \item \textbf{Selección de modelos:}  
-    Elija dos modelos distintos desde Hugging Face a los usando en los notebooks de ejemplo.
+    Elija dos modelos distintos desde Hugging Face a los usando en los notebooks de ejemplo de la asignatura que no hayan sido especializados en la tarea.
     
     \item \textbf{Análisis de los modelos:}  
     Compare y analice ambos modelos, considerando:
     \begin{itemize}
-        \item Número de parámetros
-        \item Arquitectura base
-        \item Licencia
-        \item Peso y tamaño del modelo
-        \item Técnicas de preentrenamiento utilizadas
+        \item Número de parámetros, arquitectura base, licencia, peso y tamaño del modelo, técnicas de preentrenamiento utilizadas
+        \item Otros parámetros de interés o destacables.
     \end{itemize}
     
     \item \textbf{Fine-tuning con LoRA:}  
     Entrene ambos modelos sobre el dataset seleccionado utilizando la técnica \textit{LoRA}.  
-    Puede usar bibliotecas como \texttt{PEFT} o \texttt{transformers}.
+    Puede usar bibliotecas \texttt{PEFT} y \texttt{transformers}.
     
     \item \textbf{Evaluación de resultados:}  
     Compare el rendimiento de ambos modelos tras el ajuste fino.  
@@ -128,7 +125,7 @@ El objetivo de esta parte es integrar recuperación de información con generaci
 \section{Entrega en Moodle}
 Cada grupo deberá subir a Moodle:
 \begin{itemize}
-    \item Dos archivos \textbf{.pdf} con la explicación detallada de cada proceso seguido, análisis y conclusiones.
+    \item Un archivo \textbf{.pdf} con los dos análisis y las conclusiones.
     \item Los \textbf{notebooks} empleados en el desarrollo de los entrenamientos y pruebas.
 \end{itemize}
 
