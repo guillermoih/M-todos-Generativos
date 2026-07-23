@@ -284,8 +284,27 @@ La capa \alert{Conv2D} de la libería \alert{keras} tiene una serie de \alert{hi
 
 Corresponden al \alert{número de filtros} que se le aplican a los datos de entrada.
 
-\textit{Se define con un \alert{integer}.}
+\textit{Es un \alert{integer} que corresponde con la profundidad del mapa de características de salida.}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{Slides/figures/Tema 3/DimensionFilters.png}
+    \caption{A medida que la imagen \alert{reduce} su tamaño, los filtros \alert{aumentan}. Se pretende extraer más \alert{características de alto nivel} y cubrir zonas amplias de la imagen original.}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Tamaño de imagen y filtros}
+Al mismo tiempo, a medida que el \alert{número} de filtros de \alert{multiplica por 2} las \alert{dimensiones} de la matriz de datos se \alert{reducen a la mitad}.
+
+El objetivo de este \alert{intercambio} es mantener la \alert{misma cantidad} de información, pero tratada por la red.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 3/ResolutionFilter_1.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Hiperparámetros de una convolución 2D}
 \begin{itemize}
     \item \alert{\Large kernel\_size}
 \end{itemize}
@@ -293,6 +312,10 @@ Corresponden al \alert{número de filtros} que se le aplican a los datos de entr
 Determina el \alert{tamaño de los filtros} que constituyen la capa.
 
 \textit{Se define con un \alert{integer} para filtros \alert{cuadrados}, pero admite definir las dimensiones por separado en un vector \alert{(alto, ancho)}.}
+
+\alert{Habitualmente} es de \alert{(3, 3)} o \alert{(5, 5)}, en caso de imágenes muy grandes puede llegar a \alert{(7, 7)}.
+
+Para matrices de datos \alert{más grandes} se utilizan \alert{kernels más grandes}, en casos combinando kernels de \alert{(5, 5)} para las \alert{primeras capas} y posteriormente \alert{(3, 3)} para capas más \alert{profundas}\footnote{Investigaciones posteriores \cite{simonyan2014very} han demostrado que es más eficiente apilar dos capas convoluciones de (3, 3) que una única capa de (5, 5). Aunque esto sigue en debate \cite{liu2022convnet, ding2022scaling, liu2022more} (los transformers revolucionan todo).}.
 \end{frame}
 
 \begin{frame}{Hiperparámetros de una convolución 2D}
@@ -304,6 +327,8 @@ Define el \alert{paso} de la convolución a lo largo de los ejes.
 
 \textit{Se define con un \alert{integer} para un paso igual en \alert{ambos ejes}, pero admite definir cada dimensión por separado en un vector \alert{(alto, ancho)}.}
 
+El paso de la convolución se mantiene a \alert{(1, 1)} a no ser que se desee una \alert{reducción dimensional}.
+
 \begin{itemize}
     \item \alert{\Large padding}
 \end{itemize}
@@ -311,6 +336,8 @@ Define el \alert{paso} de la convolución a lo largo de los ejes.
 Determina el \alert{padding} aplicado a los datos de entrada.
 
 \textit{Se pueden definir las opciones \say{\alert{valid}} y \say{\alert{same}}.}
+
+El padding de una convolución suele ser \alert{same} para controlar las dimensiones de la matriz de datos, pero no es extraño encontrar casos con padding \alert{valid}.
 \end{frame}
 
 \begin{frame}{Hiperparámetros de una convolución 2D}
@@ -322,7 +349,7 @@ Define la \alert{activación} aplicada tras la convolución.
 
 \textit{Dentro de las posibles activaciones se encuentran: relu, sigmoid, softmax, softplus, softsign, tanh, selu, elu, exponential.}
 
-Existe la posibilidad de aplicar \alert{otras} activaciones así como activaciones \alert{custom}. Por ejemplo para aplicar la función \alert{LeakyReLU}.
+Para las \alert{capas ocultas} se suele utilizar la función \alert{ReLU} o \alert{LeakyReLU}, para la capa de \alert{salida} la activación depende del \alert{problema concreto}.
 
 \end{frame}
 
@@ -376,20 +403,165 @@ Esto se traduce en que, la \alert{primeras} capas de la red se encargan de proce
 \end{figure}
 \end{frame}
 
+\section{Construcción de una Convolutional Neural Network (CNN)}
 
+\begin{frame}{Construcción de una CNN}
+La estructura de \alert{embudo} típica de las redes neuronales \alert{clasificadoras} también se aplica a CNN. Para ello el objetivo es \alert{reducir} la dimensión de la imagen hasta generar una salida.
 
-
-\begin{frame}{Web interactiva con convoluciones}
-Web interactiva con convoluciones
-
-
-
-\begin{itemize}
+\begin{figure}
     \centering
-    \item \Large \faHandPointRight {\Large \href{https://poloclub.github.io/cnn-explainer/}{CNN Explainer}}
+    \includegraphics[width=\textwidth]{Slides/figures/Tema 3/CNNEmbudo.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Construcción de una CNN}
+Las primeras capas \alert{convolucionales} de la red se encargan de la \alert{extracción de características} de la imagen. Posteriormente un \alert{perceptrón} se encarga de \alert{clasificar} las características extraídas para generar la \alert{salida deseada}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/Tema 3/CNNPerceptron.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Construcción de una CNN}
+Es importante recordar que la \alert{jerarquía} de capas de una red convolucional detecta características a \alert{alto nivel} en las capas \alert{más profundas}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/Tema 3/ConvHierarchy_1.png}
+    \caption{\cite{ConvHierarchy}}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Reducción dimensional en redes convolucionales}
+Para formar el \say{\alert{embudo}} de la red se utilizan distintos mecanismos para \alert{reducir las dimensiones} de la información de la red. En concreto los dos mecanismos predominantes son:
+\begin{itemize}
+    \item \alert{Capas de pooling}
+    \begin{itemize}
+        \item MaxPooling
+        \item AveragePooling
+    \end{itemize}
+    \item \alert{Convoluciones de strides=(2,2)}
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Reducción dimensional con Pooling}
+\alert{\Large MaxPooling 2D}
+La capa de MaxPooling2D reduce la dimensión de un vector cogiendo el \alert{máximo} de la ventana definida.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 3/MaxPooling_1.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Reducción dimensional con Pooling}
+\alert{\Large MaxPooling 2D}
+La capa de MaxPooling2D reduce la dimensión de un vector cogiendo el \alert{máximo} de la ventana definida.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 3/MaxPooling_2.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Reducción dimensional con Pooling}
+\alert{\Large MaxPooling 2D}
+La capa de MaxPooling2D reduce la dimensión de un vector cogiendo el \alert{máximo} de la ventana definida.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 3/MaxPooling_3.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Reducción dimensional con Pooling}
+\alert{\Large MaxPooling 2D}
+La capa de MaxPooling2D reduce la dimensión de un vector cogiendo el \alert{máximo} de la ventana definida.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 3/MaxPooling_4.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Reducción dimensional con Pooling}
+\alert{\Large MaxPooling 2D}
+La capa de MaxPooling2D reduce la dimensión de un vector cogiendo el \alert{máximo} de la ventana definida.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 3/MaxPooling_5.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Reducción dimensional con Pooling}
+\alert{\Large MaxPooling 2D}
+La capa de MaxPooling2D reduce la dimensión de un vector cogiendo el \alert{máximo} de la ventana definida.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 3/MaxPooling_res.png}
+\end{figure}
+\textit{*cabe destacar que el máximo se encarga de preservar la característica más importante}
+\end{frame}
+
+\begin{frame}{Reducción dimensional con Pooling}
+\alert{\Large AveragePooling 2D}
+La capa de AveragePooling2D reduce la dimensión de un vector cogiendo el \alert{promedio} de la ventana definida.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 3/AvgPooling_1.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Reducción dimensional con Pooling}
+\alert{\Large AveragePooling 2D}
+La capa de AveragePooling2D reduce la dimensión de un vector cogiendo el \alert{promedio} de la ventana definida.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 3/AvgPooling_2.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Reducción dimensional con Pooling}
+\alert{\Large AveragePooling 2D}
+La capa de AveragePooling2D reduce la dimensión de un vector cogiendo el \alert{promedio} de la ventana definida\footnote{Pese a su similitar rendimiento, el MaxPooling suele generar mejores resultados que el AveragePooling \cite{bieder2021comparison}}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 3/AvgPooling_res.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Reducción dimensional con strides}
+Otra \alert{opción} para la reducción dimensional es el uso de convoluciones con \alert{strides} que no sean (1, 1).
+
+\begin{itemize}
+    \item Cierta literatura apunta a esta aproximación como \say{\alert{más inteligente}} ya que se le permite a la \alert{red} que sea ella la que escoja \alert{cómo hacer} la reducción.
+    \item El principal \alert{inconveniente} es que usando este método se aumenta el número de parámetros de la red.
+    
+\end{itemize}
+
+
+Existe un debate abierto sobre si es preferible que la red \alert{aprenda} a realizar el \textit{downsampling} \cite{MaxPoolingvsStrides}, o si resulta más adecuado emplear técnicas como \alert{MaxPooling} \cite{sun2018fishnet}.
+
+\textit{*Normalmente el stride elegido es de (2, 2) pero hay libertad para adaptarlo a distintos casos.}
+\end{frame}
+
+
+\begin{frame}{Capa de dropout}
+La capa de \alert{dropout} es una capa de \alert{regularización} que \alert{desactiva aleatoriamente} la activación de ciertas \alert{neuronas} durante el entreno.
+
+Al regularizar la red previene de problemas como el \alert{overfitting}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 3/Dropout.png}
+\end{figure}
+\end{frame}
 
 \begin{frame}{Notebook de ejemplo, clasificador con redes convolucionales}
 El siguiente notebook contiene un ejemplo de clasificador redes convolucionales.
@@ -401,6 +573,56 @@ El siguiente notebook contiene un ejemplo de clasificador redes convolucionales.
 \begin{itemize}
     \centering
     \item {\Large \href{https://colab.research.google.com/github/guillermoih/M-todos-Generativos/blob/main/Notebooks/1.2_02-CNNImagenes.ipynb}{1.2\_02-CNNImagenes.ipynb}}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Transfer Learning}
+
+{\Large Idea general}
+
+Usar un modelo preentrenado en un dataset grande (ej. ImageNet) para una nueva tarea.
+
+\begin{itemize}
+    \item Enfoques comunes
+    \begin{itemize}
+        \item \alert{Feature extraction}: congelar capas y usar sus salidas como extractor de características.
+        \item \alert{Fine-tuning}: reentrenar parcialmente algunas capas junto con las nuevas.
+    \end{itemize}
+    \item Ventajas
+    \begin{itemize}
+        \item Reduce el tiempo de entrenamiento.
+        \item Mejora los resultados con pocos datos.
+        \item Facilita el uso de arquitecturas complejas.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Ejemplo: VGG16}
+    \centering
+    \includegraphics[width=0.5\textwidth]{Slides/figures/Tema 1/image-398.png}
+    
+\begin{itemize}
+    \item VGG16
+    \begin{itemize}
+        \item Red profunda propuesta por Simonyan y Zisserman (2014). \url{https://arxiv.org/abs/1409.1556}
+        \item Basada en bloques de convoluciones en embudo y luego densa.
+    \end{itemize}
+
+    \item Uso en Transfer Learning
+    \begin{itemize}
+        \item Importar el modelo preentrenado. \alert{Congelar sus pesos}.
+        \item Sustituir densa por nueva densa.
+        \item Opcionalmente: descangelar algún filtro del final.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Ejemplo/Ejercicio}
+    \centering
+    \includegraphics[width=0.4\textwidth]{Slides/figures/GoogleColab.png}
+\begin{itemize}
+    \centering
+    \item {\Large \href{https://colab.research.google.com/github/guillermoih/M-todos-Generativos/blob/main/Notebooks/1.2_05-Cuadros.ipynb}{1.2\_05-Cuadros.ipynb}}
 \end{itemize}
 \end{frame}
 

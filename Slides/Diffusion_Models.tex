@@ -74,23 +74,71 @@ Para el instante \alert{$T$} la distribución seguida por los datos será una \a
 \end{figure}
 \end{frame}
 
-\begin{frame}{Planificador de ruido}
-A la hora de introducir ruido de manera \alert{iterativa} en las imágenes que se están procesando hay distintas alternativas.
-
-Para cada imagen generada en un instante $t$ esta se puede definir como:
-
-\begin{equation}
-    x_t = \sqrt{1-\beta_t} x_{t-1} + \sqrt{\beta_t} \epsilon_{t-1}
-\end{equation}
-
-donde $\beta$ es el \alert{diffusion rate}, que se calcula para cada instante $t$ dependiendo de un planificador llamado "\alert{variance scheduler}". Y $\epsilon_{t-1}$ es el ruido de cada instante anterior tal que \alert{$\epsilon \sim \mathcal{N}(0,1)$}.
-
-\end{frame}
-
 \begin{frame}{¿Por qué llegar hasta imágenes completamente ruidosas?}
 La idea para generar \alert{nuevas imágenes} es generar \alert{ruido aleatorio} y realizar le difusión inversa.
 
 De esta manera es posible generar \alert{nuevos ejemplos} aleatoriamente, ya que la distribución de datos del instante \alert{$T$} es conocida y la del instante \alert{$0$} se calcula a través del proceso de difusión inversa.
+\end{frame}
+
+\begin{frame}{Difusión directa: computación}
+A la hora de introducir ruido de manera \alert{iterativa} en las imágenes que se están procesando hay distintas alternativas.
+
+Para cada imagen generada en un instante $t$ esta se puede definir como\footnote{Lo normal es encontrar la fórmula definida con el diffusion rate $\beta = 1-\alpha$}:
+
+\begin{equation}
+    x_t = \underbrace{\sqrt{\alpha_t} x_{t-1}}_{\text{Media (determinista)}} + \underbrace{\sqrt{1 - \alpha_t} \epsilon_{t-1}}_{\text{Varianza } \times \text{ Ruido}}
+\end{equation}
+
+donde $\alpha$ es el nivel de imagen original que se mantiene, que se calcula para cada instante $t$ dependiendo de un planificador llamado "\alert{variance scheduler}". Y $\epsilon_{t-1}$ es el ruido de cada instante anterior tal que \alert{$\epsilon \sim \mathcal{N}(0,1)$}.
+\end{frame}
+
+\begin{frame}{Difusión directa: computación}
+Calcular el nivel de ruido iterativamente paso a paso es \alert{muy costoso computacionalmente}. Por lo que si definimos la fórmula iterativa de la siguiente manera:
+
+\begin{equation}
+x_t = \sqrt{\alpha_t} \underbrace{\left( \sqrt{\alpha_{t-1}} x_{t-2} + \sqrt{1 - \alpha_{t-1}} \epsilon_{t-2} \right)}_{x_{t-1}} + \sqrt{1 - \alpha_t} \epsilon_{t-1}
+\end{equation}
+
+\begin{equation}
+x_t = \sqrt{\alpha_t \alpha_{t-1}} x_{t-2} + \sqrt{\alpha_t (1 - \alpha_{t-1})} \epsilon_{t-2} + \sqrt{1 - \alpha_t} \epsilon_{t-1}
+\end{equation}
+
+Cabe resaltar que los dos ruidos $\epsilon_{t-1}, \epsilon_{t-2}\sim \mathcal{N}(0,1)$ son \alert{independientes} y siguen la \alert{misma distribución}. Con ello podemos obtener $\bar{\epsilon}$ combinándolos y con ello:
+
+\begin{equation}
+x_t = \sqrt{\alpha_t \alpha_{t-1}} x_{t-2} + \sqrt{1 - \alpha_t \alpha_{t-1}} \bar{\epsilon}
+\end{equation}
+\end{frame}
+
+\begin{frame}{Difusión directa: el truco final}
+Si aplicamos esta misma propiedad de manera recursiva hasta llegar a la imagen original \alert{$x_0$}, los términos $\alpha$ se van multiplicando. 
+
+Podemos definir $\bar{\alpha}_t$ como el producto acumulado de todos los instantes:
+\begin{equation}
+    \bar{\alpha}_t = \prod_{s=1}^{t} \alpha_s
+\end{equation}
+
+Lo que nos permite definir cualquier instante \alert{$t$} en un solo paso directamente desde \alert{$x_0$}:
+\begin{equation}
+    x_t = \sqrt{\bar{\alpha}_t} x_0 + \sqrt{1 - \bar{\alpha}_t} \epsilon
+\end{equation}
+
+Esta propiedad permite que el entrenamiento sea altamente paralelizable, calculando cualquier estado $x_t$ en tiempo \alert{$\mathcal{O}(1)$}.
+\end{frame}
+
+\begin{frame}{Planificadores de ruido (Noise Schedulers)}
+La forma en la que evoluciona el $\alpha_t$ durante los pasos de tiempo es crucial y viene definida por el \alert{Noise Scheduler}.
+
+\begin{itemize}
+    \item \textbf{Planificador Lineal (DDPM original):} Incrementa $\alpha_t$ de forma lineal. Esto destruye demasiada información demasiado rápido.
+    \item \textbf{Planificador Coseno \cite{nichol2021improved}:} Evoluciona las $\bar{\alpha}_t$ siguiendo una curva trigonométrica. Esto hace que la transición sea más suave.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/Cosine_Scheduler_Example.png}
+    \cite{nichol2021improved}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Difusión inversa}
@@ -100,31 +148,40 @@ Para ello se realiza \alert{iterativamente} la operación de pasar del instante 
 
 Para generar la imagen del instante \alert{$t-1$} son necesarios:
 \begin{itemize}
-    \item La \alert{imagen de entrada} del instante \alert{t}.
+    \item La \alert{imagen de entrada} del instante \alert{$t$}.
     \item El \alert{ruido} de dicha imagen calculado con nuestra red de neuronas.
     \item Un algoritmo para \alert{sustraer} el ruido de la imagen.
 \end{itemize}
+
+Matemáticamente, el proceso se define de la manera siguiente:
+\begin{equation}
+p_\theta(x_{t-1} \vert{} x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \Sigma_\theta(x_t, t))
+\end{equation}
 \end{frame}
 
-\begin{frame}{Algoritmo DDPM}
-El algoritmo \gls{ddpm}, propuesto en el año 2020 \cite{ho2020denoising}, es el \alert{causante de la popularidad} que han ganado los diffusion models los últimos años.
+\begin{frame}{Difusión inversa: ¿Qué debe aprender la red?}
+Durante el proceso de difusión directa, hemos añadido un ruido conocido $\epsilon \sim \mathcal{N}(0,1)$ para pasar de $x_0$ a $x_t$.
 
-Este algoritmo permite \alert{eliminar} el ruido de una imagen para recuperarla a su estado original.
+Para revertir el proceso, necesitamos una \alert{red neuronal} (más adelante se explica en profundidad) parametrizada por $\theta$. 
 
-Una de las características de \gls{ddpm} es que añade \alert{cierta cantidad de ruido} tras haberlo eliminado. Esto se hace para que la imagen de salida siga la misma \alert{distribución de datos} del instante $t$.
+Inicialmente, se intentó que la red predijera la imagen original $x_0$ o la imagen anterior $x_{t-1}$. Sin embargo, Ho et al. (2020) \cite{ho2020denoising} demostraron que lo más eficiente matemáticamente es que la red intente \alert{predecir el ruido exacto} que se añadió en el instante $t$.
+
+Definimos nuestra red como: \alert{$\epsilon_\theta(x_t, t)$}
 \end{frame}
 
-\begin{frame}{Algoritmo DDPM}
-Añadiendo cierto ruido tras cada paso de la difusión inversa, se consigue aumentar la \alert{diversidad} en las imágenes generadas, evitando el colapso modal.
+\begin{frame}{Entrenamiento y Función de Pérdida}
+Para entrenar la red, el proceso es sorprendentemente sencillo. Tomamos una imagen original $x_0$, elegimos un paso $t$ al azar, y generamos ruido $\epsilon$.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/DDPM_Variation.png}
-    \caption{\cite{DeepLearningDifussionModelCourse}}
-\end{figure}
+Calculamos $x_t$ usando la fórmula directa. Luego, le pedimos a la red $\epsilon_\theta$ que adivine qué ruido $\epsilon$ usamos.
+
+La \alert{función de pérdida} ($\mathcal{L}_{simple}$) es simplemente el \alert{\gls{mse}} entre el ruido real y el ruido predicho por la red:
+
+\begin{equation}
+    \mathcal{L}_{simple} = \mathbb{E}_{t, x_0, \epsilon} \left[ || \epsilon - \epsilon_\theta(x_t, t) ||^2 \right]
+\end{equation}
+
+La red aprende a \alert{separar} la señal (imagen) del ruido en cualquier nivel de degradación $t$.
 \end{frame}
-
-\section{Redes neuronales y entrenamiento}
 
 \begin{frame}{Arquitectura}
 Para poder realizar el paso de \alert{inverse diffusion} utilizaremos redes neuronales, que serán capaces de calcular el \alert{ruido} de una imagen de entrada.
@@ -160,6 +217,65 @@ Aunque cabe destacar que dependiendo del \alert{conjunto de datos} que se esté 
 \end{figure}
 \end{frame}
 
+\begin{frame}{Algoritmo DDPM}
+El algoritmo \gls{ddpm}, propuesto en el año 2020 \cite{ho2020denoising}, es el \alert{causante de la popularidad} que han ganado los diffusion models los últimos años.
+
+Este algoritmo permite \alert{eliminar} el ruido de una imagen para recuperarla a su estado original.
+
+Una de las características de \gls{ddpm} es que añade \alert{cierta cantidad de ruido} tras haberlo eliminado. Esto se hace para que la imagen de salida siga la misma \alert{distribución de datos} del instante $t$.
+\end{frame}
+
+\begin{frame}{Algoritmo DDPM}
+Añadiendo cierto ruido tras cada paso de la difusión inversa, se consigue aumentar la \alert{diversidad} en las imágenes generadas, evitando el colapso modal.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/DDPM_Variation.png}
+    \caption{\cite{DeepLearningDifussionModelCourse}}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Algoritmo DDPM: Generación de imágenes}
+Para generar una \alert{nueva imagen}, partimos de ruido puro $x_T \sim \mathcal{N}(0,1)$ y aplicamos iterativamente la ecuación de muestreo inverso hasta llegar a $x_0$:
+
+\begin{equation}
+    x_{t-1} = \underbrace{\frac{1}{\sqrt{\alpha_t}} \left( x_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \epsilon_\theta(x_t, t) \right)}_{\text{Paso hacia la imagen sin ruido}} + \underbrace{\sigma_t z}_{\text{Inyección de ruido}}
+\end{equation}
+
+Donde $z \sim \mathcal{N}(0,1)$ si $t>1$, y $z=0$ si $t=1$.
+\end{frame}
+
+\begin{frame}{Desgranando la ecuación DDPM}
+\begin{itemize}
+    \item \textbf{Paso hacia la imagen:} Usamos la predicción de nuestra red ($\epsilon_\theta$) para restar el ruido estimado de $x_t$, escalado por las constantes $\alpha_t$.
+    \item \textbf{Inyección de ruido ($\sigma_t z$):} Al igual que en las \alert{Langevin Dynamics}\footnote{Vale, quizás meternos en modelado matemático para física es demasiado, pero simplemente hay que tener en cuenta que todo tiene su origen (y motivo).}, se inyecta una pequeña cantidad de ruido nuevo en cada paso. 
+\end{itemize}
+
+¿Por qué añadir ruido tras haberlo quitado? Esta aleatoriedad en cada paso evita que el modelo colapse en un único resultado promedio y garantiza la \alert{diversidad} en las imágenes generadas.
+\end{frame}
+
+\begin{frame}{Algoritmo DDIM}
+El algoritmo \gls{ddim} \cite{song2020denoising} es una alternativa a \gls{ddpm} más \alert{rápida y eficiente}.
+
+Se basa en la idea de saltar varios pasos de la \alert{inverse difussion} de una única vez.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/DDIM.png}
+    \caption{\cite{DeepLearningDifussionModelCourse}}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Algoritmo DDIM}
+La principal característica que permite a \gls{ddim} \alert{saltar pasos} del proceso es que no es un modelo probabilístico, si no \alert{determinista}.
+
+No entraremos en profundidad, pero su funcionamiento se basa en el uso de \alert{ecuaciones diferenciales} ordinarias para definir la cadena de Markov. Esto permite saltar pasos sin perder coherencia matemática.
+
+De esta manera se elimina la \alert{aleatoriedad} de las cadenas de Markov.
+
+El algoritmo \gls{ddim} llega a ser \alert{10 veces} más eficiente que el \gls{ddpm}.
+\end{frame}
+
 \section{Condicionamiento de la salida}
 
 \begin{frame}{Cómo elegir lo que se genera}
@@ -192,9 +308,44 @@ Este embedding es \alert{alimentado} a la red después de cada bloque convolucio
 \end{frame}
 
 \begin{frame}{Combinando con transformers}
-Si este embedding añadido se realiza con \alert{transformers}, entonces somos capaces, por ejemplo, de controlar la salida a través de texto.
+Si este embedding añadido se realiza con \alert{transformers}, entonces somos capaces, por ejemplo, de controlar la salida a través de texto\footnote{De hecho es lo más útil, sobran decir la cantidad de aplicaciones de esto hoy en día. Por ello a partir de aquí se habla de \textit{texto}, pero es sustituible por \textit{contexto}}.
 
-Este tipo de soluciones son las que hoy en dia se utilizan en \alert{dall-e} o \alert{Stable Diffusion}.
+Este tipo de soluciones son las que hoy en dia se utilizan en \alert{DALL-E} o \alert{Stable Diffusion}.
+\end{frame}
+
+\begin{frame}{El problema del condicionamiento}
+Aunque los \alert{transformers} nos permiten extraer un \textit{embedding} del texto ($c$) y pasárselo a nuestra red, a menudo, el modelo tiende a \alert{ignorar parcialmente} la condición $c$ porque aprenderla es más sencillo ignorar el texto y generar imágenes genéricas.
+
+Históricamente, se usaba un clasificador externo para \textit{empujar} los gradientes hacia la clase deseada (\alert{Classifier Guidance}\cite{dhariwal2021diffusion}), pero esto era ineficiente y costoso computacionalmente.
+\end{frame}
+
+\begin{frame}{Classifier-Free Guidance: Entrenamiento}
+Para solucionar esto, en 2022 se popularizó el \alert{\gls{cfg}}\cite{ho2022classifier}. 
+
+La idea es entrenar \alert{un único modelo de difusión} que sea capaz de actuar tanto de forma condicionada (con texto) como incondicional (sin texto).
+
+Durante el entrenamiento, se introduce un \alert{dropout de la condición}: con una probabilidad pequeña (e.g. 10\% de las veces), se sustituye el \textit{embedding} de texto $c$ por un token vacío o nulo ($\emptyset$).
+
+\begin{itemize}
+    \item La red aprende a predecir el ruido con texto: $\epsilon_\theta(x_t, c)$
+    \item La red aprende a predecir el ruido sin texto: $\epsilon_\theta(x_t, \emptyset)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Classifier-Free Guidance: Inferencia}
+La verdadera magia ocurre en la inferencia. Para generar una imagen que \alert{siga estrictamente} el texto, el modelo evalúa ambas condiciones y calcula la diferencia.
+
+Usamos un parámetro $w$ (\alert{Guidance Scale}) para extrapolar el vector de ruido final $\tilde{\epsilon}_\theta$:
+
+\begin{equation}
+    \tilde{\epsilon}_\theta = \epsilon_\theta(x_t, \emptyset) + w \cdot \Big( \epsilon_\theta(x_t, c) - \epsilon_\theta(x_t, \emptyset) \Big)
+\end{equation}
+
+\begin{itemize}
+    \item \textbf{El término entre paréntesis:} Es el vector que apunta desde una "imagen genérica" hacia la "imagen descrita por el texto".
+    \item \textbf{Si $w = 1$:} Usamos el modelo condicionado normal.
+    \item \textbf{Si $w > 1$ (ej. $w=7$):} Forzamos al modelo a ir mucho más lejos en la dirección del texto, aumentando drásticamente la fidelidad al \textit{prompt} a cambio de perder un poco de diversidad.
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Resumen diffusion models}
@@ -205,46 +356,24 @@ Este tipo de soluciones son las que hoy en dia se utilizan en \alert{dall-e} o \
 \end{figure}
 \end{frame}
 
-\section{Mejoras en el tiempo de inferencia}
+\section{Diffusion models avanzados}
 
-\begin{frame}{Algoritmo DDIM}
-El algoritmo \gls{ddim} \cite{song2020denoising} es una alternativa a \gls{ddpm} más \alert{rápida y eficiente}.
+\begin{frame}{\acrlong{ldm} (Stable Diffusion)}
+Trabajar directamente sobre el espacio de píxeles de imágenes de alta resolución es \alert{computacionalmente muy costoso}. La arquitectura \gls{ldm} \cite{rombach2022high} propone:
 
-Se basa en la idea de saltar varios pasos de la \alert{inverse difussion} de una única vez.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/DDIM.png}
-    \caption{\cite{DeepLearningDifussionModelCourse}}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Algoritmo DDIM}
-La principal característica que permite a \gls{ddim} \alert{saltar pasos} del proceso es que no es un modelo probabilístico, si no \alert{determinista}.
-
-De esta manera se elimina la \alert{aleatoriedad} de las cadenas de Markov.
-
-El algoritmo \gls{ddim} llega a ser \alert{10 veces} más eficiente que el \gls{ddpm}.
-\end{frame}
-
-\section{Ejemplos y aplicaciones}
-
-\begin{frame}{Generación de imágenes}
-Quizás las aplicaciones más conocidas de los \alert{diffusion models} son \alert{Stable Diffusion} o \alert{Dall-e 2}.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\textwidth]{Slides/figures/Diffusion_Models/Stable_Diffusion_Dalle.png}
-    \caption{\cite{SD_vs_DE_vs_MJ}}
-\end{figure}
-
-Stable Diffusion utiliza una architectura llamada \alert{\gls{ldm}}. Por su parte tanto Midjourney como Dall-e 2 usan tecnologías propietario desconocidas.
+\begin{itemize}
+    \item Un VAE codifica la imagen $x$ a un espacio latente mucho más pequeño\footnote{E.g. de $512\times512\times3$ a $64\times64\times4$} $z = E(x)$. Al final, un decodificador reconstruye la imagen $\tilde{x} = D(z)$.
+    \item \textbf{Compresión Semántica (Diffusion):} El proceso de difusión (forward y reverse) no se hace con píxeles, sino iterando \alert{exclusivamente dentro de ese espacio latente $z$}.
+\end{itemize}
 \end{frame}
 
 \begin{frame}{\acrlong{ldm}}
-La arquitectura \gls{ldm} \cite{rombach2022high} se basa en \alert{comprimir la información} en un espacio latente para realizar con este el proceso de difusión.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/Diffusion_Models/LDM.png}
+\end{figure}
 
-De esta manera la \alert{dimensión} de la información tratada se reduce drásticamente. Con ello se permiten mejorar los tiempos de inferencia y entrenamiento.
+Esto reduce drásticamente el coste computacional y es el secreto del éxito de los nuevos modelos de generación.
 \end{frame}
 
 \begin{frame}{Generación de video: Align your latents}

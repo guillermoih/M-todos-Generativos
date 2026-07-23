@@ -19,10 +19,8 @@
 \begin{document}
 \maketitle
 
-\section{Repaso de conceptos básicos de redes neuronales}
-
 \begin{frame}{Redes neuronales: concepto general}
-Una \alert{red neuronal} es un sistema matemático capaz de aprender a realizar predicciones a partir de unos datos de entrada, fue propuesta por McCulloch y Pitts en 1943\cite{mcculloch1943logical}, se basaba en \alert{imitar} el comportamiento de una neurona biológica.
+Una \alert{red neuronal} es un sistema matemático capaz de aprender a realizar predicciones a partir de unos datos de entrada, fue propuesta por McCulloch y Pitts en 1943 \cite{mcculloch1943logical}, se basaba en \alert{imitar} el comportamiento de una neurona biológica.
 
 \begin{itemize}
     \item Toma ciertos \alert{estímulos} de entrada, los procesa y genera una nueva salida.
@@ -54,6 +52,30 @@ Las redes neuronales han evolucionado a través de hitos clave que han marcado s
 }
 \end{frame}
 
+\begin{frame}{Redes neuronales artificiales: Ventajas}
+El paradigma del Deep Learning tiene ciertas características \alert{específicas} que definen su comportamiento y resultados.
+
+Dentro de sus \alert{ventajas} se pueden encontrar:
+\begin{itemize}
+    \item Tratamiento de problemas \alert{muy complejos}.
+    \item Mucha facilidad para \alert{extrapolación} a distintos casos de uso.
+    \item Amplia \alert{popularidad}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Redes neuronales artificiales: Desventajas}
+El paradigma del Deep Learning tiene ciertas características \alert{específicas} que definen su comportamiento y resultados.
+
+Dentro de sus \alert{desventajas} se pueden encontrar:
+\begin{itemize}
+    \item Necesidad de grandes \alert{volúmenes de datos}.
+    \item Muy alta \alert{complejidad} en su diseño y uso.
+    \item Sistema caótico (poco determinista).
+    \item No explicabilidad.
+    \item Uso intensivo de recursos \alert{computacionales} y de \alert{memoria}.
+\end{itemize}
+\end{frame}
+
 \begin{frame}{Redes neuronales: concepto general}
 Una \alert{neurona artificial} realiza cálculos matemáticos para transformar ciertos valores numéricos.
 Para dicha labor, existen diversos \alert{elementos} dentro de una neurona artificial:
@@ -74,7 +96,6 @@ Para dicha labor, existen diversos \alert{elementos} dentro de una neurona artif
 \end{column}
 \end{columns}
 \end{frame}
-
 
 \begin{frame}{Redes neuronales: bias}
 El \alert{bias} (sesgo en Español) permite que la red neuronal pueda ajustar mejor sus predicciones. 
@@ -153,29 +174,6 @@ Capas de activación. No linealidad.
     \includegraphics[width=\textwidth]{Slides/figures/Introduccion/combinolineal.png}
 \end{column}
 \end{columns}
-\end{frame}
-
-
-\begin{frame}{Redes neuronales: activación}
-Capas de activación. No linealidad. 3D
-
-\begin{columns}[c]
-\centering
-\begin{column}{0.5\textwidth}
-    \centering
-    \includegraphics[width=0.8\textwidth]{Slides/figures/Introduccion/activacion_3d.png}
-\end{column}
-\begin{column}{0.5\textwidth}
-    \centering
-    \includegraphics[width=0.8\textwidth]{Slides/figures/Introduccion/activacion_3d_varias.png}
-\end{column}
-\end{columns}
-
-\centering
-\includegraphics[width=0.4\textwidth]{Slides/figures/Introduccion/activacion_3d_combi.png}
-
-\scriptsize{DotCSV}
-
 \end{frame}
 
 \begin{frame}{Redes neuronales: entrenamiento}
@@ -320,28 +318,18 @@ Por otra parte, K. Hornik, M. Stinchcombe, y H. White demostraron el 1985 que co
 
 \begin{columns}[c]
 \centering
-\begin{column}{0.33\textwidth}
+\begin{column}{0.5\textwidth}
     \centering
     \includegraphics[width=\textwidth]{Slides/figures/Introduccion/gradient.png}
 \end{column}
-\begin{column}{0.33\textwidth}
+\begin{column}{0.5\textwidth}
     \centering
     \includegraphics[width=\textwidth]{Slides/figures/Introduccion/gradient_3d.png}
     ¡Ojo! pérdida no datos
 \end{column}
-\begin{column}{0.33\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{Slides/figures/Introduccion/descenso.png}
-\end{column}
 \end{columns}
 
-\href{https://www.deeplearning.ai/ai-notes/optimization/index.html\#learning-rate}{Gradient descent un parámetro (learning rate)}
-
-\href{https://www.deeplearning.ai/ai-notes/optimization/index.html\#adjusting-gradient-descent-hyperparameters}{Gradient descent w y b(batch size)} y \href{https://www.deeplearning.ai/ai-notes/optimization/index.html\#iterative-update}{Optimizadores}
-
-\centering
-\includegraphics[width=0.7\textwidth]{Slides/figures/Introduccion/lr.png}
-
+\href{https://www.deeplearning.ai/ai-notes/optimization/index.html}{Recursos visuales del descenso del gradiente}
 \end{frame}
 
 \begin{frame}{Algoritmo de retropropagación}
@@ -362,6 +350,36 @@ donde $\alpha$ es el \alert{learning rate}, que define la \alert{magnitud} con l
 
 \end{frame}
 
+\begin{frame}{Optimizadores}
+Los \alert{optimizadores} son \alert{modificaciones} sobre el algoritmo de descenso del gradiente para \alert{mejorar} la velocidad y convergencia del modelo.
+
+Los más comunes son:
+\begin{itemize}
+    \item \alert{Learning rate decay}
+    \item \alert{Momentum}
+    \item \alert{Nesterov accelerated gradient}
+    \item \alert{RSMprop}
+    \item \alert{Adam}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Learning rate decay}
+El \alert{learning rate decay} se basa en la idea de que el \alert{learning rate} comience con valores altos y se vaya \alert{reduciendo} a lo largo del entrenamiento. De esta manera se consigue primero hacer una \alert{aproximación global} para posteriormente realizar una \alert{búsqueda local}.
+
+El learning rate se calcula de la siguiente manera:
+\begin{equation}
+    \alert{\alpha = \alpha_0 r^{\lfloor \frac{i}{n} \rfloor}}
+\end{equation}
+donde \alert{$i$} es la \alert{iteración} del entrenamiento y \alert{$r$} (decay rate) y \alert{$n$} (decay steps) son hiperparámetros que controlan la función.
+\end{frame}
+
+\begin{frame}{Otros optimizadores}
+\begin{figure}
+\centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Tema 1/Optimizers_Formula.png}
+    \caption{\cite{Optimizers_formula}}
+\end{figure}
+\end{frame}
 
 \begin{frame}{Funciones de pérdida}
 Existen múltiples métodos para calcular la \alert{distancia} de la \alert{predicción $\hat{y}$} con respecto de la \alert{salida deseada $y$}. Es decir, múltiples funciones de pérdida que nos permiten calcular el error.
@@ -415,7 +433,7 @@ Existen dos \alert{conceptos fundamentales} que ayudan a analizar el rendimiento
 
 \begin{figure}
 \centering
-    \includegraphics[width=\textwidth]{Slides/figures/Tema 3/BiasVariance_1.jpg}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Tema 3/BiasVariance_1.jpg}
     \caption{\cite{BiasVariance_1}}
 \end{figure}
 \end{frame}

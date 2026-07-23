@@ -522,32 +522,63 @@
 \end{frame}
 
 \begin{frame}{Fundamentación matemática}
-    
-    \hfill
-    \vfill
-    {\Large Minimax game}
-    \begin{itemize}
-        \item El juego de \alert{minimax} entre ambos modelos se denota por la siguiente expresión:
-    \end{itemize}
-    
-    \begin{equation}
-        \Large \min _{G} \max _{D} L(D, G)=\log [D(x)]+\log [1-D(G(x))]
-    \end{equation}
-    
-    \begin{itemize}
-        \item \alert{G} intenta \alert{engañar} a \alert{D}.
-        \item \alert{D} intenta \alert{discriminar} correctamente ambas \alert{distribuciones}.
-    \end{itemize}
-    
+\hfill
+\vfill
+{\Large Minimax game}
+\begin{itemize}
+    \item El juego de \alert{minimax} entre ambos modelos se denota por la siguiente expresión, que corresponde con la divergencia de \alert{Jensen-Shannon}:
+\end{itemize}
+
+\begin{equation}
+    \Large \min _{G} \max _{D} L(D, G)=\log [D(x)]+\log [1-D(G(x))]
+\end{equation}
+
+\begin{itemize}
+    \item \alert{G} intenta \alert{engañar} a \alert{D}.
+    \item \alert{D} intenta \alert{discriminar} correctamente ambas \alert{distribuciones}.
+\end{itemize}
 \end{frame}
 
-% \begin{exercise}
-% \href{https://colab.research.google.com/drive/1WF-FahMjwXlpPWHWGg9qESUQhKFxGqJW}{GANs con Densas}
-% \end{exercise}
+\begin{frame}{El Discriminador Óptimo}
+El \alert{Equilibrio de Nash} se consigue cuando el entrenamiento está en equilibrio. Para entenderlo hay que entender cual es el mejor disciminador posible $D^*_G$.
 
-% \begin{exercise}
-% \href{https://colab.research.google.com/drive/1FxURNzD_FenraqJF9lHa81Dx4jNUjop-}{Deep Convolutional GANs - DCGAN}
-% \end{exercise}
+Analizando la función objetivo (derivando respecto a $D(x)$ e igualando a cero), Goodfellow\cite{goodfellow2014generative} demostró que el discriminador óptimo es:
+
+\begin{equation}
+    D^*_G(x) = \frac{p_{x}(x)}{p_{x}(x) + p_g(x)}
+\end{equation}
+
+Donde:
+\begin{itemize}
+    \item \alert{$p_{x}(x)$}: Distribución de probabilidad de los datos reales.
+    \item \alert{$p_g(x)$}: Distribución de probabilidad de los datos generados.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Fundamentación matemática: Equilibrio de Nash}
+En el \alert{Equilibrio de Nash}, el generador es tan bueno que sus datos son absolutamente indistinguibles de los reales. Es decir, las distribuciones son exactamente iguales: \alert{$p_{x}(x) = p_g(x)$}.
+
+Si sustituimos esto en la ecuación del discriminador óptimo:
+\begin{equation}
+    D^*_G(x) = \frac{p_{x}(x)}{p_{x}(x) + p_{g}(x)} = 0.5
+\end{equation}
+
+Es decir, el discriminador óptimo será incapaz de diferenciar los ejemplos reales y falsos\footnote{De ahí el 0.5.}.
+\end{frame}
+
+\begin{frame}{Conexión con la Divergencia Jensen-Shannon}
+Sustituyendo el discriminador óptimo $D^*_G$ en la funcion Minimax original\footnote{No hace falta entrar en cómo se llega a esta ecuación, eso se lo dejamos a los matemáticos.}, se obtiene:
+
+\begin{equation}
+    \min_G V(G, D^*_G) = -\log(4) + 2 \cdot JSD(p_{x} \parallel p_g)
+\end{equation}
+
+\begin{itemize}
+    \item La \alert{Divergencia Jensen-Shannon (JSD)} mide la distancia entre dos distribuciones de probabilidad.
+    \item Dado que la JSD siempre es $\ge 0$, el mínimo global de esta función se alcanza única y exclusivamente cuando \alert{$JSD = 0$}.
+    \item Esto demuestra \alert{matemáticamente} que optimizar el juego Minimax equivale a forzar que la distribución generada encaje perfectamente en la real.
+\end{itemize}
+\end{frame}
 
 \section{\gls{gan}: Problemas principales}
 
@@ -626,29 +657,83 @@
 \end{frame}
 
 \begin{frame}{Problemas del gradiente: Gradient Vanishing}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{Slides/figures/GAN/GradientVanishing.png}
+    \caption{Gradient vanishing.}
+\end{figure}
 
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.6\textwidth]{Slides/figures/GAN/GradientVanishing.png}
-        \caption{Gradient vanishing.}
-    \end{figure}
-    
-    Cuando sucede \alert{gradient vanishing}, también llamado \alert{vanishing gradients}, la actualización de pesos se hace \alert{nula} por tener valores \alert{muy pequeños}.
-    
-    Se identifica cuando la pérdida es \alert{constante en el tiempo}.
-    
+Cuando sucede \alert{gradient vanishing}, también llamado \alert{vanishing gradients}, la actualización de pesos se hace \alert{nula} por tener valores \alert{muy pequeños}.
+
+Se identifica cuando la pérdida es \alert{constante en el tiempo}.
+
 \end{frame}
 
 \begin{frame}{Mode Collapse}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{Slides/figures/GAN/Mode Collapse.png}
+    \caption{\cite{srivastava2017veegan}}
+\end{figure}
 
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.6\textwidth]{Slides/figures/GAN/Mode Collapse.png}
-        \caption{Mode collapse, figura extraída de \cite{srivastava2017veegan}.}
-    \end{figure}
+El \alert{colapso modal} sucede cuando la información generada sólo pertenece a un \alert{subgrupo} de la total.
+\end{frame}
 
-    El \alert{colapso modal} sucede cuando la información generada sólo pertenece a un \alert{subgrupo} de la total.
-    
+\begin{frame}{Mode Collapse: Definición profunda}
+El \alert{colapso modal} sucede cuando la información generada sólo pertenece a un \alert{subgrupo} de la total \cite{srivastava2017veegan}.
+
+A nivel práctico, esto significa que el Generador ha encontrado una (o unas pocas) muestras que consiguen \alert{engañar siempre} al Discriminador actual. 
+
+El Generador decide ignorar el vector de ruido de entrada $z$ y \alert{mapea todo el espacio latente} hacia esa misma salida. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/GAN/Mode_Collapse_Example.png}
+    \caption{El modelo es incapaz de producir diversidad \cite{ModeCollapseExample}.}
+\end{figure}
+\end{frame}
+
+\begin{frame}{La raíz matemática del Mode Collapse}
+El problema surge de la dinámica del \alert{juego Minimax}:
+\begin{equation}
+    \min_G \max_D V(G, D)
+\end{equation}
+
+En la práctica, suele suceder que $G$ entrena demasiado rápido y gana ventaja sobre $D$.
+
+El generador converge hacia un \alert{único punto $x^*$} que el discriminador actual (imperfecto) clasifica como real, colapsando la función de manera que $G(z) \rightarrow x^* \ \forall z$\footnote{Es decir, siempre genera el mismo ejemplo $x^*$.}.
+\end{frame}
+
+\begin{frame}{Mode-Seeking}
+Las GANs tradicionales sufren de un comportamiento conocido como \alert{Mode-Seeking} (búsqueda de modos).
+
+En estadística, una \alert{distribución multimodal} tiene varios "picos" (modos). 
+\begin{itemize}
+    \item La red prefiere generar un solo tipo de dato perfecto (cubrir un único modo) antes que intentar abarcar toda la diversidad de los datos y arriesgarse a generar muestras irreales (quedarse en los valles).
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.4\textwidth]{Slides/figures/GAN/Mode_Collapse_minimum.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Minibatch Discrimination}
+Una de las primeras soluciones \cite{salimans2016improved} fue modificar el comportamiento del Discriminador. En lugar de evaluar imágenes de una en una, el Discriminador evalúa un \alert{batch entero}\footnote{Que, por otra parte, es mucho más eficiente.}.
+
+Además, se añade una capa que calcula la \alert{distancia o similitud} entre todas las imágenes del batch. Si el Generador envía 32 imágenes idénticas, el Discriminador detecta que la varianza del lote es cero y las clasifica como falsas inmediatamente, forzando a $G$ a diversificar.
+\end{frame}
+
+\begin{frame}{Wasserstein GAN (WGAN)}
+La solución teórica y matemática definitiva al Mode Collapse llegó con la \alert{Wasserstein GAN (WGAN)} \cite{arjovsky2017wasserstein}.
+
+Se utiliza la pérdida de \alert{Wasserstein (Earth Mover's Distance)}, que mide el "coste" de transportar masa para convertir una distribución en otra en vez de la divergencia de Jensen-Sharon.
+
+\begin{equation}
+    W(p_{data}, p_g) = \inf_{\gamma \sim \Pi(p_{data}, p_g)} \mathbb{E}_{(x, y) \sim \gamma} [||x - y||]
+\end{equation}
+
+Esta distancia proporciona gradientes \alert{suaves y continuos} en todo el espacio. El Generador siempre recibe una señal útil sobre hacia dónde moverse, evitando por completo que se quede atascado en un solo modo.
 \end{frame}
 
 \section{Métricas de evaluación de métodos generativos}
@@ -764,196 +849,221 @@ Se busca que las \alert{predicciones} sean de una \alert{clase concreta}. Lo que
 \end{itemize}
 \end{frame}
 
-\section{\gls{gan}: Aplicaciones}
+\section{Aplicaciones de las GAN}
 
-\begin{frame}{\gls{gan} en el mundo real}
+\begin{frame}{Data augmentation con GAN}
+Data Augmentation consiste en generar \alert{nuevos datos} de un dataset para aumentar el número de ejemplos. Esto es especialmente útil cuando se cuenta con conjuntos de datos \alert{insuficientes} para entrenar, por ejemplo, una red neuronal.
 
-    Las \alert{\gls{gan}} son un tipo de arquitectura muy ligada a sus \alert{aplicaciones en el mundo real}. Al tratarse de \alert{modelos generativos} han despertado un gran interés en la sociedad.
-    
-    \begin{itemize}
-        \item Generación de datos.
-        \item Domain-to-domain translation.
-        \item Data augmentation
-    \end{itemize}
+También toma especial importancia cuando se cuenta con \alert{desbalanceo} entre clases de un dataset.
+
+Las \gls{gan} tienen como principal ventaja que generan nuevos datos muy similares a la distribución de datos original, pero sin copiar ni modificarlos directamente.
 \end{frame}
 
-\begin{frame}{Generación de datos aleatorios}
+\begin{frame}{Generación Condicionada (CGAN)}
+En una \gls{gan} clásica, el generador toma un vector de ruido aleatorio $z$ y produce una imagen. En este caso, no se tiene \alert{ningún control} sobre qué tipo de imagen se va a generar
 
-    Es la aplicación \alert{directa} de las \gls{gan}.
-    
-    \begin{itemize}
-        \item Consiste en generar datos de cierto tipo \alert{sin control} sobre la salida.
-        \item Durante los últimos años se ha conseguido \alert{mejorar mucho la calidad} de los datos generados.
-    \end{itemize}
-
+Para solucionar esto, surgieron las \alert{Conditional GANs (CGAN)} \cite{mirza2014conditional}.
+\begin{itemize}
+    \item Se introduce una variable condicional \alert{$c$} (como una etiqueta de clase, texto, o incluso otra imagen).
+    \item Esta condición $c$ se inyecta tanto en el \alert{Generador} (junto con el ruido $z$) para guiar la generación, como en el \alert{Discriminador} (junto con la imagen $x$).
+    \item Esto permite \alert{dirigir} qué características concretas tendrá la salida generada: $G(z, c)$.
+\end{itemize}
 \end{frame}
 
-\begin{frame}{Generación de datos aleatorios: Ejemplos}
+\begin{frame}{Conditional GAN (CGAN)}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/GAN/CGAN.png}
+    \caption{Arquitectura de una CGAN}
+\end{figure}
+\end{frame}
 
-    \begin{columns}[T]
-    \begin{column}{.48\textwidth}
-    
-    \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{Slides/figures/GAN/BigGAN.PNG}
-        \caption{Resultados de la arquitectura BigGAN\cite{brock2018large}.}
-    \end{figure}
-    
-    \end{column}
-    \hfill
-    \begin{column}{.48\textwidth}
-    
-    \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{Slides/figures/GAN/Alias-FreeGAN.PNG}
-        \caption{Resultados de la arquitectura Alias-Free GAN (StyleGAN-3)\cite{karras2021alias}.}
-    \end{figure}
+\begin{frame}{\gls{acgan}: Auxiliary Classifier GAN \cite{odena2016conditional}}
+La arquitectura \alert{\gls{acgan}} lleva el concepto del condicionamiento un paso más allá para mejorar la calidad de las imágenes. En lugar de recibir la clase como entrada, el discriminador se encarga de predecirla.
 
-    \end{column}
-    \end{columns}
+\begin{itemize}
+    \item Es capaz de separar en distintas \alert{clases} los datos con los que trata.
+    \item Realiza un entrenamiento \alert{supervisado} usando las etiquetas del dataset.
+    \item El discriminador distingue además de la \alert{veracidad} de cada dato, la clase a la que pertenece.
+    \item De esta manera es capaz de aprender los distintos tipos de datos.
+\end{itemize}
+\end{frame}
 
+\begin{frame}{\gls{acgan}: Auxiliary Classifier GAN \cite{odena2016conditional}}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/GAN/ACGAN.png}
+    \caption{Arquitectura de una ACGAN}
+\end{figure}
+\end{frame}
+
+\begin{frame}{\gls{acgan}: Función de Pérdida}
+Dado que el discriminador de la \alert{\gls{acgan}} ahora tiene dos tareas simultáneas, su función de pérdida se divide en dos componentes independientes:
+
+\begin{itemize}
+    \item \alert{$L_S$}: discriminar si la imagen es real o generada.
+    \begin{equation}
+        L_s(D, G)=\log [D(x)]+\log [1-D(G(x))]
+    \end{equation}
+    
+    \item \alert{$L_C$}: clasificar el tipo de imagen.
+    \begin{equation}
+        \min_{G} \max_{D} L_c(D, G)=\log P(C=c | x) + \log P(C=c | G(z))
+    \end{equation}
+    $$ L_C = E[\log P(C=c | X_{real})] + E[\log P(C=c | X_{fake})] $$
+\end{itemize}
+
+El \alert{Discriminador} maximiza $L_S + L_C$, mientras que el \alert{Generador} busca maximizar la clasificación correcta pero engañar en la fuente, maximizando $L_C - L_S$.
+\end{frame}
+
+\begin{frame}{\gls{acgan}\cite{odena2016conditional}}
+\begin{itemize}
+    \item Capaz de separar en distintas \alert{clases} los datos con los que trata.
+    \item Realiza un entrenamiento \alert{supervisado} usando las etiquetas del dataset.
+    \item El discriminador distingue además de la \alert{veracidad} de cada dato, la clase a la que pertenece. De esta manera es capaz de aprender los distintos tipos de datos.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{Slides/figures/GAN/ACGAN Results.PNG}
+    \caption{Resultados de una ACGAN para la generación de dígitos del dataset MNIST\cite{lecun1998mnist}}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Domain-to-domain translation}
+El \alert{Domain-to-domain translation} es una aplicación \alert{no exclusiva} de las \gls{gan}. Sin embargo estas redes funcionan muy bien para esta aplicación.
 
-    El \alert{Domain-to-domain translation} es una aplicación \alert{no exclusiva} de las \gls{gan}. Sin embargo estas redes funcionan muy bien para esta aplicación.
-    
-    Es una de las aplicaciones \alert{más vistosas} y que más ha ayudado a la popularidad de las \gls{gan} en os últimos años.
-    
-    \begin{itemize}
-        \item La idea es traducir un conjunto de datos de entrada de \alert{un dominio a otro distinto}.
-    \end{itemize}
+Es una de las aplicaciones \alert{más vistosas} y que más ha ayudado a la popularidad de las \gls{gan} en os últimos años.
 
+\begin{itemize}
+    \item La idea es traducir un conjunto de datos de entrada de \alert{un dominio a otro distinto}.
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Domain-to-domain translation: Ejemplos}
+\begin{columns}[T]
+\begin{column}{.48\textwidth}
 
-    \begin{columns}[T]
-    \begin{column}{.48\textwidth}
-    
-    \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{Slides/figures/GAN/TAC-GAN.PNG}
-        \caption{Resultados de la arquitectura TAC-GAN\cite{dash2017tac}.}
-    \end{figure}
-    
-    \end{column}
-    \hfill
-    \begin{column}{.55\textwidth}
-    
-    \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{Slides/figures/GAN/CycleGAN.PNG}
-        \caption{Resultados de la arquitectura CycleGAN\cite{zhu2017unpaired}.}
-    \end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/GAN/TAC-GAN.PNG}
+    \caption{Resultados de la arquitectura TAC-GAN\cite{dash2017tac}.}
+\end{figure}
 
-    \end{column}
-    \end{columns}
+\end{column}
+\hfill
+\begin{column}{.55\textwidth}
 
-\end{frame}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/GAN/CycleGAN.PNG}
+    \caption{Resultados de la arquitectura CycleGAN\cite{zhu2017unpaired}.}
+\end{figure}
 
-\begin{frame}{Data augmentation}
-
-    Data Augmentation consiste en generar \alert{nuevos datos} de un dataset para aumentar el número de ejemplos. Esto es especialmente útil cuando se cuenta con conjuntos de datos \alert{insuficientes} para entrenar, por ejemplo, una red neuronal.
-    
-    También toma especial importancia cuando se cuenta con \alert{desbalanceo} entre clases de un dataset.
-    
-    Las \gls{gan} tienen como principal ventaja que generan nuevos datos muy similares a la distribución de datos original, pero sin copiar ni modificarlos directamente.
-    
-\end{frame}
-
-\section{\gls{gan}: Arquitecturas}
-
-\begin{frame}{\gls{acgan}\cite{odena2016conditional}}
-
-    \begin{itemize}
-        \item Capaz de separar en distintas \alert{clases} los datos con los que trata.
-        \item Realiza un entrenamiento \alert{supervisado} usando las etiquetas del dataset.
-        \item El discriminador distingue además de la \alert{veracidad} de cada dato, la clase a la que pertenece. De esta manera es capaz de aprender los distintos tipos de datos.
-    \end{itemize}
-    
-    \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{Slides/figures/GAN/ACGAN.png}
-        \caption{Arquitectura de una ACGAN}
-    \end{figure}
-    
-\end{frame}
-
-\begin{frame}{\gls{acgan}\cite{odena2016conditional}}
-
-    \begin{itemize}
-        \item Capaz de separar en distintas \alert{clases} los datos con los que trata.
-        \item Realiza un entrenamiento \alert{supervisado} usando las etiquetas del dataset.
-        \item El discriminador distingue además de la \alert{veracidad} de cada dato, la clase a la que pertenece. De esta manera es capaz de aprender los distintos tipos de datos.
-    \end{itemize}
-    
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.6\textwidth]{Slides/figures/GAN/ACGAN Results.PNG}
-        \caption{Resultados de una ACGAN para la generación de dígitos del dataset MNIST\cite{lecun1998mnist}}
-    \end{figure}
-    
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}{Image-to-Image Translation with Conditional Adversarial Nets (pix2pix)\cite{isola2017image}}
+\begin{itemize}
+    \item La arquitectura \alert{pix2pix} fue presentada para realizar generación de imágenes \alert{condicionada} por una entrada, que \alert{también es una imagen}.
+    \item La idea es traducir la imagen de entrada a otro \alert{dominio}, en lo que se conoce como \alert{image-to-image translation}.
+\end{itemize}
 
-    \begin{itemize}
-        \item La arquitectura \alert{pix2pix} fue presentada para realizar generación de imágenes \alert{condicionada} por una entrada, que \alert{también es una imagen}.
-        \item La idea es traducir la imagen de entrada a otro \alert{dominio}, en lo que se conoce como \alert{image-to-image translation}.
-    \end{itemize}
-    
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.85\textwidth]{Slides/figures/GAN/pix2pix.png}
-        \caption{Arquitectura general de una pix2pix.}
-    \end{figure}
-    
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{Slides/figures/GAN/pix2pix.png}
+    \caption{Arquitectura general de una pix2pix.}
+\end{figure}
 \end{frame}
 
-\begin{frame}{Image-to-Image Translation with Conditional Adversarial Nets (pix2pix)\cite{isola2017image}}
-
-    \begin{itemize}
-        \item El discriminador se encarga de juzgar la veracidad de cada uno de los \alert{parches} en los que se divide una imagen. Esta arquitectura se conoce como \alert{PatchGAN}\cite{isola2017image}.
-        \item De esta manera se consigue que cada sección de la imagen sea realista.
-    \end{itemize}
+\begin{frame}{pix2pix\cite{isola2017image}: Traducción de imagen a imagen}
+A diferencia de las \gls{gan} clásicas que parten de un vector de ruido $z$, en \alert{pix2pix} la entrada principal es una \alert{imagen condicionante} $x$.
     
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.9\textwidth]{Slides/figures/GAN/pix2pix Discriminador.png}
-        \caption{Discriminador de la arquitectura PatchGAN\cite{isola2017image}.}
-    \end{figure}
-    
+Esto cambia radicalmente el enfoque del \alert{Generador}, que pasa a ser un \alert{Autoencoder y no necesitar un espacio latente}.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Slides/figures/GAN/pix2pix_G.png}
+\end{figure}
 \end{frame}
 
-\begin{frame}{Image-to-Image Translation with Conditional Adversarial Nets (pix2pix)\cite{isola2017image}}
+\begin{frame}{pix2pix\cite{isola2017image}: Función de Pérdida combinada}
+La pérdida adversaria se combina para equilibrar el \alert{realismo} y la \alert{fidelidad}:
 
-    \begin{itemize}
-        \item El nuevo discriminador necesita una \alert{función de pérdida} que permita unir la clasificación de todos los \alert{parches}.
-    \end{itemize}
-    
+\begin{itemize}
+    \item \alert{Pérdida Condicional (cGAN):} El discriminador evalúa pares de imágenes; la original condicionante y la real o generada.
     \begin{equation}
-        \large L=\sum\left[\log D\left(x_{i}\right)+\log \left(1-D\left(G\left(z_{i}\right)\right)\right)+\lambda L_{L 1}(G)\right]
+        \min_G \max_D \mathcal{L}_{cGAN}(G, D) = \log D(x, y) + \log(1 - D(x, G(x, z)))
     \end{equation}
+    donde $x$ es la imagen de entrada e $y$ y $G(x,z)$ las del nuevo dominio.
     
+    \item \alert{Pérdida L1:} Para evitar que el generador "alucine" artefactos\footnote{Sí, las alucinaciones no son exclusivas de los transformers.}, se usa el \gls{mae}.
     \begin{equation}
-        \large L_{L 1}(G)=y-G(z, x)
+        \min_G\mathcal{L}_{L1}(G) = \mathbb{E}_{x,y,z}[||y - G(x, z)||_1]
     \end{equation}
-    
+\end{itemize}
+
 \end{frame}
 
-\begin{frame}{GauGAN\cite{park2019semantic}}
+\begin{frame}{pix2pix: El Discriminador PatchGAN}
+La pérdida L1 captura la estructura global pero genera \alert{imágenes borrosas}.
 
-    \begin{itemize}
-        \item Arquitectura presentada por \alert{NVIDIA} que consigue mejorar aún más los resultados de la \alert{pix2pix} y \alert{pix2pixHD}.
-    \end{itemize}
+Para solucionarlo, pix2pix introduce la arquitectura \alert{PatchGAN} \cite{isola2017image}:
     
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.75\textwidth]{Slides/figures/GAN/GauGAN2.jpg}
-        \caption{\href{http://gaugan.org/gaugan2/}{http://gaugan.org/gaugan2/}.}
-    \end{figure}
-    
+\begin{itemize}
+    \item En lugar de clasificar la imagen completa con un único valor (Real/Falso), el discriminador evalúa la imagen en \alert{parches locales de $N \times N$ píxeles} (comúnmente $70 \times 70$).
+    \item De esta manera se consigue que cada sección de la imagen sea realista.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Slides/figures/GAN/pix2pix Discriminador.png}
+    \caption{Discriminador de la arquitectura PatchGAN\cite{isola2017image}.}
+\end{figure}
+\end{frame}
+
+\begin{frame}{El problema de los datos no emparejados}
+La \alert{pix2pix} requiere \alert{datos estrictamente emparejados} para calcular la pérdida L1 (e.g., la foto exacta del mismo edificio y su boceto).
+
+Sin embargo, para muchos problemas, obtener este tipo de conjuntos de datos es \alert{imposible}. 
+\begin{itemize}
+    \item ¿Cómo traducimos una pintura de Monet a una foto real? No existe la foto original que Monet miró.
+    \item ¿Cómo traducimos caballos a cebras? No tenemos fotos del mismo animal en la misma pose exacta como caballo y como cebra.
+\end{itemize}
+
+\alert{CycleGAN} \cite{zhu2017unpaired} se presentó en 2017 para resolver el problema de la traducción \alert{Unpaired Domain-to-Domain}.
+\end{frame}
+
+\begin{frame}{CycleGAN\cite{zhu2017unpaired}}
+CycleGAN asume que si traducimos del dominio $X$ al dominio $Y$, y luego traducimos el resultado de vuelta al dominio $X$, deberíamos obtener \alert{exactamente la misma imagen original}\footnote{Es decir, traducir \textit{Hola$\rightarrow$Bonjour} y luego \textit{Bonjour$\rightarrow$Hola}.}.
+
+Se utilizan \alert{dos Generadores} y \alert{dos Discriminadores} simultáneamente:
+\begin{itemize}
+    \item \textbf{Generadores $G$ y $F$}: Traducen de $X \rightarrow Y$ y de $Y \rightarrow X$.
+    \item \textbf{Discriminador $D_X$ y $D_Y$}: Intenta distinguir entre las imágenes reales de $X$ y las generadas por $G$ (y lo mismo con $Y$ y $F$).
+\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\textwidth]{Slides/figures/GAN/CycleGAN_architecture.png}
+    \caption{\cite{zhu2017unpaired}.}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Cycle-Consistency Loss}
+La matemática detrás de este concepto se plasma en la \alert{Cycle-Consistency Loss}. 
+
+Si solo usáramos la pérdida adversaria, el generador podría mapear todos los caballos a una única foto de una cebra genérica que engañara al discriminador (Mode Collapse). Para evitarlo, forzamos a que el proceso sea \alert{reversible}:
+
+\begin{equation}
+    \mathcal{L}_{cyc}(G, F) = ||F(G(x)) - x||_1 + ||G(F(y)) - y||_1
+\end{equation}
+
+\begin{itemize}
+    \item \textbf{Forward cycle:} $x \rightarrow G(x) \rightarrow F(G(x)) \approx x$
+    \item \textbf{Backward cycle:} $y \rightarrow F(y) \rightarrow G(F(y)) \approx y$
+\end{itemize}
+
+Donde básicamente se utiliza la norma $L_1$ para comparar la calidad del ciclo.
 \end{frame}
 
 \begin{frame}{Lineas de investigación de \gls{gan}}
