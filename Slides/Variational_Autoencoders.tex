@@ -8,68 +8,53 @@
 \begin{document}
 \maketitle
 
-\begin{frame}{Contenidos}
-  \begin{enumerate}
-      \item Introducción
-      \item Auto-encoders (AEs)
-      \item{Auto-encoders Variacionales (VAEs)}
-      \item{Generative Adversarial Networks (GANs)}
-      \item{Transformers}
-      \item{Diffusion Models}
-    \end{enumerate}
+\begin{frame}{Generación en AE clásicos}
+Un Autoencoder clásico aprende a mapear una entrada $x$ a un único punto $z$ en el espacio latente.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Slides/figures/Autoencoder/Autoencoder_Latent_Space.png}
+\end{figure}
 \end{frame}
 
+\begin{frame}{Generación en AE clásicos}
+Si queremos \alert{generar un dato nuevo}, la idea intuitiva sería inventarnos un vector $z_{nuevo}$ al azar y pasarlo por el Decodificador.
 
-\begin{frame}{Contenidos}
-  \begin{enumerate}
-      \item Introducción
-      \item Auto-encoders (AEs)
-      \item{\textbf{Auto-encoders Variacionales (VAEs)}}
-      \item{Generative Adversarial Networks (GANs)}
-      \item{Transformers}
-      \item{Diffusion Models}
-    \end{enumerate}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/Autoencoder/Autoencoder_Latent_Space_new.png}
+\end{figure}
 \end{frame}
 
-\section{Auto-encoders Variacionales (VAEs)}
-
-\begin{frame}{Motivación}
-
-Los autoencoders tienen un gran problema: no son buenos \textbf{generadores} de datos.
-\newline
-\newline
-\centering\textbf{¿Por qué?}
+\begin{frame}{Espacio latente en AE}
+Sin embargo, esto \alert{falla estrepitosamente}:
+\begin{itemize}
+    \item \textbf{Espacio discontinuo:} La red solo sabe decodificar los puntos exactos que vio durante el entrenamiento. Los espacios intermedios están "vacíos" o generan ruido.
+    \item \textbf{Distribución desconocida:} No sabemos qué forma tiene la distribución de probabilidad $p(z)$. Si elegimos un $z$ aleatorio, es muy probable que caigamos fuera de la \textit{variedad} (manifold) de los datos reales.
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Motivación}
-
 Pensemos en un ejemplo sencillo: la reconstrucción de imágenes del dataset MNIST.
 
 ¿Cómo pensáis que será el espacio latente (representación en el \textit{bottleneck})?
 
-\end{frame}
-
-\begin{frame}{Motivación}
-
 \begin{figure}
     \centering
-    \includegraphics[width=0.7\textwidth]{Slides/figures/02_Metodos_Generativos/ae-latent-space.png}
-    \caption{Ejemplo de espacio latente con el dataset MNIST (\href{https://indico.ictp.it/event/8674/session/155/contribution/1121/material/slides/0.pdf}{fuente}).}
-    \label{fig:enter-label}
+    \includegraphics[width=0.9\textwidth]{Slides/figures/Autoencoder/AE_latent_space.png}
+    \caption{\cite{LatentSpaceMNIST}}
 \end{figure}
 
 \end{frame}
 
 \begin{frame}{Motivación}
-
-Esta representación presenta determinados problemas: al no ser continua, tendremos problemas cuando la entrada sea ligeramente distinta a los datos con los que se entrenó el autoencoder:
+Al no tener un \alert{espacio latente continuo}, tendremos problemas cuando la entrada sea ligeramente distinta a los datos con los que se entrenó el autoencoder:
 
 ¿Qué ocurrirá cuando la entrada sean imágenes que generen códigos latentes entre medio de las muestras de entrenamiento?
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.4\textwidth]{Slides/figures/02_Metodos_Generativos/ae-zoom-latent-space.png}
-    \caption{Ejemplo de problemas al generar nuevas muestras (\href{https://indico.ictp.it/event/8674/session/155/contribution/1121/material/slides/0.pdf}{fuente}).}
+    \includegraphics[width=\textwidth]{Slides/figures/Autoencoder/AE_latent_space_discontinuity.png}
     \label{fig:enter-label}
 \end{figure}
 
@@ -91,13 +76,11 @@ Esta imagen lo muestra de forma intuitiva:
 
 
 \begin{frame}{Motivación}
-
-¿Qué es lo deseable?
+Se busca un espacio latente \alert{continuo y ordenado}:
 
 \begin{itemize}
-    \item Un espacio latente \textbf{continuo} y \textbf{ordenado}
-    \item en el que poder obtener muestras parecidas a los datos de la entrada aunque no coincidan exactamente con alguno de los de entrenamiento
-    \item y en el que poder \textbf{interpolar} entre distintos espacios latentes para obtener \textbf{nuevas muestras}
+    \item En el que poder obtener muestras parecidas a los datos de la entrada aunque no coincidan exactamente con alguno de los de entrenamiento.
+    \item En el que poder \alert{interpolar} entre distintos espacios latentes para obtener \alert{nuevas muestras}.
 \end{itemize}
 
 \begin{figure}
@@ -111,7 +94,6 @@ Esta imagen lo muestra de forma intuitiva:
 
 
 \begin{frame}{Motivación}
-
 Ejemplo de interpolación con un espacio latente \textbf{contínuo} y \textbf{ordenado}:
 
 \begin{figure}
@@ -128,12 +110,12 @@ Ejemplo de interpolación con un espacio latente \textbf{contínuo} y \textbf{or
 
 \textbf{¿Cómo lo logramos?}
 
-Modificando ligeramente la arquitectura del auto-encoder para conseguir un espacio latente \textbf{contínuo} y \textbf{ordenado}.
+Modificando ligeramente la arquitectura del AE para conseguir un espacio latente \textbf{continuo} y \textbf{ordenado}.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{Slides/figures/02_Metodos_Generativos/vae-continuous-latent-space.png}
-    \caption{Ejemplo de espacio latente \textbf{contínuo} y \textbf{ordenado} de las muestras generadas a partir de su muestreo. (\href{https://indico.ictp.it/event/8674/session/155/contribution/1121/material/slides/0.pdf}{fuente}).}
+    \caption{Ejemplo de espacio latente \textbf{continuo} y \textbf{ordenado} de las muestras generadas a partir de su muestreo. (\href{https://indico.ictp.it/event/8674/session/155/contribution/1121/material/slides/0.pdf}{fuente}).}
     \label{fig:enter-label}
 \end{figure}
 
@@ -142,7 +124,7 @@ Modificando ligeramente la arquitectura del auto-encoder para conseguir un espac
 \begin{frame}{\acrfullpl{vae}}
 
 \textbf{¿Qué son los Auto-Encoders Variacionales (VAEs)?}
-Son una variante de los autoencoders~\cite{kingma2019introduction} que permiten la generación de datos sintéticos.
+Son una variante de los autoencoders~\cite{kingma2013auto} que permiten la generación de datos sintéticos.
 
 \begin{itemize}
     \item Combinan redes neuronales con distribuciones de probabilidad.
@@ -157,27 +139,30 @@ Así, la red aprende los parámetros de una distribución de probabilidad.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{¿Cómo funcionan?}
-En los \glspl{vae}, el espacio latente está definido por \textbf{dos vectores de tamaño $n$}:
+\begin{frame}{VAEs}
+Propuestos por Kingma y Welling (2013) \cite{kingma2013auto}, los \alert{Variational Autoencoders (VAE)} resuelven este problema con un cambio de paradigma fundamental:
 
+En lugar de mapear una entrada $x$ a un vector determinista $z$, el Codificador mapea la entrada a una \alert{distribución de probabilidad}.
 \begin{itemize}
-    \item $\vec{\mu} = (\mu_1, \ldots, \mu_n)$: Vector de \textbf{medias}.
-    \item $\vec{\sigma} = (\sigma_1, \ldots, \sigma_n)$: Vector de \textbf{desviaciones estándar}.
+    \item El Codificador $f_\theta(z|x)$ no devuelve un punto, sino los parámetros de una distribución Gaussiana: un vector de medias $\mu$ y un vector de varianzas $\sigma^2$.
+    \item El vector latente $z$ que pasará al Decodificador se \alert{muestrea} aleatoriamente de esa distribución: $z \sim \mathcal{N}(\mu, \sigma^2)$.
 \end{itemize}
 
-Forman un vector de distribuciones normales: $(N(\mu_1,\sigma_1),\ldots ,N(\mu_n,\sigma_n))$.
+Esta aleatoriedad fuerza a que el espacio latente sea \alert{continuo} (suave), ya que puntos cercanos deben decodificarse en imágenes similares.
+\end{frame}
 
-\begin{itemize}
-    \item Cada $\mu_i$ controlará el centro aproximado donde codificar los datos de entrada.
-    \item Cada $\sigma_i$ controlará cuánto pueden desviarse en cualquiera de sus muestras.
-\end{itemize}
+\begin{frame}{El "Prior" y la Generación}
+Para poder generar datos desde cero sin depender de una imagen de entrada, necesitamos establecer un \alert{Prior} (una distribución base) para todo el espacio latente. 
 
-Con este modelo, el decodificador asocia áreas completas (no solo puntos individuales) a variantes ligeras de la misma salida.
+En los VAEs, asumimos que la distribución global de todo el espacio latente sigue una \alert{Gaussiana Estándar}:
+$$ p(z) = \mathcal{N}(0, I) $$
 
-\begin{itemize}
-    \item Esto resulta en un espacio interpolado mucho más suave.
-    \item Es capaz de producir nuevas salidas que comparten propiedades.
-\end{itemize}
+\textbf{¿Por qué esto es brillante para la generación?}
+Porque si logramos que nuestro espacio latente se organice con esta forma matemática, generar una nueva imagen es tan sencillo como:
+\begin{enumerate}
+    \item Generar un vector $z$ usando un generador de números pseudoaleatorios estándar $\mathcal{N}(0, I)$.
+    \item Pasar ese vector por el Decodificador $q_\phi(x|z)$.
+\end{enumerate}
 \end{frame}
 
 \begin{frame}{Estructura}
@@ -200,14 +185,25 @@ Luego debemos ajustar las funciones de pérdida individualmente de tal manera qu
 
 \textbf{¿Por qué necesitamos las pérdidas de reconstrucción y la divergencia KL?}
 
-
 \begin{figure}
     \centering
     \includegraphics[width=1\textwidth]{Slides/figures/02_Metodos_Generativos/vae-comparison-mse-and-kl.png}
     \caption{Ejemplo con diferentes términos de la función de pérdidas (\href{https://www.jeremyjordan.me/content/images/2018/03/Screen-Shot-2018-03-18-at-7.22.24-PM.png}{fuente}).}
     \label{fig:enter-label}
 \end{figure}
+\end{frame}
 
+\begin{frame}{La Función de Pérdida (ELBO)}
+Para lograr que la red reconstruya las imágenes y, al mismo tiempo, organice su espacio latente como una Gaussiana estándar, la función de pérdida se divide en dos términos:
+
+\begin{equation}
+\mathcal{L}(\theta, \phi) = \underbrace{-\log g_\phi(f_\theta(x))}_{\text{1. Error de Reconstrucción}} + \underbrace{(f_\theta(z|x) \parallel q_\phi(z))}_{\text{2. Divergencia KL}}
+\end{equation}
+
+\begin{itemize}
+    \item \textbf{Error de Reconstrucción:} Asegura que el Decodificador sepa recuperar la imagen original (como en un AE clásico, suele ser \textbf{MSE} o \textbf{BCE}).
+    \item \textbf{Divergencia Kullback-Leibler (KL):} Mide la diferencia entre la distribución predicha por el codificador $\mathcal{N}(\mu, \sigma^2)$ y la distribución deseada $\mathcal{N}(0, I)$. 
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Divergencia KL (I)}
@@ -243,14 +239,88 @@ Nuestra función de pérdida consistirá en dos términos:
 
 Por lo tanto, la expresión de la función de pérdida será:
 
-$$
-\mathcal{L}(y, \hat{y}) = \mathcal{L}_r(y, \hat{y}) + \mathcal{L}_{\text{KL}} (y, \hat{y})
-$$
+\begin{equation}
+\mathcal{L} = \mathcal{L}_r(x, \hat{x}) + \mathcal{L}_{\text{KL}} (z, \mathcal{N}(0, I))
+\end{equation}
+\end{frame}
 
+\begin{frame}{Entendiendo la Divergencia KL en VAEs}
+El término de la \alert{Divergencia KL} actúa como un \textbf{regularizador}. 
+
+\begin{itemize}
+    \item Sin la divergencia KL, la red haría que las varianzas $\sigma^2$ tendieran a $0$ para eliminar la aleatoriedad, volviendo a ser un Autoencoder clásico y arruinando el espacio continuo.
+    \item La divergencia KL penaliza a la red si la media $\mu$ se aleja de $0$ o si la varianza $\sigma^2$ se aleja de $1$.
+    \item Esto fuerza a que las distribuciones de todas las imágenes de entrenamiento se \alert{superpongan y se empaqueten} de forma densa alrededor del origen $(0,0)$, creando un espacio sin "agujeros" ideal para generar.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{El Reparameterization Trick}
+Existe un problema grave de ingeniería: el proceso de \alert{muestrear} $z \sim \mathcal{N}(\mu, \sigma^2)$ es una operación estocástica (aleatoria). \textbf{No se puede calcular el gradiente} a través de un nodo aleatorio, lo que rompe la \textit{retropropagación} (backpropagation).
+
+Kingma y Welling introdujeron el \alert{Truco de Reparametrización}:
+Extraemos la aleatoriedad a un nodo externo $\epsilon$ que no requiere gradientes.
+
+En lugar de muestrear $z$ directamente, lo calculamos como:
+\begin{equation}
+z = \mu + \sigma \odot \epsilon
+\end{equation}
+Donde \alert{$\epsilon \sim \mathcal{N}(0, I)$} es un ruido constante durante ese paso\footnote{Ahora las derivadas parciales respecto a $\mu$ y $\sigma$ fluyen perfectamente}.
+\end{frame}
+
+\begin{frame}{El problema del control en la generación}
+El proceso de generación de un VAE estándar es \alert{aleatorio}.
+
+\begin{itemize}
+    \item Si entrenamos un VAE con el dataset MNIST (dígitos del 0 al 9), no tenemos forma de pedirle a la red que genere específicamente un "3" o un "7".
+    \item La red generará un número aleatorio dependiendo de dónde caiga el vector $z$.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Autoencoder/MNIST_random.png}
+    \caption{\cite{doersch2016tutorial}}
+\end{figure}
+\end{frame}
+
+\begin{frame}{cVAE}
+La solución de los \alert{Conditional VAEs (CVAEs)} \cite{sohn2015learning} es inyectar una \alert{variable condicional $c$} (como una etiqueta de clase) en el modelo.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/Autoencoder/CVAE.png}
+    \caption{\cite{abdelli2022degradation}}
+\end{figure}
+\end{frame}
+
+\begin{frame}{cVAE}
+Esto transforma las distribuciones de probabilidad subyacentes:
+
+\begin{itemize}
+    \item \alert{Codificador Condicionado:} Ahora estima la media y varianza observando tanto la imagen $x$ como su clase $c$.
+    $$ q_\phi(z|x, c) = \mathcal{N}(\mu_\phi(x,c), \sigma_\phi^2(x,c)) $$
+    \item \alert{Decodificador Condicionado:} Reconstruye la imagen observando tanto el vector latente $z$ como la clase $c$.
+    $$ p_\theta(x|z, c) $$
+\end{itemize}
+
+El \alert{Prior} (la distribución base) también se condiciona teóricamente $p(z|c)$, aunque en las implementaciones más comunes se asume que el espacio latente global sigue siendo independiente de la clase: $p(z) = \mathcal{N}(0, I)$.
+\end{frame}
+
+\begin{frame}{cVAE: Función de Pérdida}
+La función de pérdida se adapta para reflejar la condición $c$ en cada paso del proceso:
+
+\begin{equation}
+    \mathcal{L}_{cVAE} = \underbrace{-\log p_\theta(x|z,c)}_{\text{Error de Reconstrucción condicionado}} + \underbrace{(q_\phi(z|x,c) \parallel p(z|c))}_{\text{Divergencia KL}}
+\end{equation}
+
+La variable $c$ suele ser un vector \textit{One-Hot} o un \textit{Embedding}.
+\begin{itemize}
+    \item En el \alert{Encoder}, se concatena $c$ con la entrada $x$.
+    \item En el \alert{Decoder}, se concatena $c$ con el vector latente $z$.
+\end{itemize}
+De esta manera, la red aprende a separar la "\alert{identidad}" del objeto (clase $c$) de su "\alert{estilo}" o detalles menores (ruido $z$).
 \end{frame}
 
 \begin{frame}{Aplicaciones}
-
 Una aplicación de los VAEs es la de poder generar muestras teniendo \alert{cierto} control sobre lo que generamos.
 
 \begin{figure}
@@ -260,7 +330,7 @@ Una aplicación de los VAEs es la de poder generar muestras teniendo \alert{cier
     \label{fig:enter-label}
 \end{figure}
 
-En los VAEs el espacio latente está \alert{entrelazado}. \href{https://github.com/nnormandin/Conditional_VAE/blob/master/Conditional_VAE.ipynb}{Conditional VAE}. Se verá en CGANs.
+En los VAEs el espacio latente está \alert{entrelazado}. \href{https://github.com/nnormandin/Conditional_VAE/blob/master/Conditional_VAE.ipynb}{Conditional VAE}.
     
 \end{frame}
 
@@ -309,23 +379,49 @@ Por ejemplo, si muestreamos dos veces con valores similares, deberemos obtener m
     
 \end{frame}
 
-
-\begin{frame}{Bonus: ¿Aprendizaje supervisado o no supervisado?}
-
-Tradicionalmente, se han clasificado como \textbf{aprendizaje no supervisado}.
-
+\begin{frame}{El debate: ¿Supervisado o No Supervisado?}
+Tradicionalmente, el \textit{Machine Learning} se divide en dos grandes ramas:
 \begin{itemize}
-    \item Después de todo, no trabajan con datos etiquetados.
-    \item ¡Pero no puedes optimizar autoencoders sin la retroalimentación de la propia reconstrucción!
+    \item \textbf{Supervisado:} Tenemos datos $X$ y etiquetas $Y$ anotadas por humanos. Buscamos $p(y|x)$\footnote{O visto de otro modo $f(X) \rightarrow Y$}.
+    \item \textbf{No Supervisado:} Solo tenemos datos $X$ y buscamos patrones ocultos (e.g., \textit{clustering}, reducción dimensional). Buscamos $p(x)$\footnote{O también se puede ver como $f(X)$}.
 \end{itemize}
 
-En el \textbf{aprendizaje supervisado}, se aprende con retroalimentación de los datos.
-
+\alert{¿Dónde encajan los Autoencoders?}
 \begin{itemize}
-    \item Se espera que, al proporcionar algunos ejemplos, el algoritmo descubra la función que mapea las entradas a las salidas deseadas con el menor error.
+    \item A menudo se clasifican como \alert{no supervisados} porque no hay $Y$.
+    \item Mecánicamente son \alert{supervisados}: usan una función de pérdida contra un objetivo exacto (\alert{ground truth}) y usan retropropagación.
 \end{itemize}
+\end{frame}
 
-Yann LeCun inventó el término \textbf{aprendizaje auto-supervisado} para hablar sobre estos modelos.
+\begin{frame}{La solución: Aprendizaje Autosupervisado}
+Para resolver esta paradoja terminológica, Yann LeCun \cite{lecun2021darkmatter} y otros pioneros de la IA popularizaron el término \alert{Aprendizaje Autosupervisado (Self-Supervised Learning)}\footnote{Que, además, es un término muy rimbombante, lo cual siempre mola en IA.}.
+
+En este paradigma, \alert{}{los propios datos proporcionan la supervisión}. El modelo retiene o corrompe una parte de la información y usa el resto para predecir lo que falta.
+
+En el caso de los Autoencoders:
+\begin{itemize}
+    \item \textbf{AE Clásico:} El objetivo (etiqueta) es el propio dato de entrada. $y = x$.
+    \item \textbf{Denoising AE:} El dato de entrada es corrupto ($\tilde{x}$) y la "etiqueta" es el dato original limpio ($x$).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Impacto del Aprendizaje Autosupervisado}
+El \alert{Aprendizaje Autosupervisado} es el paradigma dominante en la Inteligencia Artificial moderna, ya que permite entrenar modelos masivos aprovechando la inmensa cantidad de datos sin etiquetar que hay en internet.
+
+Ejemplos clave que nacen de esta misma idea:
+\begin{itemize}
+    \item \textbf{Procesamiento de Lenguaje (e.g., BERT):} Se enmascara el 15\% de las palabras de una frase (como un ruido) y la red debe predecir cuáles eran. Es un \alert{Masked Autoencoder} de texto.
+    \item \textbf{Modelos Autorregresivos (e.g., GPT):} La red lee las primeras $N$ palabras y su "etiqueta" (supervisión) es simplemente la palabra $N+1$ que ya venía en el texto original.
+    \item \textbf{Visión por Computador:} Ocultar parches enteros de una imagen y pedirle a un \textit{Vision Transformer} que los reconstruya.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Aprendizaje Autosupervisado}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{Slides/figures/Autoencoder/SelfSupervised_Example.png}
+    \caption{\cite{yao2022masked}}
+\end{figure}
 \end{frame}
 
 \begin{frame}
@@ -333,7 +429,7 @@ Yann LeCun inventó el término \textbf{aprendizaje auto-supervisado} para habla
 {\Large\it I now call it ``self-supervised learning'', because ``unsupervised'' is both a loaded and confusing term. [\ldots] Self-supervised learning uses way more supervisory signals than supervised learning, and enormously more than reinforcement learning. That's why calling it ``unsupervised'' is totally misleading.}
 
 \begin{flushright}
-Yann LeCun - Recent Advances in Deep Learning (2019)
+Yann LeCun - Recent Advances in Deep Learning (2019) \cite{lecun2019facebook}
 \end{flushright}
 \end{frame}
 

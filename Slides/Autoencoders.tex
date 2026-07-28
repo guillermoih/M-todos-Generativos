@@ -8,55 +8,16 @@
 \begin{document}
 \maketitle
 
+\begin{frame}{¿Qué es un Autoencoder? (Visión formal)}
+Tradicionalmente se definen como redes neuronales que aprenden a comprimir y reconstruir datos. A nivel matemático, un \alert{Autoencoder (AE)} es un modelo diseñado para aprender la \alert{función identidad} $f(x) \approx x$ bajo una serie de restricciones.
 
-\begin{frame}{Contenidos}
-  \begin{enumerate}
-      \item Introducción
-      \item Auto-encoders (AEs)
-      \item{Auto-encoders Variacionales (VAEs)}
-      \item{Generative Adversarial Networks (GANs)}
-      \item{Transformers}
-      \item{Diffusion Models}
-    \end{enumerate}
-\end{frame}
-
-
-\begin{frame}{Contenidos}
-  \begin{enumerate}
-      \item Introducción
-      \item \textbf{Auto-encoders (AEs)}
-      \item{Auto-encoders Variacionales (VAEs)}
-      \item{Generative Adversarial Networks (GANs)}
-      \item{Transformers}
-      \item{Diffusion Models}
-    \end{enumerate}
-\end{frame}
-
-\section{Auto-encoders (AEs)}
-
-\begin{frame}{¿Qué son los autoencoders?}
-Un tipo de red neuronal que puede aprender a comprimir y luego reconstruir datos.
-
+El modelo se divide en dos funciones parametrizadas (normalmente redes neuronales):
 \begin{itemize}
-    \item Un autoencoder es un tipo de red neuronal utilizada en tareas de aprendizaje no supervisado.
-    \item Su objetivo es aprender una representación \textbf{compacta} de los datos de entrada.
-    \item Consiste en dos partes principales: el codificador y el decodificador.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{¿Qué son los autoencoders?}
-Para operar, constan de dos componentes que se \textbf{entrenan al mismo tiempo}:
-
-\begin{itemize}
-    \item \textbf{Codificador}: Transforma los datos de entrada en una representación de menor dimensión.
-    \item \textbf{Decodificador}: Toma esta representación y reconstruye los datos originales.
+    \item \textbf{Codificador (Encoder):} Mapea los datos de entrada a un espacio latente (o \textit{bottleneck}). Se define como \alert{$z = f_\theta(x)$}.
+    \item \textbf{Decodificador (Decoder):} Intenta reconstruir la entrada original a partir del espacio latente. Se define como \alert{$\hat{x} = g_\phi(z)$}.
 \end{itemize}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=.7\textwidth]{Slides/figures/02_Metodos_Generativos/cnn-ae.jpg}
-    \caption{Estructura básica de un autoencoder.}
-\end{figure}
+El objetivo es optimizar los parámetros $\theta$ y $\phi$ para minimizar el \alert{Error de Reconstrucción} entre $x$ y $\hat{x}$.
 \end{frame}
 
 \begin{frame}{¿Para qué se emplean?}
@@ -70,84 +31,96 @@ Son muy útiles en una amplia variedad de aplicaciones.
 \end{itemize}
 \end{frame}
 
-
-\begin{frame}{¿Cómo funcionan?}
-
-A efectos prácticos, como cualquier otra red neuronal. Únicamente cambian la estructura del modelo, las entradas y salidas, y la función de pérdidas.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=.7\textwidth]{Slides/figures/02_Metodos_Generativos/cnn-ae.jpg}
-\end{figure}
-
-Su entrenamiento se realiza mediante el descenso de gradiente.
+\begin{frame}{Relevancia en la actualidad: ¿Por qué estudiarlos?}
+Aunque los \alert{AE clásicos} se propusieron inicialmente para reducción de dimensionalidad o eliminación de ruido \cite{bank2020autoencoders}, hoy en día son la piedra angular del \alert{Deep Learning Generativo}:
 
 \begin{itemize}
-    \item La \textbf{retropropagación} ajustará la salida de la red con respecto a la entrada.
-    \item El entrenamiento tenderá a eliminar los datos que contribuyen menos a la salida, es decir, a encontrar una representación \textbf{comprimida} de los datos de entrada.
+    \item \textbf{Modelos de Difusión Latente (LDM):} Arquitecturas como \alert{Stable Diffusion} usan \alert{espacios latentes $z$} generados por un Autoencoder preentrenado.
+    \item \textbf{Modelos Multimodales:} Utilizan las proyecciones del \textit{encoder} para alinear texto, imagen y audio en un mismo espacio dimensional (e.g., \gls{clip}\cite{radford2015unsupervised})\footnote{Más adelante iremos conociendo estas arquitecturas, pero vamos, que los AE se usan en todos lados.}.
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Arquitectura: Formalización Matemática}
+En una AE definimos un espacio de entrada $\mathcal{X} \in \mathbb{R}^D$ y un espacio latente $\mathcal{Z} \in \mathbb{R}^d$, donde \alert{$d \ll D$}.
 
-\begin{frame}{¿Cómo funcionan?}
-
-Un ejempo real de un autoencoder podría ser el siguiente:
+La arquitectura se define formalmente mediante dos funciones parametrizadas:
+\begin{itemize}
+    \item \alert{Codificador ($f_\theta$):} Transforma la entrada $x$ en el vector latente.
+    $$ z = f_\theta(x) $$
+\end{itemize}
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/2.2. ae conv.png}
-    \caption{Esquema de un Autoencoder convolucional (\href{https://www.researchgate.net/profile/Xifeng-Guo/publication/320658590/figure/fig1/AS:614154637418504@1523437284408/The-structure-of-proposed-Convolutional-AutoEncoders-CAE-for-MNIST-In-the-middle-there.png}{fuente}).}
+    \includegraphics[width=0.5\linewidth]{Slides/figures/Autoencoder/Encoder_Architecture.png}
+    \label{fig:placeholder}
 \end{figure}
-
 \end{frame}
 
-\begin{frame}{¿Cómo funcionan?}
+\begin{frame}{Arquitectura: Formalización Matemática}
+\begin{itemize}
+    \item \alert{Decodificador ($g_\phi$):} Reconstruye la entrada a partir del vector latente $z$.
+    $$ \hat{x} = g_\phi(z) $$
+\end{itemize}
+
+El proceso completo (la predicción del modelo) es la composición de ambas funciones:
+$$ \hat{x} = g_\phi(f_\theta(x)) $$
 
 \begin{figure}
     \centering
-    \includegraphics[width=.7\textwidth]{Slides/figures/02_Metodos_Generativos/cnn-ae-adv.png}
+    \includegraphics[width=0.5\linewidth]{Slides/figures/Autoencoder/Decoder_Architecture.png}
+    \label{fig:placeholder}
 \end{figure}
+\end{frame}
 
-Podemos observar que se compone de:
+\begin{frame}{Entrenamiento y Función de Pérdida}
+Como en un problema de \alert{regresión}, el objetivo del entrenamiento es encontrar los parámetros óptimos $\theta^*$ y $\phi^*$ que minimicen una \alert{función de pérdida $\mathcal{L}$}.
+
+La función de pérdida mide el \alert{error de reconstrucción} entre la entrada original $x$ y la reconstrucción $\hat{x}$. Dependiendo del dato se puede usar como loss:
+
 \begin{itemize}
-    \item El codificador o \textit{\textbf{encoder}}: calcula una representación comprimida de los datos de entrada.
-    \item El \textbf{\textit{bottleneck}}: la información que representa los datos de entrada de forma comprimida.
-    \item El decodificador o \textit{\textbf{decoder}}: trata de reconstruir los datos de entrada a partir de la información del \textit{bottleneck}.
+    \item \textbf{Error Cuadrático Medio (MSE):} Estándar para datos continuos.
+    $$ \mathcal{L}(\theta, \phi) = \frac{1}{N} \sum_{i=1}^N || x_i - g_\phi(f_\theta(x_i)) ||^2 $$
+    
+    \item \textbf{Entropía Cruzada Binaria (BCE):} Usada cuando las entradas están normalizadas en el rango $[0, 1]$ (tratando los píxeles como probabilidades).
 \end{itemize}
 \end{frame}
 
-
-\begin{frame}{¿Cómo se entrenan?}
-
-Se entrenan de igual forma que las redes neuronales tradicionales.
-
-La función de pérdidas suele ser parecida a la que se emplearía en problemas de \textbf{regresión}, pues, al final, se trata de eso mismo.
-
+\begin{frame}{Arquitectura: Esquema}
 \begin{figure}
     \centering
-    \includegraphics[width=.7\textwidth]{Slides/figures/02_Metodos_Generativos/cnn-ae-loss.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Autoencoder/Autoencoder_Architecture.png}
 \end{figure}
-
 \end{frame}
 
+\begin{frame}{Capacidad del Modelo: El problema de la identidad}
 
-\begin{frame}{¿Cómo se entrenan?}
-\begin{figure}
-    \centering
-    \includegraphics[width=.6\textwidth]{Slides/figures/02_Metodos_Generativos/cnn-ae-loss.png}
-\end{figure}
-
-Podemos observar que se compone de:
+Dependiendo de la \alert{dimensionalidad} del espacio latente podemos tener un espacio:
 \begin{itemize}
-    \item El codificador o \textit{\textbf{encoder}}: calcula una representación comprimida de los datos de entrada.
-    \item El \textbf{\textit{bottleneck}}: la información que representa los datos de entrada de forma comprimida.
-    \item El decodificador o \textit{\textbf{decoder}}: trata de reconstruir los datos de entrada a partir de la información del \textit{bottleneck}.
+    \item \textbf{Undercomplete ($d < D$):} Al pasar por un cuello de botella, se extraen los \alert{rasgos más relevantes} de los datos.
+    \item \textbf{Overcomplete ($d \ge D$):} El codificador/decodificador tienen demasiados parámetros, la red puede colapsar aprendiendo la \alert{función identidad} ($f(x) = x$) de memoria, sin aprender ninguna representación útil\footnote{Inútil? Puede parecer, pero en ciertas arquitecturas modernas \cite{liu2022convnet} son muy populares.}.
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Manifold Hypothesis}
+La clave reside en el \alert{cuello de botella}, que fuerza a la red a descartar ruido y redundancias, apoyándose en la \alert{Manifold Hypothesis}:
+\begin{itemize}
+    \item Los datos del mundo real (como una imagen de \textit{Hello Kitty} de $256 \times 256$ píxeles) ocupan de dimensiones altísimas, pero \alert{no están distribuidos uniformemente}.
+    \item En realidad, residen en una subvariedad (\alert{\textit{manifold}}) de dimensión mucho menor\footnote{Es decir, representan conceptos más sencillos.}.
+    \item El \alert{Autoencoder} aprende la topología de esas subvariedades, comprimiendo el espacio.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Arquitectura: Representación del espacio latente}
+El espacio latente será capaz de representar los datos de manera ordenada, extrayendo sus \alert{características de alto nivel}. Este nivel de abstracción es el que buscamos.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/Autoencoder/AE_latent_space.png}
+    \caption{\cite{LatentSpaceMNIST}}
+\end{figure}
+\end{frame}
 
 \begin{frame}{¿Por qué necesitamos Autoencoders?}
-
 \begin{figure}
     \centering
     \includegraphics[width=.6\textwidth]{Slides/figures/02_Metodos_Generativos/cnn-ae-loss.png}
@@ -164,10 +137,8 @@ Los autoencoders tienen muchas aplicaciones en el mundo real:
 \end{itemize}
 \end{frame}
 
-
 \begin{frame}{Tipos de autoencoders}
-
-Los autoencoders son modelos que tienen muchas variaciones. Las más comunmente utilizadas son:
+Los autoencoders son modelos que tienen muchas variaciones. Las más comúnmente utilizadas son:
 
 \begin{itemize}
     \item Vanilla Autoencoder
@@ -175,32 +146,6 @@ Los autoencoders son modelos que tienen muchas variaciones. Las más comunmente 
     \item Denoising Autoencoder
     \item Convolutional Autoencoder
     \item \textit{Variational Autoencoder}\footnote{Los veremos más adelante, ya que introducen variaciones importantes en la arquitectura básica de un autoencoder.}
-\end{itemize}
-
-\end{frame}
-
-
-\section{Vanilla Autoencoder}
-
-\begin{frame}{Vanilla Autoencoder}
-
-Son el tipo más simple de autoencoder.
-
-\begin{itemize}
-    \item Introducidos por Hinton y Salakhutdinov en su artículo ``\textit{Reducing the dimensionality of data with neural networks}''~\cite{hinton2006reducing}.
-\end{itemize}
-
-Consisten en una sola capa oculta.
-
-\begin{itemize}
-    \item Que se llama ``espacio latente'' y se denota como $z$
-\end{itemize}
-
-Son una forma simple y efectiva de aprender representaciones comprimidas de datos.
-
-\begin{itemize}
-    \item Se pueden usar para compresión de datos y reducción de dimensionalidad.
-    \item Para otras aplicaciones, como generación de datos sintéticos, no son las mejores elecciones.
 \end{itemize}
 \end{frame}
 
@@ -229,9 +174,6 @@ Los Vanilla Autoencoder no son muy eficientes en la generación de datos sintét
 
 En resumen, \textbf{si el espacio intermedio no es continuo, las salidas del decodificador no son realistas}. --> Esto lo solucionan los autoencoders variacionales
 \end{frame}
-
-
-\section{Autoencoders Convolucionales}
 
 \begin{frame}{Autoencoders Convolucionales}
 Un tipo de red neuronal diseñado para procesar y reconstruir datos de imágenes.
@@ -271,37 +213,44 @@ Pueden aprender a representar datos de imágenes de manera más compacta y efici
 % }
 \end{exercise}
 
-
-\section{Autoencoders de Eliminación de Ruido (Denoising Autoencoders)}
-
-\begin{frame}{Autoencoders de Eliminación de Ruido (Denoising Autoencoders)}
-
-Son similares a un autoencoder vanilla~\cite{vincent2008extracting}:
+\begin{frame}{La flexibilidad del paradigma Encoder-Decoder}
+En la arquitectura \alert{Encoder-Decoder con cuello de botella} se pueden modificar pares de \textbf{Entrada} / \textbf{Salida Esperada} y la \textbf{Función de Pérdida}, pudiendo tratar problemas radicalmente distintos, entre otros:
 
 \begin{itemize}
-    \item La red típicamente consta de un codificador y un decodificador.
-    \item La diferencia: una capa de ruido que agrega ruido a los datos de entrada.
-    \item Agrega ruido a los datos de entrada antes de que se alimenten al codificador.
+    \item \textbf{Compresión:} Entrada $x$, Salida $x$. (AE clásico).
+    \item \textbf{Eliminación de ruido:} Entrada $\tilde{x}$ (corrupta), Salida $x$ (limpia).
+    \item \textbf{Segmentación semántica:} Entrada $x$ (foto), Salida $y$ (máscara).
+    \item \textbf{Coloreado:} Entrada $x$ (blanco y negro), Salida $y$ (color).
 \end{itemize}
+\end{frame}
+
+\begin{frame}{Autoencoders para denoising}
+Los \alert{Autoencoders de Eliminación de Ruido} \cite{vincent2008extracting} son capaces de recuperar una imagen original $x$ a través de una \alert{versión corrupta} $\tilde{x}$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{Slides/figures/Autoencoder/Autoencoder_Denoising_Architecture.png}
+\end{figure}
+
+La función objetivo se modifica para que la red reconstruya la imagen \alert{limpia original} ($x$), no la corrupta ($\tilde{x}$):
+\begin{equation}
+    \mathcal{L} = || x - g_\phi(f_\theta(\tilde{x})) ||^2
+\end{equation}
 
 \end{frame}
 
-
-\begin{frame}{Autoencoders de Eliminación de Ruido (Denoising Autoencoders)}
-Durante el entrenamiento, se presentan pares de datos de entrada con ruido y datos de salida limpios.
-
+\begin{frame}{Denoising Autoencoders: Topología y Manifold}
+Al corromper la imagen original $x$, la estamos "empujando" fuera de la subvariedad (\alert{manifold}) donde residen las imágenes reales.
 \begin{itemize}
-    \item La red se entrena para minimizar la diferencia entre los datos de entrada originales y los datos de salida reconstruidos, teniendo en cuenta el ruido añadido.
+    \item El modelo aprende un \alert{campo vectorial} continuo.
+    \item Este campo vectorial apunta desde cualquier punto ruidoso hacia el punto más cercano de los datos reales.
+    \item Genera representaciones latentes \alert{más robustas} y menos sensibles a pequeñas variaciones.
 \end{itemize}
 
-La capa de ruido se puede personalizar según el tipo de ruido:
-
-\begin{itemize}
-    \item \eg Ruido gaussiano: Capa que agrega ruido gaussiano a los datos de entrada.
-    \item \eg Ruido sal y pimienta: Capa que establece algunos píxeles en cero.
-\end{itemize}
-
-\textbf{Pueden aprender representaciones \alert{robustas} de datos \alert{menos sensibles al ruido}}.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{Slides/figures/Autoencoder/Denoising_Latent_Space.png}
+\end{figure}
 \end{frame}
 
 \begin{exercise}
@@ -312,55 +261,86 @@ La capa de ruido se puede personalizar según el tipo de ruido:
 % }
 \end{exercise}
 
-
-\section{Autoencoders Apilados (Stacked autoencoders)}
-
-\begin{frame}{\acrfullpl{sae}}
-Tipo de red neuronal compuesta por múltiples capas de autoencoders~\cite{vincent2010stacked}.
+\begin{frame}{Segmentación de imagen}
+El campo de la segmentación de imagen es muy relevante en \alert{visión por computador}.
 
 \begin{itemize}
-    \item Cada capa consta de un codificador y un decodificador, similar a un autoencoder vanilla.
-    \item La salida de una capa se alimenta como entrada a la siguiente, creando una red neuronal profunda.
+    \item La \alert{dimensionalidad} de entrada es igual (o similar) a la de salida.
+    \item Se puede ver cómo un problema de \alert{clasificación} a nivel de píxel, o de traducción.
 \end{itemize}
 
 \begin{figure}
     \centering
-    \includegraphics[width=.45\textwidth]{Slides/figures/02_Metodos_Generativos/nn-stack-autoencoder-1.png}
-    \caption{Autoencoder apilado}
+    \includegraphics[width=0.9\linewidth]{Slides/figures/Autoencoder/Segmentation_CV.png}
+    \caption{\cite{choi2020convolutional}}
 \end{figure}
-
-Permiten una representación más poderosa de los datos que se puede utilizar en tareas posteriores.
 \end{frame}
 
-\begin{frame}{\acrshort{sae} como método de entrenamiento de redes neuronales profundas}
-
-\begin{columns}
-    \begin{column}{.4\linewidth}
-        \begin{center}
-        \includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/nn-stack-autoencoder-2.png}
-        \end{center}
-    \end{column}
-    \begin{column}{.6\linewidth}
-        De hecho, los \acrshortpl{sae} pueden usarse como técnica para el entrenamiento de \acrshortpl{mlp}:
-
-        \begin{enumerate}
-            \item Cada capa del autoencoder apilado se entrena por separado para reconstruir sus datos de entrada.
-            \item Una vez que una capa se entrena, su salida se usa como entrada para la siguiente capa.
-            \item Cuando toda la red ha sido entrenada, los espacios latentes resultantes se apilan.
-        \end{enumerate}
-    \end{column}
-\end{columns}
-\vspace{1em}
-Luego, se ajusta finamente la red resultante para minimizar el error de reconstrucción entre los datos de entrada originales y los datos de salida finales.
+\begin{frame}{Autoencoders para segmentación semántica}
+Los Autoencoders son la red \alert{más habitual} dentro de problemas de segmentación.
 
 \begin{itemize}
-    \item Esta fue una de las primeras técnicas para entrenar redes neuronales profundas~\cite{hinton2006reducing}.
+    \item \textbf{Entrada ($x$):} Una imagen RGB ($H \times W \times 3$).
+    \item \textbf{Salida esperada ($y$):} Una máscara de segmentación ($H \times W \times C$), donde $C$ es el número de clases, indicando a qué objeto pertenece cada píxel.
+    \item \textbf{Función de Pérdida:} Ya no usamos el Error Cuadrático (MSE), sino \alert{Entropía Cruzada (Cross-Entropy)} a nivel de píxel.
+\end{itemize}
+
+El cuello de botella fuerza a la red a extraer el \alert{contexto global} (qué objetos hay), y el decodificador utiliza esa información semántica para proyectar la máscara precisa a la resolución original.
+\end{frame}
+
+\begin{frame}{El problema de la resolución espacial}
+
+En un Autoencoder clásico, la imagen pasa por un \alert{cuello de botella} muy severo:
+\begin{itemize}
+    \item El codificador extrae un excelente contexto semántico (\textit{¿Qué objetos hay en la imagen?}).
+    \item Pero al reducir drásticamente la dimensionalidad, se destruye la información espacial fina (\textit{¿Dónde están exactamente los bordes de esos objetos?}).
+\end{itemize}
+
+Para solucionar este conflicto en 2015 se propuso la \alert{U-Net} \cite{ronneberger2015u}\footnote{Originalmente se proponen para segmentación de imagen biomédica, pero la vida da muchas vueltas.}.
+\end{frame}
+
+\begin{frame}{Arquitectura U-Net}
+La U-Net introduce las \alert{Skip Connections} que unen capas del mismo nivel de resolución.
+
+Se divide en dos rutas simétricas:
+\begin{itemize}
+    \item \textbf{Ruta de contracción (Encoder):} se reducen las dimensiones espaciales y aumentan los canales. Extrae características semánticas de alto nivel.
+    \item \textbf{Ruta de expansión (Decoder):} Se que recupera progresivamente la resolución espacial.
 \end{itemize}
 \end{frame}
 
-\begin{exercise}
-\href{https://colab.research.google.com/drive/18_mDUr6XVRtWmUcJ7UuZgODjWblpAS2f}{Autoencoders apilados y la reconstrucción de fashion MNIST}
-\end{exercise}
+\begin{frame}{Arquitectura U-Net}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{Slides/figures/Autoencoder/UNet.png}
+    \caption{\cite{ronneberger2015u}}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Skip Connections: La clave matemática}
+La innovación de la U-Net es cómo une el Encoder y el Decoder. En cada nivel, el mapa de características del Encoder se \alert{concatena} (no se suma) con el mapa del Decoder.
+
+A nivel de tensores, si el Decoder genera un tensor de tamaño $H \times W \times C_1$ y recibe por la conexión residual un tensor del Encoder de tamaño $H \times W \times C_2$, la concatenación en la dimensión de los canales produce:
+\begin{equation}
+    T_{out} = H \times W \times (C_1 + C_2)
+\end{equation}
+
+Esto permite que la red convolucional posterior combine:
+\begin{itemize}
+    \item La información \alert{semántica profunda} del Decoder.
+    \item La información \alert{espacial de alta resolución} intacta del Encoder.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{La U-Net como motor Generativo}
+Aunque la U-Net nació para segmentación de imágenes médicas, su capacidad para procesar imágenes preservando detalles a nivel de píxel la ha convertido en la arquitectura más importante del \alert{Deep Learning Generativo}.
+
+Como se estudiará (o se ha estudiado) en otros temas, la U-Net es el motor principal de:
+\begin{itemize}
+    \item \textbf{pix2pix (Conditional GANs):} Genera imágenes fotorrealistas a partir de bocetos, manteniendo la estructura geométrica original gracias a las \textit{skip connections}.
+    \item \textbf{Modelos de Difusión (DDPM, Stable Diffusion):} Se utiliza para predecir el tensor de ruido $\epsilon_\theta(x_t, t)$, que tiene exactamente la misma dimensionalidad espacial que la imagen original.
+\end{itemize}
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -373,23 +353,6 @@ Luego, se ajusta finamente la red resultante para minimizar el error de reconstr
     \item https://machinelearningmastery.com/blog
 \end{itemize}
 \end{frame}
-
-% \section{Auto-encoders Variacionales (VAEs)}
-% % \begin{frame}{Auto-encoders Variacionales(VAEs)}
-% % \end{frame}
-
-% \section{Generative Adversarial Networks (GANs)}
-% % \begin{frame}{Generative Adversarial Networks (GANs)}
-% % \end{frame}
-
-% \section{Transformers}
-% % \begin{frame}{Transformers}
-% % \end{frame}
-
-% \section{Diffusion Models}
-% % \begin{frame}{Diffusion Models}
-% % \end{frame}
-
 
 \appendix
 
