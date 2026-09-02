@@ -32,7 +32,7 @@ Los \glspl{vit} son una arquitectura presentada en el artículo \textit{"An imag
 \begin{column}{0.45\textwidth}
 \alert{\Large Desventajas}
 \begin{itemize}
-    \item Necesidad de \alert{grandes datasets}
+    \item Necesidad de \alert{grandes datasets}\footnotemark
     \begin{itemize}
         \item Muchas veces se contrarresta con un \alert{pretraining}, pero no siempre es posible, y sigue siendo muy costoso
         \item Hay investigación que intenta reducir el coste \cite{yuan2021tokens}
@@ -40,6 +40,8 @@ Los \glspl{vit} son una arquitectura presentada en el artículo \textit{"An imag
 \end{itemize}
 \end{column}
 \end{columns}
+
+\footnotetext{Las CNNs saben que los píxeles cercanos están correlacionados (inductive bias \cite{dosovitskiy2020image}), estos modelos aprenden la geometría desde cero.}
 \end{frame}
 
 \begin{frame}{Metodología de los ViT}
@@ -113,24 +115,22 @@ El siguiente paso consiste en procesar los tokens para añadir \alert{informaci�
 \end{figure}
 \end{frame}
 
-\begin{frame}{Procesamiento de tokens: Concatenar el \textit{prediction token}}
-El \alert{\textit{prediction token}} es un vector que siempre se inicializa a \alert{0}, usado para generar la salida de \alert{predicción tras en encoding}.
+\begin{frame}{Procesamiento de tokens: Concatenar el \textit{class token}}
+El \alert{\textit{class token}} es un vector que siempre se inicializa a \alert{0}, usado para generar la salida de \alert{predicción tras en encoding}.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{Slides/figures/Vision_Transformers/Pred_Token.png}
+    \includegraphics[width=\textwidth]{Slides/figures/Vision_Transformers/Class_Token.png}
 \end{figure}
 \end{frame}
 
 \begin{frame}{Procesamiento de tokens: Position embedding}
-Para mantener las \alert{relaciones espaciales} de los parches de una imagen se añade un \alert{positional embedding} que \alert{ordena} los embeddings. Esto ya se hacía en los \alert{Transformers} para \gls{nlp}.
+Para mantener las \alert{relaciones espaciales} de los parches de una imagen se añade un \alert{positional embedding}\footnote{Recalcamos que el positional embedding es \alert{sumado} a los anteriores. Normalmente se una una función \alert{sinusoidal} o la salida de un perceptrón.} que \alert{ordena} los embeddings. Esto ya se hacía en los \alert{Transformers} para \gls{nlp}.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{Slides/figures/Vision_Transformers/Pos_Embedding.png}
 \end{figure}
-
-*Es importante recalcar que el positional embedding es \alert{sumado} a los anteriores. Normalmente se una una función \alert{sinusoidal}.
 \end{frame}
 
 \begin{frame}{Encoding}
@@ -154,7 +154,7 @@ En este punto cabe recordar que el \alert{encoder} está procesando cada parche 
 \begin{frame}{Salida del modelo}
 Una vez procesada la información, se genera la \alert{salida} de la red de neuronas. Hasta este punto, la arquitectura del \gls{vit} es general y puede usarse para múltiples problemas. Pero en este ejemplo se explicará cómo hacer una \alert{clasificación}.
 
-Para ello se usa el \alert{prediction token} anteriormente definido.
+Para ello se usa el \alert{class token} anteriormente definido.
 
 \begin{figure}
     \centering
@@ -163,7 +163,7 @@ Para ello se usa el \alert{prediction token} anteriormente definido.
 \end{frame}
 
 \begin{frame}{Salida del modelo}
-El prediction token es finalmente procesado por una \alert{cabeza de clasificación} compuesta por un \alert{perceptrón}.
+El class token es finalmente procesado por una \alert{cabeza de clasificación} compuesta por un \alert{perceptrón}.
 
 Normalmente, este perceptrón no es más que una capa con activación lineal.
 
@@ -184,13 +184,61 @@ Existen arquitecturas como \alert{\gls{diffit}} \cite{hatamizadeh2024diffit} que
 \end{frame}
 
 \begin{frame}{Generación de contenido: DiffiT}
-Combinando una arquitectura de \alert{\gls{ae}} e introduciendo bloques de \gls{vit} con un \alert{embedding temporal} consiguen generar los mejores resultados del estado del arte.
+Combinando una arquitectura de \alert{\gls{ae}} e introduciendo bloques de \gls{vit} con un \alert{embedding temporal} consiguen generar los mejores resultados del estado del arte\footnote{Por fin, llegamos a lo mejor de lo mejor.}.
 
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{Slides/figures/Vision_Transformers/DiffiT_Transformer.png}
     \caption{\cite{hatamizadeh2024diffit}}
 \end{figure}
+\end{frame}
+
+\begin{frame}{De ViT a Diffusion Transformers (DiT / DiffiT)}
+Para que un \gls{vit} genere imágenes, cambiamos el paradigma:
+\begin{itemize}
+    \item \textbf{Entrada:} Ya no recibe una imagen limpia, sino una \alert{imagen ruidosa $x_t$} en un instante de tiempo $t$.
+    \item \textbf{Procesamiento:} Se divide $x_t$ en parches exactos como en el ViT clásico.
+    \item \textbf{Salida:} En lugar de predecir una clase con un \textit{prediction token}, el modelo procesa todos los tokens para predecir el \alert{tensor de ruido} $\epsilon_\theta(x_t, t)$ del mismo tamaño que la imagen original.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Condicionamiento con tiempo y clase}
+En un modelo de difusión, el modelo \textbf{debe saber en qué paso $t$ se encuentra} y qué está generando (condición $c$, como texto o clase)\footnote{Esto es opcional, por supuesto, pero la mayoría de modelos lo usan.}.
+
+DiffiT inyecta esta información usando \alert{Adaptive Layer Normalization (adaLN)}\cite{karras2020analyzing}\footnote{Si observais la cita, veréis que esto se propuso para GANs, pero se usa en todo tipo de modelos.}:
+
+\begin{itemize}
+    \item Se extraen \textit{embeddings} del tiempo $t$ y la condición $c$.
+    \item A partir de estos, un \gls{mlp} calcula parámetros de escala ($\gamma$) y desplazamiento ($\beta$).
+    \item Antes de cada bloque de atención, los tokens se modulan: 
+    $$ \text{adaLN}(h, t, c) = \gamma(t, c) \cdot \text{LayerNorm}(h) + \beta(t, c) $$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Bloques DiffiT: Atención Jerárquica}
+El cálculo de la \alert{Self-Attention} tiene una complejidad de $\mathcal{O}(N^2)$. Para latentes muy grandes, esto desborda la memoria de la \gls{gpu}.
+
+Para solventarlo, \gls{diffit} propone un mecanismo inspirado en arquitecturas jerárquicas como los \textit{Swin Transformers} (Shifted Window Transformer):
+\begin{itemize}
+    \item \textbf{Atención Local (\textit{Window Attention}):} Los tokens se agrupan en ventanas espaciales pequeñas. La atención se calcula solo entre los tokens de la misma ventana (capturando texturas locales).
+    \item \textbf{Conexiones Shifted:} Entre cada capa las ventanas se desplazan para permitir el flujo de información.
+    \item \textbf{Atención Global reducida:} En las capas más profundas, se reduce la resolución espacial fusionando parches (\textit{Patch Merging}), permitiendo una atención global sobre la estructura principal de la imagen.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Des-tokenización y loss}
+Tras atravesar los bloques de codificación obtenemos una \alert{secuencia final de tokens} $z_L$.
+
+La salida generativa requiere revertir la tokenización:
+\begin{enumerate}
+    \item Se aplica una capa lineal final a cada token.
+    \item Los $N$ tokens se reordenan espacialmente (\textit{un-patchify}) para reconstruir la imagen original de $H \times W \times C$.
+\end{enumerate}
+
+Este tensor final es el \alert{ruido predicho} $\epsilon_\theta(x_t, t)$.
+
+La red se optimiza minimizando el \alert{\gls{mse}} frente al ruido real $\epsilon$ que se inyectó en el paso \textit{forward}:
+$$ \mathcal{L}_{MSE} = || \epsilon - \epsilon_\theta(x_t, t, c) ||^2 $$
 \end{frame}
 
 \addcontentsline{toc}{section}{Referencias}

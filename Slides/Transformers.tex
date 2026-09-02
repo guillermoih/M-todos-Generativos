@@ -8,115 +8,190 @@
 \begin{document}
 \maketitle
 
-\begin{frame}{Contenidos}
-  \begin{enumerate}
-      \item Introducción
-      \item Auto-encoders (AEs)
-      \item{Auto-encoders Variacionales (VAEs)}
-      \item{Generative Adversarial Networks (GANs)}
-      \item{Transformers}
-      \item{Diffusion Models}
-    \end{enumerate}
-\end{frame}
+\begin{frame}{Procesamiento digital de texto}
+Las redes neuronales solo entienden \alert{números}, no texto.
 
-
-\begin{frame}{Contenidos}
-  \begin{enumerate}
-      \item Introducción
-      \item Auto-encoders (AEs)
-      \item{Auto-encoders Variacionales (VAEs)}
-      \item{Generative Adversarial Networks (GANs)}
-      \item{\textbf{Transformers}}
-      \item{Diffusion Models}
-    \end{enumerate}
-\end{frame}
-
-\section{Transformers}
-% \begin{frame}{Auto-encoders (AEs)}
-% \end{frame}
-
-
-\begin{frame}{Motivación}
-
-Hasta la aparición de los transformers, los problemas secuenciales se trataban (casi) siempre con \textbf{redes recurrentes}.
-
-Sin embargo, dichas arquitecturas tienen dos problemas bien conocidos:
-
+Históricamente, el \alert{\gls{nlp}} ha evolucionado en la forma de transformar palabras en vectores numéricos:
 \begin{itemize}
-    \item Su entrenamiento no se puede paralelizar, ya que un instante depende del anterior, y así sucesivamente, por lo que su entrenamiento es \textbf{lento}.
-    \item Aunque aparecieron para ``recordar'', su memoria es bastante limitada, empeorando sus resultados cuanto más larga es la secuencia con la que tienen que trabajar.
+    \item \textbf{Bag of Words (BoW) y TF-IDF:} Representaciones estadísticas clásicas.
+    \item \textbf{Word Embeddings (Word2Vec / GloVe):} Representaciones semánticas estáticas.
+    \item \textbf{Transformers:} Representaciones contextuales dinámicas.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{¿Qué son los Transformers?}
+\begin{frame}{Bag of Words y TF-IDF}
+Los primeros enfoques trataban los documentos como "bolsas de palabras", ignorando el \alert{orden y la gramática}.
 
 \begin{itemize}
-  \item Los \textbf{transformers} son un tipo de arquitectura de redes neuronales revolucionaria en el campo de la inteligencia artificial.
-  \item A mediados de 2017 aparece un artículo científico que demuestra que existe una alternativa a las redes recurrentes para trabajar con \textbf{problemas secuenciales}.
-  \item En concreto, habla del concepto de ``\textbf{atención}'', que básicamente significa ``\textbf{ponderar}'' los elementos de las secuencias según afecten más o menos a las predicciones.
-  \item Habla sobre todo de NLP (Natural Language Processing), pero también es aplicable a series temporales (y a imágenes con ligeras modificaciones).
-  \item Elimina el concepto de \textbf{recursión}, con lo que el entrenamiento puede ser mucho más \textbf{rápido}.
-  \item Además, es capaz de ``\textbf{memorizar}'' secuencias más largas.
+    \item \textbf{One-Hot Encoding:} Cada palabra del vocabulario es un vector enorme con un '1' en su índice y '0' en el resto.
+    \item \textbf{TF-IDF (Term Frequency - Inverse Document Frequency):} Asigna un peso a cada palabra. Penaliza palabras comunes ("a") y da importancia las que definen el texto (e.g. "dog").
+\end{itemize}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{Slides/figures/Transformer/BoW.jpeg}
+    \caption{\cite{BagofWordsImage}}
+\end{figure}
+\end{frame}
 
+\begin{frame}{Word Embeddings}
+Para resolver la falta de significado de TF-IDF, surgieron modelos como \alert{Word2Vec} \cite{mikolov2013efficient} o \alert{GloVe} \cite{pennington2014glove}. Estos modelos aprenden vectores donde palabras con \alert{significados similares} están \alert{cerca} en el espacio matemático.
+
+\begin{itemize}
+    \item \textbf{Aritmética semántica:} Famosamente demostraron que se podía operar con conceptos: $Rey - Hombre + Mujer \approx Reina$.
+    \item \textbf{Problema principal (Polisemia):} Estos embeddings son \alert{estáticos}. La palabra "banco" tiene el mismo vector exacto en "banco de dinero" que en "banco de sentarse", impidiendo captar el contexto real.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{¿Qué son los Transformers?}
+\begin{frame}{Word Embeddings}
+Ahora contamos con un \alert{espacio latente} que representa las palabras siguiendo una \alert{geometría lógica}, que capta la \alert{semántica} de las mismas\footnote{Eso no quiere decir que nuestros problemas se hayan acabado, más bien, aquí empiezan otros nuevos... \cite{bolukbasi2016man}}.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.7\textwidth]{Slides/figures/02_Metodos_Generativos/transf-attention-is-all-you-need.png}
-    \caption{Captura de arxiv.org del artículo ``Attention is all you need''.}
+    \includegraphics[width=0.5\textwidth]{Slides/figures/Transformer/Word2Vec_Embedding.jpeg}
+    \caption{\cite{Word2VecEmbedding}}
 \end{figure}
-
 \end{frame}
 
-\begin{frame}{¿Qué son los Transformers?}
+\section{Motivación y Transformers}
+
+\begin{frame}{El problema secuencial}
+Para solucionar el problema del contexto, hasta 2017 los problemas secuenciales se trataban (casi) siempre con \alert{\gls{rnn}} \cite{schmidt2019recurrent}.
+
+Estas arquitecturas leen el texto palabra por palabra, actualizando una "memoria". Sin embargo, tienen dos problemas graves:
+\begin{itemize}
+    \item \textbf{Cuello de botella secuencial:} Su entrenamiento no se puede paralelizar. Para procesar la palabra $w$, el modelo debe haber procesado la anterior $w-1$.
+    \item \textbf{Olvido catastrófico:} Su memoria es limitada. Empeoran sus resultados drásticamente cuanto más larga es la secuencia.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Transformers}
+En 2017, investigadores de Google publicaron \alert{\textit{"Attention is all you need"}} \cite{vaswani2017attention} proponiendo las capas de atención:
+
+\begin{itemize}
+    \item \alert{Eficiencia}: Elimina por completo el concepto de recursividad, permitiendo una \alert{paralelización masiva}.
+    \item \alert{Contexto global}: Introduce el concepto de \alert{Atención}, que permite al modelo "ponderar" qué palabras de la secuencia son importantes para entender otra palabra específica, sin importar lo lejos que estén.
+    \item \alert{Contexto}: Resuelve el problema de la polisemia: el vector final de la palabra "banco" cambiará dinámicamente según las palabras que tenga a su alrededor.
+\end{itemize}
 
 \begin{figure}
     \centering
-    \includegraphics[width=1\textwidth]{Slides/figures/02_Metodos_Generativos/transf-attention-is-all-you-need-citas.png}
-    \caption{Captura de Google Scholar mostrando el número de citas a fecha Octubre de 2023.}
+    \includegraphics[width=\textwidth]{Slides/figures/Transformer/Screenshot_Attention.png}
 \end{figure}
-
 \end{frame}
 
+\begin{frame}{Tokenización moderna: BPE y Sub-words}
+Antes de entrar a la arquitectura, hay un último detalle. Los Transformers modernos (como GPT o BERT) no usan palabras completas ni letras individuales, usan \alert{Tokens (Sub-palabras)}.
 
-\begin{frame}{Arquitectura de los Transformers}
+Algoritmos como \textbf{Byte-Pair Encoding (BPE)} \cite{gage1994new} dividen las palabras en trozos frecuentes:
+\begin{itemize}
+    \item \textit{"Incomprensible"} $\rightarrow$ \texttt{["In", "\#\#comprens", "\#\#ible"]}
+\end{itemize}
+\textbf{Ventajas:}
+\begin{itemize}
+    \item Evita el problema de las palabras fuera del vocabulario (Out-Of-Vocabulary).
+    \item Permite al modelo entender raíces, prefijos y sufijos, siendo mucho más eficiente.
+\end{itemize}
+\end{frame}
+
+\section{Arquitectura de los Transformers}
+
+\begin{frame}{Visión General}
+La arquitectura original del Transformer es capaz de eliminar la recursión. Contiene los siguientes componentes:
 
 \begin{columns}
-\column{0.6\textwidth}
+\column{0.5\textwidth}
 \begin{itemize}
-    \item Una arquitectura encoder-decoder con atención.
-    \item La atención ``mira'' a la secuencia de entrada y decide para cada instante qué otras partes de la misma son importantes (podéis entenderlo como el ``contexto'').
-    \item Consiste en bloques encoder y decoder apilables (\texttt{Nx} bloques)
-    \item Capas densas y bloques Multi-Head Attention (MHA).
-    \item Positional embbeding (para introducir la información ``temporal'' en el caso de las series temporales o ``situacional'' en el caso de NLP)
+    \item Una arquitectura \alert{Encoder-Decoder}.
+    \item \alert{Bloques de atención que deciden para cada palabra qué otras partes son importantes} \cite{vaswani2017attention}.
+    \item \textbf{Positional embedding:} Para introducir información temporal o situacional.
 \end{itemize}
 
-\column{0.4\textwidth}
-\vspace{0.2em}
-\includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch.png}
+\column{0.5\textwidth}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch.png}
+    \caption{\cite{vaswani2017attention}}
+\end{figure}
 \end{columns}
 \end{frame}
 
-\begin{frame}{Arquitectura de los Transformers}
+\begin{frame}{Visión General}
+Los Transformers originales nacieron para tareas de \textit{Sequence-to-Sequence} (como la traducción automática). En estos problemas, la entrada y la salida no tienen la misma \alert{longitud} ni el mismo \alert{orden}.
+
+\begin{columns}
+\column{0.5\textwidth}
 \begin{itemize}
-    \item El bloque \textbf{Multi-Head Attention} es el que permite al modelo ``fijarse'' en las cosas más importantes.
-    \item Funciona creando varios \textbf{mapas de activación} (Q: query, K: key, V: value) y comprobando sus \textbf{relaciones}.
+    \item \alert{Encoder:} Lee toda la frase de entrada y extrae una \alert{representación} con el significado global y el contexto de cada palabra.
+    \item \alert{Decoder:} Actúa como un modelo generativo condicionado. Recibe el "significado" extraído por el Encoder y lo usa para generar la secuencia de destino.
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch4.png}
+    \caption{Arquitectura encoder-decoder (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
+\end{figure}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Generación autorregresiva de secuencias}
+A la hora de realizar inferencia, el \alert{Decoder} no genera toda la frase de golpe, lo hace de forma \alert{autoregresiva} (paso a paso).
+
+Para generar un nuevo token en el instante $t$, el modelo calcula la probabilidad basándose en el contexto del Encoder ($X$) y en \alert{los tokens que ya ha generado previamente}:
+
+\begin{equation}
+P(y_t | y_1, y_2, \dots, y_{t-1}, X) 
+\end{equation}
+
+\begin{enumerate}
+    \item Recibe un token de inicio (ej. \texttt{[START]})\footnote{Estos son palabras (llamadas tokens) especiales.} y predice la primera palabra.
+    \item Recibe \texttt{[START]} más la palabra anterior, y predice la segunda.
+    \item El ciclo continúa hasta que el modelo predice un token especial de fin de secuencia (ej. \texttt{[END]}).
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Integración de la Atención: El interior del Encoder}
+Para que el \alert{Encoder} funcione de forma paralela sin dependencias temporales, apila internamente $N$ bloques compuestos por dos capas principales:
+
+\begin{itemize}
+    \item \textbf{Self-Attention:} Permite al encoder fijarse en las palabras de la secuencia de entrada que crean el \alert{contexto}.
+    \item \textbf{Feed-Forward:} Una red densa clásica que procesa la representación contextualizada de cada vector de forma independiente.
 \end{itemize}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch2.png}
-    \caption{Principales mecanismos de la arquitectura transformer.}
+    \includegraphics[width=0.5\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch5.png}
+    \caption{Arquitectura general del transformer (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
 \end{figure}
-
 \end{frame}
 
+\begin{frame}{Integración de la Atención: El interior del Decoder}
+El \alert{Decoder} apila $N$ bloques similares. Si le pasamos \alert{toda la frase} real de golpe durante el entrenamiento, el modelo podría usar la siguiente palabra antes de predecirla.
 
+Para evitarlo, la primera sub-capa del Decoder es el \textbf{Masked Self-Attention}:
+\begin{itemize}
+    \item Se aplica una \alert{máscara} a todas las posiciones futuras ($> t$).
+    \item Al intentar predecir la palabra en la posición $t$, la \alert{atención del modelo} solo pueda recaer sobre las \alert{posiciones anteriores}.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch6.png}
+    \caption{Arquitectura general del encoder y el decoder (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Encoder-Decoder Attention (Cross-Attention)}
+Finalmente, el Decoder incorpora una sub-capa intermedia llamada \alert{Encoder-Decoder Attention}. 
+
+Permite decirle al Decoder qué partes de la secuencia de entrada son \alert{importantes} en ese instante exacto. Sus entradas provienen de flujos distintos:
+\begin{itemize}
+    \item \textbf{Query (Q):}\footnote{Más adelante entenderemos mejor que es esto de \textit{Query}, \textit{Key} y \textit{Value}.} Proviene del propio Decoder (representa la necesidad de información de la palabra que estamos intentando traducir).
+    \item \textbf{Key (K) y Value (V):} Provienen de la salida final del Encoder (representan el catálogo de información semántica de la frase original).
+\end{itemize}
+\end{frame}
 
 \begin{frame}{Arquitectura de los Transformers}
 \begin{itemize}
@@ -131,201 +206,210 @@ Sin embargo, dichas arquitecturas tienen dos problemas bien conocidos:
 \end{figure}
 \end{frame}
 
-\begin{frame}{Arquitectura de los Transformers}
-\begin{itemize}
-    \item Los transformers se componen de un \textbf{encoder} y un \textbf{decoder}.
-\end{itemize}
+\section{El Mecanismo de Self-Attention}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.7\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch4.png}
-    \caption{Arquitectura encoder-decoder (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Arquitectura de los Transformers}
-\begin{itemize}
-    \item O para ser más exactos, de $N$ bloques de encoders apilados seguidos de $N$ bloques de decoders apilados.
-\end{itemize}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.6\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch5.png}
-    \caption{Arquitectura general del transformer (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Arquitectura de los Transformers}
-\begin{itemize}
-    \item Dentro de cada \textbf{encoder} tendremos un bloque de capas \textbf{feed-forward} (densas) y otro bloque de \textbf{Self-Attention}, el cual ayuda al encoder a fijarse no solo en la palabra que está procesando en ese momento, sino también en las demás palabras de la secuencia de entrada.
-    \item En los \textbf{decoders}, tendremos además de eso, un \textbf{bloque de Encoder-Decoder attention} que le permita decirle qué partes de la secuencia de entrada son \textbf{importantes}.
-\end{itemize}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.75\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch6.png}
-    \caption{Arquitectura general del encoder y el decoder (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
-\end{figure}
-\end{frame}
-
-
-\begin{frame}{Arquitectura de los Transformers}
-\begin{itemize}
-    \item Los vectores de  entrada \textit{fluyen} a través de los bloques cada uno en una posición fija. \item El encoder crea dependencias entre estos ``caminos'' en los bloques de \textbf{self-attention}.
-    \item ¡Esto se puede \textbf{paralelizar}, ya no existen dependencias temporales!
-\end{itemize}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch7.png}
-    \caption{Arquitectura de los bloques de tipo \textbf{encoder} en detalle (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Arquitectura de los Transformers}
-\begin{itemize}
-    \item Este proceso se repite para cada bloque “encoder”.
-\end{itemize}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.7\textwidth]{Slides/figures/02_Metodos_Generativos/trans-arch8.png}
-    \caption{Arquitectura del \textbf{encoder} en detalle (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
-\end{figure}
-\end{frame}
-
-\begin{frame}{¿Cómo funciona la atención?}
-
+\begin{frame}{Intuición}
 \begin{columns}
-\column{0.6\textwidth}
+\column{0.5\textwidth}
+En la frase \textit{“The \alert{monkey} ate a bannana because \alert{it} was hungry”}, el modelo no sabe a priori que “it” se refiere a “monkey”.
+
+A través del self-attention:
 \begin{itemize}
-    \item En la frase “The \textbf{animal} didn’t cross the street because it was too tired”, el modelo no sabe a priori que “it” se refiere a “The animal” -> ¡Esto es lo que hace el bloque de \textbf{self-attention}!
-    \item Conforme el modelo procesa \textbf{cada palabra} (o cada posición en la secuencia de entrada), el módulo de self-attention le permite \textbf{mirar} al \textbf{resto de las posiciones} en la secuencia de entrada para pistas que le permitan \textbf{codificar mejor} el elemento \textbf{actual}.
+    \item El modelo procesa cada palabra (o posición) \alert{mirando} al resto de las posiciones en la secuencia para encontrar \alert{relaciones}.
+    \item Esto le permite \alert{codificar mejor} el elemento actual, integrando el \alert{contexto global}.
 \end{itemize}
 
-\column{0.4\textwidth}
-% \vspace{0.2em}
-\includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/trans-att.png}
+\column{0.5\textwidth}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{Slides/figures/Transformer/SelfAttention_Example.png}
+    \caption{\cite{xie2021deep}.}
+\end{figure}
 \end{columns}
 \end{frame}
 
+\begin{frame}{Proyecciones Lineales: Query, Key, Value}
+A nivel matemático, el proceso comienza proyectando nuestros vectores de entrada a un nuevo espacio dimensional.
 
-
-\begin{frame}{¿Cómo funciona el bloque de self-attention?}
+Para cada palabra, creamos $3$ matrices de pesos entrenables (\alert{$W^Q, W^K, W^V$}). Multiplicamos cada \alert{vector de entrada (embedding)} por estas \alert{matrices}\footnote{Se escogen de \alert{menor dimensionalidad} que la entrada para reducir el coste (típicamente $64$).} para obtener $3$ nuevos vectores:
 
 \begin{columns}
-\column{0.4\textwidth}
-\begin{enumerate}
-    \item Creamos 3 matrices entrenables ($W^Q$, $W^K$, $W^V$)
-    \item Multiplicamos cada vector de entrada por cada una de las 3 matrices entrenables ($W^Q$, $W^K$, $W^V$) 
-    \item Obtenemos 3 nuevos vectores ($q_n$, $k_n$, $v_n$), que además son de menor dimensionalidad que los de entrada, ya que las matrices se eligen así para reducir el coste computacional
+\column{0.5\textwidth}
+\begin{itemize}
+    \item \textbf{Query ($q$):} Lo que la palabra "busca" en las demás.
+    \item \textbf{Key ($k$):} Lo que la palabra "ofrece" a las demás.
+    \item \textbf{Value ($v$):} El contenido semántico real que se transferirá.
+\end{itemize}
 
-\end{enumerate}
+\column{0.5\textwidth}
 
-\column{0.6\textwidth}
-\includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/trans-att2.png}
-
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/trans-att2.png}
+\end{figure}
 \end{columns}
 \end{frame}
 
+\begin{frame}{Afinidad con Producto Escalar}
+Una vez tenemos las proyecciones, necesitamos saber cuánto se \alert{relacionan} dos palabras entre sí. 
 
-\begin{frame}{¿Cómo funciona el bloque de self-attention?}
-
-\begin{enumerate}
-\setcounter{enumi}{3}
-    \item Calculamos la self-attention como el producto escalar de $q_n\cdot k_n$. 
-\end{enumerate}
+Calculamos la \alert{atención} como el producto escalar de la Query de la palabra actual por la Key de las demás palabras ($q_n \cdot k_m$).
 
 \begin{figure}
     \centering
     \includegraphics[width=0.85\textwidth]{Slides/figures/02_Metodos_Generativos/trans-att3.png}
     \caption{Ejemplo del producto escalar en el mecanismo de self-attention (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
 \end{figure}
-
 \end{frame}
 
-
-\begin{frame}{¿Cómo funciona el bloque de self-attention?}
-
-\begin{columns}
-\column{0.4\textwidth}
-\begin{enumerate}
-\setcounter{enumi}{4}
-    \item Dividimos entre la raiz cuadrada del número de dimensiones escogidas para los vectores \textbf{key} (para estabilizar los gradientes durante el entrenamiento)
-    \item Aplicamos la funcion \textbf{softmax} para normalizar los valores y que sumen 1.
-\end{enumerate}
-\vspace{1em}
-¡Ya tenemos el valor de la atención!
-
-Pero no hemos acabado...
-
-\column{0.6\textwidth}
-\includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/trans-att4.png}
-
-\end{columns}
-\end{frame}
-
-\begin{frame}{¿Cómo funciona el bloque de self-attention?}
-
-\begin{columns}
-\column{0.4\textwidth}
-\begin{enumerate}
-\setcounter{enumi}{6}
-    \item Multiplicamos el valor de la atención de cada vector de entrada ($a_n$) por el vector value $v_1$ (porque estamos calculando el valor de la atención para el \textbf{vector de entrada 1})
-    \item Sumamos todos los resultados $a_n \cdot v_n$, obteniendo $z_1$
-
-\end{enumerate}
-\vspace{1em}
-Y ahora sí que hemos acabado :-)
-
-\column{0.6\textwidth}
-\vspace{0.2em}
-\includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/trans-att5.png}
-
-\end{columns}
-\end{frame}
-
-
-\begin{frame}{¿Cómo funciona el bloque de self-attention?}
-
+\begin{frame}{Afinidad con Producto Escalar}
+A través del \alert{producto escalar} entre $q_n$ y $k_m$:
 \begin{itemize}
-    \item Solamente indicar que esto, en realidad, se hace de forma \textbf{matricial} para ir más rápido.
-    \item Y con más de un conjunto de $W^Q$, $W^K$, $W^V$ (\textbf{multi-head}).
+    \item Geométricamente, el producto escalar mide la \textbf{alineación} o similitud entre dos vectores\footnote{Cabe recordar que ahora las palabras se representan con vectores, no son puntos en el espacio.}.
+    \item Un resultado alto indica que la palabra $m$ es muy relevante para entender la palabra $n$.
 \end{itemize}
+\end{frame}
+
+\begin{frame}{Scaled Dot-Product: Estabilización y Softmax}
+Al calcular productos escalares de vectores en dimensiones altas, los valores resultantes pueden ser inmensos. Esto empuja a la función \alert{softmax} hacia regiones donde el gradiente es casi nulo (saturación).
+
+Para evitarlo y \alert{estabilizar los gradientes} durante el entrenamiento, se realiza un paso crucial:
+\begin{enumerate}
+    \item Se divide el resultado entre la raíz cuadrada del número de dimensiones de los vectores key ($\sqrt{d_k}$).
+    \item Se aplica la función \textbf{softmax} para normalizar los valores y hacer que sumen $1$.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Scaled Dot-Product: Estabilización y Softmax}
+Estos \alert{valores normalizados} ($a_n$) representan exactamente qué "porcentaje"\footnote{Aunque una softmax técnicamente no proporciona un porcentaje.} de \alert{atención} debe prestar la palabra actual a cada una de las demás.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/trans-att6.png}
-    \caption{Ejemplo del cálculo de la \textbf{self-attention} (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
+    \includegraphics[width=0.8\textwidth]{Slides/figures/02_Metodos_Generativos/trans-att4.png}
+    \caption{Ejemplo de la normalización en el mecanismo de self-attention (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Vector de Contexto Final}
+El último paso es construir la nueva \alert{representación matemática} de la palabra actual, enriquecida con el contexto.
+
+\begin{enumerate}
+    \item Multiplicamos el valor de \alert{atención normalizado} de cada vector de entrada ($a_n$) por su vector correspondiente \textit{Value} ($v_n$). Si la atención es casi $0$, ese valor se ahoga pero si es alta, se preserva.
+    \item \alert{Juntamos todos los resultados} ($a_n \cdot v_n$) para obtener el vector de salida final, $z$.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Vector de Contexto Final}
+El vector $z$ es una \alert{}{suma ponderada} de la información de todas las palabras de la frase\footnote{Y con eso hemos acabado, por fin.}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.55\textwidth]{Slides/figures/02_Metodos_Generativos/trans-att5.png}
+    \caption{Ejemplo de la salida en el mecanismo de self-attention (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Formulación Matricial: La Ecuación Maestra}
+En la práctica, para aprovechar el paralelismo de las GPUs, todos estos cálculos paso a paso se agrupan en \alert{operaciones matriciales} para ir más rápido. Toda la mecánica del Self-Attention se resume en esta elegante ecuación:
+
+\alert{
+\begin{equation}
+\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+\end{equation}
+}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{Slides/figures/02_Metodos_Generativos/trans-att6.png}
+    \caption{Ejemplo de la operacion de self-attention (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
 \end{figure}
 \end{frame}
 
 
 \begin{frame}{Resumen}
-
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\textwidth]{Slides/figures/02_Metodos_Generativos/trans-att-resumen.png}
+    \includegraphics[width=\textwidth]{Slides/figures/02_Metodos_Generativos/trans-att-resumen.png}
     \caption{Resumen del mecanismo de \textbf{self-attention} (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
 \end{figure}
 \end{frame}
 
+\begin{frame}{Multi-head Attention}
+El mecanismo de \alert{Self-Attention} se combina múltiples veces usando varias matrices de Keys, Queries y Values generando capas de \alert{Multi-head Attention}. Eso mejora las posibilidades de la capa, pudiendo extraer \alert{varios contextos} de la misma secuencia al mismo tiempo\footnote{¿Matando moscas a cañonazos? Quizás, pero así funciona la inteligencia artificial hoy en día.}.
 
-\begin{frame}{Pero... ¿y la información de la posición?}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.35\textwidth]{Slides/figures/Transformer/Multi-head_Attention.png}
+    \caption{\cite{meng2023sentiment}}
+\end{figure}
+\end{frame}
+
+\section{Información temporal con Positional Encoding}
+
+\begin{frame}{El problema de la Invarianza a la Permutación}
+Al eliminar las redes recurrentes y procesar todos los inputs de \alert{forma paralela}, la arquitectura pierde el orden de la secuencia.
+
+La operación matricial de \alert{Self-Attention} es, matemáticamente, un operador de conjuntos. Esto significa que es \alert{invariante a la permutación}:
+\begin{itemize}
+    \item La frase "El perro mordió al hombre" generaría el mismo resultado que "El hombre mordió al perro".
+    \item La red necesita un mecanismo para recuperar la noción del tiempo o la posición.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Slides/figures/Transformer/Positional_Encoding_Architecture.jpg}
+    \caption{\cite{vaswani2017attention}}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Positional Encoding}
+La solución propuesta originalmente \cite{vaswani2017attention} es añadir lo que se conoce como \alert{Positional Embedding} (o Encoding).
+
+Modificamos los datos de entrada:
+\begin{enumerate}
+    \item Cada palabra se convierte en un vector denso de dimensión $d_{model}$ (ej. 512).
+    \item Creamos un segundo vector (el \textit{Positional Encoding}) de \alert{mismo tamaño} $d_{model}$, que contiene un patrón numérico único para esa posición temporal.
+    \item Se realiza una \alert{suma elemento a elemento} de ambos vectores.
+\end{enumerate}
+
+$$ \text{Entrada}_{final} = \text{Embedding}_{palabra} + \text{Encoding}_{posicion} $$
+\end{frame}
+
+\begin{frame}{Positional Encoding}
+Estos vectores de posición se generan usando \alert{ondas sinusoidales} de diferentes frecuencias.
+
+Para una posición temporal $pos$ y una dimensión espacial $i$, el valor se calcula como:
+\begin{equation}
+PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{model}}}\right)
+\end{equation}
+\begin{equation}
+PE_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d_{model}}}\right) 
+\end{equation}
 
 \begin{itemize}
-    \item Si hemos dicho que se procesan todos los inputs de forma paralela, hemos perdido la información del tiempo.
-    \item La solución es añadir lo que se conoce como \textbf{positional embedding}, que es lo que le indica a la red la posición de cada elemento de entrada en la secuencia completa.
+    \item Si el índice de la dimensión es par ($2i$), usamos el \alert{seno}.
+    \item Si el índice de la dimensión es impar ($2i+1$), usamos el \alert{coseno}.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Pero... ¿y la información de la posición?}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.9\textwidth]{Slides/figures/02_Metodos_Generativos/trans-encoding.png}
-    \caption{Ejemplo de \textbf{positional embedding} (\href{http://jalammar.github.io/illustrated-transformer/}{fuente}).}
-\end{figure}
+\begin{frame}{¿Por qué senos y cosenos?}
+Esta formulación matemática parece compleja, pero tiene razones geométricas y de ingeniería muy profundas:
+
+\begin{itemize}
+    \item \textbf{Valores limitados:} Los valores oscilan entre [-1, 1], evitando que la suma del vector de posición \alert{sature los valores} del \textit{word embedding}.
+    \item \textbf{Frecuencias intercaladas:} Las primeras dimensiones (ondas rápidas) cambian a \alert{cada paso}, mientras que las últimas dimensiones (ondas lentas) cambian \alert{muy despacio}\footnote{Funciona como los engranajes de un reloj. Las primeras posiciones del embedding sería el segundero y las últimas la aguja de las horas.}.
+    \item \textbf{Relaciones relativas:} Gracias a las propiedades trigonométricas, para cualquier desplazamiento fijo $k$, $PE_{pos+k}$ se puede representar como una función lineal de $PE_{pos}$. ¡Esto permite al modelo aprender \alert{distancias relativas} fácilmente!
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Alternativas del Positional Encoding}
+ Hoy en día, dependiendo de la arquitectura, se usan distintos enfoques:
+
+\begin{itemize}
+    \item \alert{Absolute Learned Embeddings:} Modelos como BERT o GPT-2 no usan senos ni cosenos. Simplemente crean una matriz de pesos entrenables donde la red \alert{aprende} desde cero cuál debe ser el vector para la posición 1, la 2, etc.
+    \item \alert{RoPE (Rotary Positional Embeddings):} Es el estado del arte actual (usado en modelos como LLaMA). En lugar de sumar un vector a la entrada, rota las matrices $Q$ y $K$ en el espacio complejo según su posición relativa justo antes del \textit{Self-Attention}.
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Más información...}
@@ -336,8 +420,6 @@ La tenéis disponible en: \href{http://jalammar.github.io/illustrated-transforme
 
 Si os habéis quedado con dudas, es \textbf{muy recomendable} que os leáis el post y os veáis el video, lo más seguro es que os disipe todas las dudas :-)
 \end{frame}
-
-
 
 \begin{exercise}
 \href{https://colab.research.google.com/drive/1dIKI6xl_Wi5XycbSgYF9qJDYWBsvvTrH}{Ejemplo de transformer}
@@ -355,29 +437,15 @@ Si os habéis quedado con dudas, es \textbf{muy recomendable} que os leáis el p
 \end{itemize}
 \end{frame}
 
-% \section{Auto-encoders Variacionales (VAEs)}
-% % \begin{frame}{Auto-encoders Variacionales(VAEs)}
-% % \end{frame}
+\addcontentsline{toc}{section}{Referencias}
 
-% \section{Generative Adversarial Networks (GANs)}
-% % \begin{frame}{Generative Adversarial Networks (GANs)}
-% % \end{frame}
-
-% \section{Transformers}
-% % \begin{frame}{Transformers}
-% % \end{frame}
-
-% \section{Diffusion Models}
-% % \begin{frame}{Diffusion Models}
-% % \end{frame}
+\begin{frame}[allowframebreaks]{Referencias}
+    \bibliographystyle{unsrt}
+    \bibliography{Slides/references.bib}
+\end{frame}
 
 
 \appendix
-
-% \begin{frame}[allowframebreaks]{Referencias}
-%     \bibliography{references}
-%     \bibliographystyle{abbrv}
-% \end{frame}
 
 \begin{frame}<presentation:0>{License}
     \begin{block}{Tema \texttt{slides-upm}. Puedes obtener sus fuentes en}
