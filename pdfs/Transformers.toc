@@ -1,0 +1,6 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Motivación y Transformers}{6}{0}{1}
+\beamer@sectionintoc {2}{Arquitectura de los Transformers}{10}{0}{2}
+\beamer@sectionintoc {3}{El Mecanismo de Self-Attention}{18}{0}{3}
+\beamer@sectionintoc {4}{Información temporal con Positional Encoding}{30}{0}{4}
+\contentsline {section}{Referencias}{39}{}%

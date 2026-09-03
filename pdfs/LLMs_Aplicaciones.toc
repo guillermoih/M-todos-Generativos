@@ -1,0 +1,5 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Fine-tuning y Transfer Learning}{3}{0}{1}
+\beamer@sectionintoc {2}{Optimización y Eficiencia}{9}{0}{2}
+\beamer@sectionintoc {3}{RAG}{17}{0}{3}
+\contentsline {section}{Referencias}{26}{}%

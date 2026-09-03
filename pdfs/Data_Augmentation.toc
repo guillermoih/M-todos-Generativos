@@ -1,0 +1,4 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Introducción al Data Augmentation}{2}{0}{1}
+\beamer@sectionintoc {2}{Data augmentation para imágenes}{9}{0}{2}
+\contentsline {section}{Referencias}{25}{}%

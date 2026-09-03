@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99e (TeX Live 2026)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: Vision_Transformers.aux
+The style file: unsrt.bst
+Database file #1: Slides/references.bib
+You've used 4 entries,
+            1791 wiz_defined-function locations,
+            469 strings with 4705 characters,
+and the built_in function-call counts, 1567 in all, are:
+= -- 130
+> -- 101
+< -- 3
++ -- 35
+- -- 31
+* -- 109
+:= -- 240
+add.period$ -- 14
+call.type$ -- 4
+change.case$ -- 4
+chr.to.int$ -- 0
+cite$ -- 4
+duplicate$ -- 71
+empty$ -- 129
+format.name$ -- 31
+if$ -- 359
+int.to.chr$ -- 0
+int.to.str$ -- 4
+missing$ -- 4
+newline$ -- 23
+num.names$ -- 4
+pop$ -- 21
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 47
+stack$ -- 0
+substring$ -- 96
+swap$ -- 34
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 13
+width$ -- 5
+write$ -- 47

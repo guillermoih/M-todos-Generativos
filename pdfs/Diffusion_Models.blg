@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99e (TeX Live 2026)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: Diffusion_Models.aux
+The style file: unsrt.bst
+Database file #1: Slides/references.bib
+You've used 14 entries,
+            1791 wiz_defined-function locations,
+            520 strings with 6178 characters,
+and the built_in function-call counts, 3766 in all, are:
+= -- 348
+> -- 159
+< -- 6
++ -- 59
+- -- 45
+* -- 191
+:= -- 548
+add.period$ -- 48
+call.type$ -- 14
+change.case$ -- 14
+chr.to.int$ -- 0
+cite$ -- 14
+duplicate$ -- 180
+empty$ -- 365
+format.name$ -- 45
+if$ -- 886
+int.to.chr$ -- 0
+int.to.str$ -- 14
+missing$ -- 10
+newline$ -- 77
+num.names$ -- 14
+pop$ -- 70
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 124
+stack$ -- 0
+substring$ -- 247
+swap$ -- 79
+text.length$ -- 6
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 31
+width$ -- 16
+write$ -- 155

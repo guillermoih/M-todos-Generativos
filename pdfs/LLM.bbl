@@ -1,0 +1,353 @@
+\begin{thebibliography}{10}
+
+\bibitem{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock In {\em Advances in neural information processing systems}, pages
+  5998--6008, 2017.
+
+\bibitem{naik2024decoder}
+Dishita Naik, Ishita Naik, and Nitin Naik.
+\newblock Decoder-only transformers: the brains behind generative ai, large
+  language models and large multimodal models.
+\newblock In {\em The International Conference on Computing, Communication,
+  Cybersecurity \& AI}, pages 315--331. Springer, 2024.
+
+\bibitem{devlin2018bert}
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova.
+\newblock Bert: Pre-training of deep bidirectional transformers for language
+  understanding.
+\newblock {\em arXiv preprint arXiv:1810.04805}, 2018.
+
+\bibitem{reimers-2019-sentence-bert}
+Nils Reimers and Iryna Gurevych.
+\newblock Sentence-bert: Sentence embeddings using siamese bert-networks.
+\newblock In {\em Proceedings of the 2019 Conference on Empirical Methods in
+  Natural Language Processing}. Association for Computational Linguistics, 11
+  2019.
+
+\bibitem{CausalSelfAttentionImage}
+BOWEN.
+\newblock Causal self-attention (kaggle).
+\newblock \url{https://www.kaggle.com/code/aisuko/causal-self-attention}, 2024.
+\newblock [Online; accessed July, 2026].
+
+\bibitem{mu2025comprehensive}
+Siyuan Mu and Sen Lin.
+\newblock A comprehensive survey of mixture-of-experts: Algorithms, theory, and
+  applications.
+\newblock {\em arXiv preprint arXiv:2503.07137}, 2025.
+
+\bibitem{jacobs1991adaptive}
+Robert~A Jacobs, Michael~I Jordan, Steven~J Nowlan, and Geoffrey~E Hinton.
+\newblock Adaptive mixtures of local experts.
+\newblock {\em Neural computation}, 3(1):79--87, 1991.
+
+\bibitem{raffel2020exploring}
+Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael
+  Matena, Yanqi Zhou, Wei Li, and Peter~J Liu.
+\newblock Exploring the limits of transfer learning with a unified text-to-text
+  transformer.
+\newblock {\em Journal of machine learning research}, 21(140):1--67, 2020.
+
+\bibitem{brenndoerfer2025prefixlanguage}
+Michael Brenndoerfer.
+\newblock Prefix language modeling.
+\newblock
+  \url{https://mbrenndoerfer.com/writing/prefix-language-modeling-bidirectional-causal-generation},
+  2025.
+\newblock Accessed: 2026-08-05.
+
+\bibitem{wei2022chain}
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Fei Xia, Ed~Chi, Quoc~V
+  Le, Denny Zhou, et~al.
+\newblock Chain-of-thought prompting elicits reasoning in large language
+  models.
+\newblock {\em Advances in neural information processing systems},
+  35:24824--24837, 2022.
+
+\bibitem{schulman2017proximal}
+John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov.
+\newblock Proximal policy optimization algorithms.
+\newblock {\em arXiv preprint arXiv:1707.06347}, 2017.
+
+\bibitem{zheng2023secrets}
+Rui Zheng, Shihan Dou, Songyang Gao, Yuan Hua, Wei Shen, Binghai Wang, Yan Liu,
+  Senjie Jin, Qin Liu, Yuhao Zhou, et~al.
+\newblock Secrets of rlhf in large language models part i: Ppo.
+\newblock {\em arXiv preprint arXiv:2307.04964}, 2023.
+
+\bibitem{papineni2002bleu}
+Kishore Papineni, Salim Roukos, Todd Ward, and Wei-Jing Zhu.
+\newblock Bleu: a method for automatic evaluation of machine translation.
+\newblock In {\em Proceedings of the 40th annual meeting of the Association for
+  Computational Linguistics}, pages 311--318, 2002.
+
+\bibitem{lin2004rouge}
+Chin-Yew Lin.
+\newblock Rouge: A package for automatic evaluation of summaries.
+\newblock In {\em Text summarization branches out}, pages 74--81, 2004.
+
+\bibitem{hendrycks2020measuring}
+Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn
+  Song, and Jacob Steinhardt.
+\newblock Measuring massive multitask language understanding.
+\newblock {\em arXiv preprint arXiv:2009.03300}, 2020.
+
+\bibitem{cobbe2021training}
+Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz
+  Kaiser, Matthias Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano,
+  et~al.
+\newblock Training verifiers to solve math word problems.
+\newblock {\em arXiv preprint arXiv:2110.14168}, 2021.
+
+\bibitem{chen2021evaluating}
+Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique Ponde De~Oliveira
+  Pinto, Jared Kaplan, Harri Edwards, Yuri Burda, Nicholas Joseph, Greg
+  Brockman, et~al.
+\newblock Evaluating large language models trained on code.
+\newblock {\em arXiv preprint arXiv:2107.03374}, 2021.
+
+\bibitem{mmluBenchmark}
+Bracai.
+\newblock Ranking del benchmark mmlu-pro: mejor llm en conocimiento general en
+  2026 (bracai).
+\newblock \url{https://www.bracai.eu/es/post/mmlu-pro-ranking}, 2025.
+\newblock Accessed: August 2026.
+
+\bibitem{goodhart1984problems}
+Charles~AE Goodhart.
+\newblock Problems of monetary management: the uk experience.
+\newblock In {\em Monetary theory and practice: The UK experience}, pages
+  91--121. Springer, 1984.
+
+\bibitem{bai2024mt}
+Ge~Bai, Jie Liu, Xingyuan Bu, Yancheng He, Jiaheng Liu, Zhanhui Zhou, Zhuoran
+  Lin, Wenbo Su, Tiezheng Ge, Bo~Zheng, et~al.
+\newblock Mt-bench-101: A fine-grained benchmark for evaluating large language
+  models in multi-turn dialogues.
+\newblock In {\em Proceedings of the 62nd Annual Meeting of the Association for
+  Computational Linguistics (Volume 1: Long Papers)}, pages 7421--7454, 2024.
+
+\bibitem{chiang2024chatbot}
+Wei-Lin Chiang, Lianmin Zheng, Ying Sheng, Anastasios~Nikolas Angelopoulos,
+  Tianle Li, Dacheng Li, Hao Zhang, Banghua Zhu, Michael Jordan, Joseph~E
+  Gonzalez, et~al.
+\newblock Chatbot arena: An open platform for evaluating llms by human
+  preference.
+\newblock {\em arXiv preprint arXiv:2403.04132}, 2024.
+
+\bibitem{hu2022lora}
+Edward~J Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean
+  Wang, Liang Wang, Weizhu Chen, et~al.
+\newblock Lora: Low-rank adaptation of large language models.
+\newblock {\em Iclr}, 1(2):3, 2022.
+
+\bibitem{LoRAImage}
+Tayyib Ul Hassan~Gondal (Medium).
+\newblock Lora: Low rank adaptation of large language models.
+\newblock \url{https://www.bracai.eu/es/post/mmlu-pro-ranking}, 2024.
+\newblock Accessed: August 2026.
+
+\bibitem{hu2023llm}
+Zhiqiang Hu, Lei Wang, Yihuai Lan, Wanyu Xu, Ee-Peng Lim, Lidong Bing, Xing Xu,
+  Soujanya Poria, and Roy Lee.
+\newblock Llm-adapters: An adapter family for parameter-efficient fine-tuning
+  of large language models.
+\newblock In {\em Proceedings of the 2023 conference on empirical methods in
+  natural language processing}, pages 5254--5276, 2023.
+
+\bibitem{lester2021power}
+Brian Lester, Rami Al-Rfou, and Noah Constant.
+\newblock The power of scale for parameter-efficient prompt tuning.
+\newblock In {\em Proceedings of the 2021 conference on empirical methods in
+  natural language processing}, pages 3045--3059, 2021.
+
+\bibitem{li2021prefix}
+Xiang~Lisa Li and Percy Liang.
+\newblock Prefix-tuning: Optimizing continuous prompts for generation.
+\newblock In {\em Proceedings of the 59th annual meeting of the association for
+  computational linguistics and the 11th international joint conference on
+  natural language processing (volume 1: Long papers)}, pages 4582--4597, 2021.
+
+\bibitem{sanh2019distilbert}
+Victor Sanh, Lysandre Debut, Julien Chaumond, and Thomas Wolf.
+\newblock Distilbert, a distilled version of bert: smaller, faster, cheaper and
+  lighter.
+\newblock {\em arXiv preprint arXiv:1910.01108}, 2019.
+
+\bibitem{KnowledgeDistilationImage}
+Prakhar~Ganesh (towards~data science).
+\newblock Knowledge distilation: Simplified.
+\newblock
+  \url{https://towardsdatascience.com/knowledge-distillation-simplified-dd4973dbc764/},
+  2019.
+\newblock Accessed: August 2026.
+
+\bibitem{kaplan2020scaling}
+Jared Kaplan, Sam McCandlish, Tom Henighan, Tom~B Brown, Benjamin Chess, Rewon
+  Child, Scott Gray, Alec Radford, Jeffrey Wu, and Dario Amodei.
+\newblock Scaling laws for neural language models.
+\newblock {\em arXiv preprint arXiv:2001.08361}, 2020.
+
+\bibitem{gunasekar2023textbooks}
+Suriya Gunasekar, Yi~Zhang, Jyoti Aneja, Caio C{\'e}sar~Teodoro Mendes, Allie
+  Del~Giorno, Sivakanth Gopi, Mojan Javaheripi, Piero Kauffmann, Gustavo
+  de~Rosa, Olli Saarikivi, et~al.
+\newblock Textbooks are all you need.
+\newblock {\em arXiv preprint arXiv:2306.11644}, 2023.
+
+\bibitem{hoffmann2022training}
+Jordan Hoffmann, Sebastian Borgeaud, Arthur Mensch, Elena Buchatskaya, Trevor
+  Cai, Eliza Rutherford, Diego de~Las Casas, Lisa~Anne Hendricks, Johannes
+  Welbl, Aidan Clark, et~al.
+\newblock Training compute-optimal large language models.
+\newblock {\em arXiv preprint arXiv:2203.15556}, 2022.
+
+\bibitem{inan2023llama}
+Hakan Inan, Kartikeya Upasani, Jianfeng Chi, Rashi Rungta, Krithika Iyer,
+  Yuning Mao, Michael Tontchev, Qing Hu, Brian Fuller, Davide Testuggine,
+  et~al.
+\newblock Llama guard: Llm-based input-output safeguard for human-ai
+  conversations.
+\newblock {\em arXiv preprint arXiv:2312.06674}, 2023.
+
+\bibitem{rebedea2023nemo}
+Traian Rebedea, Razvan Dinu, Makesh~Narsimhan Sreedhar, Christopher Parisien,
+  and Jonathan Cohen.
+\newblock Nemo guardrails: A toolkit for controllable and safe llm applications
+  with programmable rails.
+\newblock In {\em Proceedings of the 2023 conference on empirical methods in
+  natural language processing: system demonstrations}, pages 431--445, 2023.
+
+\bibitem{GuardrailsImage}
+Jeffrey Ip~(Confident AI).
+\newblock Llm guardrails for data leakage, prompt injection, and more.
+\newblock
+  \url{https://www.confident-ai.com/blog/llm-guardrails-the-ultimate-guide-to-safeguard-llm-systems},
+  2025.
+\newblock Accessed: August 2026.
+
+\bibitem{lewis2020retrieval}
+Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir
+  Karpukhin, Naman Goyal, Heinrich K{\"u}ttler, Mike Lewis, Wen-tau Yih, Tim
+  Rockt{\"a}schel, et~al.
+\newblock Retrieval-augmented generation for knowledge-intensive nlp tasks.
+\newblock {\em Advances in neural information processing systems},
+  33:9459--9474, 2020.
+
+\bibitem{smigielski2026chunking}
+Mateusz {\'S}migielski, Micha{\l} Rajkowski, Mateusz Zbrocki, Micha{\l}
+  Bernacki-Janson, Karol Kunicki, Julianna Godziszewska, Maciej Piasecki, and
+  Konrad Wojtasik.
+\newblock Chunking methods on retrieval-augmented generation-effectiveness
+  evaluation against computational cost and limitations.
+\newblock {\em arXiv preprint arXiv:2606.00881}, 2026.
+
+\bibitem{RAGArchitectureImage}
+Cole (codingscape).
+\newblock Rag 101: What is rag and why does it matter?
+\newblock
+  \url{https://codingscape.com/blog/rag-101-what-is-rag-and-why-does-it-matter},
+  -.
+\newblock Accessed: August 2026.
+
+\bibitem{edge2024local}
+Darren Edge, Ha~Trinh, Newman Cheng, Joshua Bradley, Alex Chao, Apurva Mody,
+  Steven Truitt, Dasha Metropolitansky, Robert~Osazuwa Ness, and Jonathan
+  Larson.
+\newblock From local to global: A graph rag approach to query-focused
+  summarization.
+\newblock {\em arXiv preprint arXiv:2404.16130}, 2024.
+
+\bibitem{KnowledgeGraphImage}
+Anca Ioana Muscalagiu~(Decoding AI).
+\newblock Your agent's reasoning is fine - its memory isn't.
+\newblock
+  \url{https://www.decodingai.com/p/designing-production-engineer-agent-graphrag},
+  2026.
+\newblock Accessed: August 2026.
+
+\bibitem{AgentArchitectureImage}
+Maarten Grootendorst (Exploring~Language Models).
+\newblock A visual guide to llm agents.
+\newblock
+  \url{https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-llm-agents},
+  2025.
+\newblock Accessed: August 2026.
+
+\bibitem{wu2023autogen}
+Qingyun Wu, Gagan Bansal, Jieyu Zhang, Yiran Wu, Beibin Li, Erkang Zhu,
+  Li~Jiang, Xiaoyun Zhang, Shaokun Zhang, Jiale Liu, et~al.
+\newblock Autogen: Enabling next-gen llm applications via multi-agent
+  conversation.
+\newblock {\em arXiv preprint arXiv:2308.08155}, 2023.
+
+\bibitem{crewai2024}
+João Moura and CrewAI Inc.
+\newblock Crewai: Framework for orchestrating role-playing, autonomous ai
+  agents.
+\newblock \url{https://github.com/crewaiinc/crewai}, 2024.
+\newblock Accessed: 2026-08-06.
+
+\bibitem{radford2021learning}
+Alec Radford, Jong~Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh,
+  Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark,
+  et~al.
+\newblock Learning transferable visual models from natural language
+  supervision.
+\newblock In {\em International conference on machine learning}, pages
+  8748--8763. PmLR, 2021.
+
+\bibitem{CLIPImage}
+Sandeep (OpenCV).
+\newblock Introduction to clip.
+\newblock \url{https://opencv.org/clip/}, 2025.
+\newblock Accessed: August 2026.
+
+\bibitem{chen2020simple}
+Ting Chen, Simon Kornblith, Mohammad Norouzi, and Geoffrey Hinton.
+\newblock A simple framework for contrastive learning of visual
+  representations.
+\newblock In {\em International conference on machine learning}, pages
+  1597--1607. PmLR, 2020.
+
+\bibitem{liu2023visual}
+Haotian Liu, Chunyuan Li, Qingyang Wu, and Yong~Jae Lee.
+\newblock Visual instruction tuning.
+\newblock {\em Advances in neural information processing systems},
+  36:34892--34916, 2023.
+
+\bibitem{VLMArchitectureimage}
+Gaudenz~Boesch (viso.ai).
+\newblock Vision language models: Exploring multimodal ai.
+\newblock \url{https://viso.ai/deep-learning/vision-language-models/}, 2024.
+\newblock Accessed: August 2026.
+
+\bibitem{wolf2020transformers}
+Thomas Wolf, Julien Chaumond, Lysandre Debut, Victor Sanh, Clement Delangue,
+  Anthony Moi, Pierric Cistac, Morgan Funtowicz, Joe Davison, Sam Shleifer,
+  et~al.
+\newblock Transformers: State-of-the-art natural language processing.
+\newblock In {\em Proceedings of the 2020 Conference on Empirical Methods in
+  Natural Language Processing: System Demonstrations}, pages 38--45, 2020.
+
+\bibitem{chase2022langchain}
+Harrison Chase.
+\newblock Langchain.
+\newblock \url{https://github.com/langchain-ai/langchain}, 2022.
+\newblock Accessed: August 2026.
+
+\bibitem{Liu_LlamaIndex_2022}
+Jerry Liu.
+\newblock {LlamaIndex}.
+\newblock \url{https://github.com/run-llama/llama_index}, 11 2022.
+
+\bibitem{Ollama_2023}
+Jeffrey Morgan and Michael Chiang.
+\newblock Ollama.
+\newblock \url{https://github.com/ollama/ollama}, 2023.
+\newblock Accessed: August 2026.
+
+\end{thebibliography}
