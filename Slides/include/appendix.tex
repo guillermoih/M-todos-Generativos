@@ -8,26 +8,24 @@
 \begin{frame}[fragile]{Citación}
 
 {\footnotesize
-\textbf{BibTeX}
+\textbf{Cita APA:} Iglesias, G. and Talavera, E. (\the\year, \mesnombre ~\the\day). \textit{\mytitle} [Diapositivas de la asignatura Métodos Generativos]. GitHub. \url{https://guillermoih.github.io/M-todos-Generativos/\currfilebase.pdf}
+}
 
+Tema de las diapositivas "Metropolis" lincenciado bajo \href{https://www.latex-project.org/lppl/lppl-1-3c/}{LPPL 1.3c}
+
+{\footnotesize\textbf{BibTeX}}
+
+{\tiny
 \begin{lstlisting}[breaklines]
-@slides{MetodosGenerativosSlides,
+@slides{*@\currfilebase@*_MG_*@\the\year@*,
     author = {Iglesias, Guillermo and Talavera, Edgar},
     title = {*@\mytitle@* [Diapositivas de la asignatura Métodos Generativos]},
     year = {*@\the\year@*},
     month = {*@\the\month@*},
     howpublished={\url{*@\href{https://guillermoih.github.io/M-todos-Generativos/\currfilebase.pdf\}}{https://guillermoih.github.io/M-todos-Generativos/\currfilebase.pdf}@*}},
-    note = {[Online; accessed *@\today@*]},
+    note = {[Online; accessed *@\today@*]},WW
     organization={ETSISI. Universidad Politécnica de Madrid}
 }
 \end{lstlisting}
 }
-
-{\footnotesize
-\textbf{Cita APA}
-
-Iglesias, G. and Talavera, E. (\the\year, \mesnombre ~\the\day). \textit{\mytitle} [Diapositivas de la asignatura Métodos Generativos]. GitHub. https://guillermoih.github.io/M-todos-Generativos/\currfilebase.pdf
-}
-
-Tema de las diapositivas "Metropolis" lincenciado bajo \href{https://www.latex-project.org/lppl/lppl-1-3c/}{LPPL 1.3c}
 \end{frame}
