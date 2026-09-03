@@ -66,9 +66,19 @@
     \end{frame}
 }
 
+% Define nominal month names
 \newcommand{\mesnombre}{%
   \ifcase\month\or
     enero\or febrero\or marzo\or abril\or mayo\or junio\or
     julio\or agosto\or septiembre\or octubre\or noviembre\or diciembre
   \fi
 }
+
+% Save slides title
+\makeatletter
+\xdef\mytitle{No \string\title\space given!}
+\renewcommand{\title}[1]{%
+  \gdef\@title{#1}%
+  \gdef\mytitle{#1}%
+}
+\makeatother
