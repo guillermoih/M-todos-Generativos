@@ -1,0 +1,53 @@
+\begin{thebibliography}{1}
+
+\bibitem{LatentSpaceMNIST}
+Julien~Despois (HACKERNOON).
+\newblock Mnist latent space image.
+\newblock
+  \url{https://hackernoon.com/latent-space-visualization-deep-learning-bits-2-bd09a46920df},
+  February 23rd, 2017.
+\newblock [Online; accessed July, 2026].
+
+\bibitem{kingma2013auto}
+Diederik~P Kingma and Max Welling.
+\newblock Auto-encoding variational bayes.
+\newblock {\em arXiv preprint arXiv:1312.6114}, 2013.
+
+\bibitem{doersch2016tutorial}
+Carl Doersch.
+\newblock Tutorial on variational autoencoders.
+\newblock {\em arXiv preprint arXiv:1606.05908}, 2016.
+
+\bibitem{sohn2015learning}
+Kihyuk Sohn, Honglak Lee, and Xinchen Yan.
+\newblock Learning structured output representation using deep conditional
+  generative models.
+\newblock {\em Advances in neural information processing systems}, 28, 2015.
+
+\bibitem{abdelli2022degradation}
+Khouloud Abdelli, Helmut Grie{\ss}er, Christian Neumeyr, Robert Hohenleitner,
+  and Stephan Pachnicke.
+\newblock Degradation prediction of semiconductor lasers using conditional
+  variational autoencoder.
+\newblock {\em Journal of Lightwave Technology}, 40(18):6213--6221, 2022.
+
+\bibitem{lecun2021darkmatter}
+Yann LeCun and Ishan Misra.
+\newblock Self-supervised learning: The dark matter of intelligence (meta ai
+  blog).
+\newblock
+  \url{https://ai.facebook.com/blog/self-supervised-learning-the-dark-matter-of-intelligence/},
+  2021.
+
+\bibitem{yao2022masked}
+Yuchong Yao, Nandakishor Desai, and Marimuthu Palaniswami.
+\newblock Masked contrastive representation learning.
+\newblock {\em arXiv preprint arXiv:2211.06012}, 2022.
+
+\bibitem{lecun2019facebook}
+Yann LeCun.
+\newblock Yann lecun facebook publication (facebook).
+\newblock \url{https://www.facebook.com/722677142/posts/10155934004262143/},
+  2019.
+
+\end{thebibliography}

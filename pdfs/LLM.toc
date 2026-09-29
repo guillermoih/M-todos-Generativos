@@ -1,0 +1,18 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Introducción}{2}{0}{1}
+\beamer@sectionintoc {2}{Entrenamiento de LLMs}{17}{0}{2}
+\beamer@sectionintoc {3}{Interacción y Razonamiento}{23}{0}{3}
+\beamer@sectionintoc {4}{Alineamiento}{29}{0}{4}
+\beamer@sectionintoc {5}{Evaluación de Modelos: Benchmarks vs. Jueces}{35}{0}{5}
+\beamer@sectionintoc {6}{Full Fine-Tuning de LLMs}{41}{0}{6}
+\beamer@sectionintoc {7}{LoRA: Low-Rank Adaptation}{46}{0}{7}
+\beamer@sectionintoc {8}{Adapters y Prefix Tuning}{51}{0}{8}
+\beamer@sectionintoc {9}{Compresión y Eficiencia: Llevando la IA a Producción}{55}{0}{9}
+\beamer@sectionintoc {10}{Knowledge Distillation: Maestro y Estudiante}{58}{0}{10}
+\beamer@sectionintoc {11}{Seguridad y Robustez en LLMs}{64}{0}{11}
+\beamer@sectionintoc {12}{Retrieval-Augmented Generation}{70}{0}{12}
+\beamer@sectionintoc {13}{GraphRAG: La Frontera del Conocimiento}{76}{0}{13}
+\beamer@sectionintoc {14}{Agentes LLM}{79}{0}{14}
+\beamer@sectionintoc {15}{Multimodalidad: Vision-Language Models}{85}{0}{15}
+\beamer@sectionintoc {16}{El Ecosistema de Producción}{90}{0}{16}
+\contentsline {section}{Referencias}{94}{}%

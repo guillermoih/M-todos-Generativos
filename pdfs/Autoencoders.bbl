@@ -1,0 +1,48 @@
+\begin{thebibliography}{1}
+
+\bibitem{bank2020autoencoders}
+Dor Bank, Noam Koenigstein, and Raja Giryes.
+\newblock Autoencoders. arxiv.
+\newblock {\em arXiv preprint arXiv:2003.05991}, pages 2593--2613, 2020.
+
+\bibitem{radford2015unsupervised}
+Alec Radford, Luke Metz, and Soumith Chintala.
+\newblock Unsupervised representation learning with deep convolutional
+  generative adversarial networks.
+\newblock {\em arXiv preprint arXiv:1511.06434}, 2015.
+
+\bibitem{liu2022convnet}
+Zhuang Liu, Hanzi Mao, Chao-Yuan Wu, Christoph Feichtenhofer, Trevor Darrell,
+  and Saining Xie.
+\newblock A convnet for the 2020s.
+\newblock In {\em Proceedings of the IEEE/CVF conference on computer vision and
+  pattern recognition}, pages 11976--11986, 2022.
+
+\bibitem{LatentSpaceMNIST}
+Julien~Despois (HACKERNOON).
+\newblock Mnist latent space image.
+\newblock
+  \url{https://hackernoon.com/latent-space-visualization-deep-learning-bits-2-bd09a46920df},
+  February 23rd, 2017.
+\newblock [Online; accessed July, 2026].
+
+\bibitem{vincent2008extracting}
+Pascal Vincent, Hugo Larochelle, Yoshua Bengio, and Pierre-Antoine Manzagol.
+\newblock Extracting and composing robust features with denoising autoencoders.
+\newblock In {\em Proceedings of the 25th international conference on Machine
+  learning}, pages 1096--1103, 2008.
+
+\bibitem{choi2020convolutional}
+Joonmyeong Choi, Keewon Shin, Jinhoon Jung, Hyun-Jin Bae, Do~Hoon Kim,
+  Jeong-Sik Byeon, and Namku Kim.
+\newblock Convolutional neural network technology in endoscopic imaging:
+  artificial intelligence for endoscopy.
+\newblock {\em Clinical endoscopy}, 53(2):117--126, 2020.
+
+\bibitem{ronneberger2015u}
+Olaf Ronneberger, Philipp Fischer, and Thomas Brox.
+\newblock U-net: Convolutional networks for biomedical image segmentation.
+\newblock In {\em International Conference on Medical image computing and
+  computer-assisted intervention}, pages 234--241. Springer, 2015.
+
+\end{thebibliography}

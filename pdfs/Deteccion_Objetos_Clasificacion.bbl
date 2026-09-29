@@ -1,0 +1,74 @@
+\begin{thebibliography}{10}
+
+\bibitem{SemanticSeg}
+John Wilson~(AI Pool).
+\newblock Semantic segmentation image.
+\newblock
+  https://ai-pool.com/d/could-you-explain-me-how-instance-segmentation-works.
+\newblock [Online; accessed September, 2022].
+
+\bibitem{InstanceSeg}
+John Wilson~(AI Pool).
+\newblock Instance segmentation image.
+\newblock
+  https://ai-pool.com/d/could-you-explain-me-how-instance-segmentation-works.
+\newblock [Online; accessed September, 2022].
+
+\bibitem{ObjectDet}
+John Wilson~(AI Pool).
+\newblock Object detection image.
+\newblock
+  https://ai-pool.com/d/could-you-explain-me-how-instance-segmentation-works.
+\newblock [Online; accessed September, 2022].
+
+\bibitem{long2015fully}
+Jonathan Long, Evan Shelhamer, and Trevor Darrell.
+\newblock Fully convolutional networks for semantic segmentation.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 3431--3440, 2015.
+
+\bibitem{badrinarayanan2015segnet}
+Vijay Badrinarayanan, Ankur Handa, and Roberto Cipolla.
+\newblock Segnet: A deep convolutional encoder-decoder architecture for robust
+  semantic pixel-wise labelling.
+\newblock {\em arXiv preprint arXiv:1505.07293}, 2015.
+
+\bibitem{ronneberger2015u}
+Olaf Ronneberger, Philipp Fischer, and Thomas Brox.
+\newblock U-net: Convolutional networks for biomedical image segmentation.
+\newblock In {\em International Conference on Medical image computing and
+  computer-assisted intervention}, pages 234--241. Springer, 2015.
+
+\bibitem{ClaLocal}
+Ravindra Parmar (Towards~Data Science).
+\newblock Clasification and localization image.
+\newblock
+  https://towardsdatascience.com/detection-and-segmentation-through-convnets-47aa42de27ea.
+\newblock [Online; accessed September, 2022].
+
+\bibitem{ren2015faster}
+Shaoqing Ren, Kaiming He, Ross Girshick, and Jian Sun.
+\newblock Faster r-cnn: Towards real-time object detection with region proposal
+  networks.
+\newblock {\em Advances in neural information processing systems}, 28, 2015.
+
+\bibitem{redmon2016you}
+Joseph Redmon, Santosh Divvala, Ross Girshick, and Ali Farhadi.
+\newblock You only look once: Unified, real-time object detection.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 779--788, 2016.
+
+\bibitem{YOLOFinal}
+Sik-Ho Tsang (Towards~Data Science).
+\newblock Yolo final layer image.
+\newblock
+  https://towardsdatascience.com/yolov1-you-only-look-once-object-detection-e1f3ffec8a89.
+\newblock [Online; accessed September, 2022].
+
+\bibitem{YOLOResults}
+Gilbert Tanner.
+\newblock Yolo non-maximum suppresion image.
+\newblock https://gilberttanner.com/blog/yolo-object-detection-introduction/.
+\newblock [Online; accessed September, 2022].
+
+\end{thebibliography}

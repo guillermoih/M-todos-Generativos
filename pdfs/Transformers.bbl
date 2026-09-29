@@ -1,0 +1,65 @@
+\begin{thebibliography}{10}
+
+\bibitem{BagofWordsImage}
+Tanesh Balodi.
+\newblock An optimum approach towards the bag of words with code illustration
+  in python (analytic steps).
+\newblock
+  \url{https://www.analyticssteps.com/blogs/an-optimum-approach-towards-the-bag-of-words-with-code-illustration-in-python},
+  2019.
+\newblock [Online; accessed July, 2026].
+
+\bibitem{mikolov2013efficient}
+Tomas Mikolov, Kai Chen, Greg Corrado, and Jeffrey Dean.
+\newblock Efficient estimation of word representations in vector space.
+\newblock {\em arXiv preprint arXiv:1301.3781}, 2013.
+
+\bibitem{pennington2014glove}
+Jeffrey Pennington, Richard Socher, and Christopher~D Manning.
+\newblock Glove: Global vectors for word representation.
+\newblock In {\em Proceedings of the 2014 conference on empirical methods in
+  natural language processing (EMNLP)}, pages 1532--1543, 2014.
+
+\bibitem{bolukbasi2016man}
+Tolga Bolukbasi, Kai-Wei Chang, James~Y Zou, Venkatesh Saligrama, and Adam~T
+  Kalai.
+\newblock Man is to computer programmer as woman is to homemaker? debiasing
+  word embeddings.
+\newblock {\em Advances in neural information processing systems}, 29, 2016.
+
+\bibitem{Word2VecEmbedding}
+Nikhil Birajdar.
+\newblock Word2vec research paper explained (towards data science).
+\newblock
+  \url{https://towardsdatascience.com/word2vec-research-paper-explained-205cb7eecc30/},
+  2021.
+\newblock [Online; accessed July, 2026].
+
+\bibitem{schmidt2019recurrent}
+Robin~M Schmidt.
+\newblock Recurrent neural networks (rnns): A gentle introduction and overview.
+\newblock {\em arXiv preprint arXiv:1912.05911}, 2019.
+
+\bibitem{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock In {\em Advances in neural information processing systems}, pages
+  5998--6008, 2017.
+
+\bibitem{gage1994new}
+Philip Gage.
+\newblock A new algorithm for data compression.
+\newblock {\em The C Users Journal}, 12(2):23--38, 1994.
+
+\bibitem{xie2021deep}
+Huiqiang Xie, Zhijin Qin, Geoffrey~Ye Li, and Biing-Hwang Juang.
+\newblock Deep learning enabled semantic communication systems.
+\newblock {\em IEEE transactions on signal processing}, 69:2663--2675, 2021.
+
+\bibitem{meng2023sentiment}
+Fanfei Meng and Chen-Ao Wang.
+\newblock Sentiment analysis with adaptive multi-head attention in transformer.
+\newblock {\em arXiv preprint arXiv:2310.14505}, 2023.
+
+\end{thebibliography}

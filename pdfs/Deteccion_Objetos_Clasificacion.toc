@@ -1,0 +1,4 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Segmentación semántica}{6}{0}{1}
+\beamer@sectionintoc {2}{Localización y detección de objetos}{20}{0}{2}
+\contentsline {section}{Referencias}{29}{}%
