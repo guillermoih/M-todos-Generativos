@@ -1,0 +1,95 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=3.5cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage[breaklinks=true]{hyperref}
+\usepackage[newfloat]{minted}
+\usepackage[nolist]{acronym}
+\usepackage{glossaries}
+\usepackage[
+    type={CC},
+    modifier={by-nc-sa},
+    version={3.0},
+]{doclicense}
+
+\hypersetup{breaklinks=true}
+
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.6pt}
+
+\pagestyle{fancy}
+\setlength\headheight{50pt}
+\lhead{\includegraphics[height=1.5cm]{Practicas/logos/upm_logo}}
+\chead{Métodos generativos\\\vspace{.5em} Práctica 1\\\vspace{-.1em}}
+\rhead{\includegraphics[height=1.5cm]{Practicas/logos/etsisi_logo}}
+\lfoot{\textbf{Tema 2:} Arquitecturas de métodos generativos}
+\cfoot{}
+\rfoot{\thepage}
+
+\parskip 1.1ex % paragraph spacing
+\newglossaryentry{AE}{name={AE},description={Autoencoder}}
+\newglossaryentry{VAE}{name={VAE},description={Variational Autoencoder}}
+\newglossaryentry{GAN}{name={GAN},description={Generative Adversarial Network}}
+
+
+\begin{document}
+
+\section*{Normativa}
+
+\begin{itemize}
+    \item La práctica se realizará en grupos de 5 alumnos con la siguiente distribución:
+    \begin{itemize}
+        \item 2 alumnos del Grado de Ingeniería del Software
+        \item 1 alumno del Grado de Ingeniería de Computadores
+        \item 1 alumno del Grado de Ciencia de Datos e Inteligencia Artificial
+        \item 1 alumno comodín de cualquier titulación
+    \end{itemize}
+    \item Si se detecta cualquier sospecha de copia conllevará un 0.
+    \item No se podrán utilizar modelos entrenados con la técnica de \textit{fine-tunning} ni arquitecturas distintas a las vistas en clase.
+    \item Se penalizará el uso de LLMs sin criterio para redactar el contenido o generar el código. El alumno siempre es el último responsable de su trabajo.
+\end{itemize}
+
+\section{Objetivo de la práctica}
+\textbf{Dataset:} Para la realización de la práctica y la presentación de los resultados se va a utilizar un dataset homogéneo de caras de humanos, para poder crear nuevas ''personas'' a nuestro antojo. \href{https://github.com/switchablenorms/CelebAMask-HQ}{\textbf{CelebAMask-HQ}} es un dataset de 30.000 imágenes a color de 512x512 píxeles que contiene imágenes de personas, así como máscaras de segmentación para 19 de sus atributos faciales.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Practicas/2627/Practica_1/CelebAMask-HQ.jpeg}
+\end{figure}
+
+Partiendo de este dataset se ha generado un subconjunto más pequeño, de 64x64 píxeles para la realización de esta práctica, que está disponible en Kaggle (previa invitación) \href{https://www.kaggle.com/competitions/mg-practica-1-generando-caras}{\nolinkurl{https://www.kaggle.com/competitions/mg-practica-1-generando-caras}}. Durante esta práctica sólo serán necesarias las imágenes de las caras, no las máscaras de segmentación.
+
+\section{Evaluación}
+La evaluación de la práctica consistirá en una competición de Kaggle junto a una breve presentación en clase. Todos los grupos deberán participar en ambas o de lo contrario la práctica se considerará no entregada.
+
+\textbf{Competición de Kaggle:} Utilizando cada uno de los modelos de redes neuronales generativos que se lista a continuación y el dataset citado anteriormente, se debe entrenar un modelo capaz de generar imágenes parecidas al dataset para cada arquitectura.
+\begin{itemize}
+    \item \gls{AE}: entrenamiento e inferencia
+    \item \gls{VAE}: entrenamiento e inferencia
+\end{itemize}
+
+Elige uno de los modelos utilizados en el apartado anterior para participar en la competición entre todos los alumnos de este curso. Para ello, vamos a utilizar las herramientas que nos ofrece la plataforma de Kaggle (URL de invitación a la competición: \href{https://www.kaggle.com/t/313d806078e46a21725d1e3ce786c35f}{\textbf{pincha aqui}}), en el enlace encontrareis la competición entre vosotros y las puntuaciones obtenidas en cada subida. El punto de este apartado lo conseguirán solo los 3 mejores resultados al finalizar la competición.
+
+\textbf{Presentación:} Cada grupo deberá realizar una breve presentación de 6 minutos utilizando un póster o diapositivas complementarias, donde se explique el trabajo realizado y se haga un análisis crítico de los resultados obtenidos en la competición de Kaggle.
+
+La presentación debe incluir:
+\begin{itemize}
+    \item La justificación del diseño de las arquitecturas utilizadas y sus entrenamientos. También se deben incluir reflexiones sobre pruebas realizadas para obtener los mejores resultados.
+    \item Un análisis de los resultados obtenidos visualmente.
+    \item Explicación de los resultados subidos a Moodle.
+    \item Generación de imágenes que fusionen características de distintas personas que \textbf{no pertenezcan al dataset}. Por ejemplo, podéis usar fotos de los profesores de la asignatura\footnote{Os lo ponemos fácil, aqui os pasamos alguna: \href{https://master-sostec.etsisi.upm.es/wp-content/uploads/2019/03/edgar.jpg}{\nolinkurl{https://master-sostec.etsisi.upm.es/wp-content/uploads/2019/03/edgar.jpg}} y \href{https://blogs.upm.es/gietema/wp-content/uploads/sites/1082/2025/10/Guille-886x1024.jpeg}{\nolinkurl{https://blogs.upm.es/gietema/wp-content/uploads/sites/1082/2025/10/Guille-886x1024.jpeg}}} para generar una cara que fusione los rasgos faciales de ambos.
+\end{itemize}
+
+\section{Entrega en Moodle}
+Además se deberán subir los notebooks correspondientes para los entrenos realizados, como prueba del funcionamiento de lo anteriormente descrito.
+
+Asimismo, para poder ser evaluada, la entrega deberá llevar asociada una participación en la competición de Kaggle previamente descrita.
+
+\doclicenseThis
+\end{document}

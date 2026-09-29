@@ -1,0 +1,76 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=3.5cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[newfloat]{minted}
+\usepackage[nolist]{acronym}
+\usepackage{glossaries}
+\usepackage[
+    type={CC},
+    modifier={by-nc-sa},
+    version={3.0},
+]{doclicense}
+
+\pagestyle{fancy}
+\setlength\headheight{50pt}
+\lhead{\includegraphics[height=1.5cm]{Practicas/logos/upm_logo}}
+\chead{Métodos generativos\\\vspace{.5em} Práctica 2\\\vspace{-.1em}}
+\rhead{\includegraphics[height=1.5cm]{Practicas/logos/etsisi_logo}}
+\lfoot{\textbf{Tema 3:} Arquitecturas avanzadas de métodos generativos}
+\cfoot{}
+\rfoot{\thepage}
+
+\newglossaryentry{AE}{name={AE},description={Autoencoder}}
+\newglossaryentry{VAE}{name={VAE},description={Variational Autoencoder}}
+\newglossaryentry{GAN}{name={GAN},description={Generative Adversarial Network}}
+
+
+\begin{document}
+\section*{Normativa}
+
+\begin{itemize}
+    \item La práctica se realizará en grupos de 5 alumnos con la siguiente distribución:
+    \begin{itemize}
+        \item 2 alumnos del Grado de Ingeniería del Software
+        \item 1 alumno del Grado de Ingeniería de Computadores
+        \item 1 alumno del Grado de Ciencia de Datos e Inteligencia Artificial
+        \item 1 alumno comodín de cualquier titulación
+    \end{itemize}
+    \item Si se detecta cualquier sospecha de copia conllevará un 0.
+    \item No se podrán utilizar modelos entrenados con la técnica de \textit{fine-tunning}.
+    \item Se penalizará el uso de LLMs sin criterio para redactar el contenido o generar el código. El alumno siempre es el último responsable de su trabajo.
+\end{itemize}
+
+\section{Objetivo de la práctica}
+\textbf{Dataset:} Para la realización de la práctica, usaremos de nuevo el dataset \href{https://github.com/switchablenorms/CelebAMask-HQ}{\textbf{CelebAMask-HQ}}, pero en este caso haciendo uso de las máscaras de segmentación. Que originalmente consta de 30.000 imágenes a color de 512x512 píxeles de personas y sus atributos faciales. Como en la práctica anterior, se ha realizado un subconjunto menor para facilitar la tarea. El dataset está disponible en Kaggle \href{https://www.kaggle.com}{\textcolor{red}{PREPARAR DATASET}}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Practicas/2627/Practica_2/CelebAMask-HQ_1.png}
+\end{figure}
+
+\section{Evaluación}
+La evaluación de la práctica consistirá en una presentación pública realizada con una sesión de posters en la universidad. La sesión será el \textcolor{red}{DEFINIR FECHA} en la rotonda (en frente de la cafetería).
+
+Cada grupo deberá ser capaz de generar caras utilizando como entradas máscaras de segmentación, al contrario que en la práctica anterior, donde no se usaban para nada. Por tanto se deberán utilizar arquitecturas capaces de ser condicionadas por ese tipo de información. Para ello, se permite utilizar cualquier modelo de los estudiados en clase en este tema (GAN, Diffusion Models, ViT). De estos modelos se podrán buscar arquitecturas no vistas en clase, siempre y cuando se conozca su funcionamiento en profundidad. Se permite el uso de código de repositorios públicos, correctamente citados.
+
+Debido a esto, el trabajo deberá incluir una primera parte donde se explique con profundidad el funcionamiento de la arquitectura que se esté utilizando. Esta explicación tiene como objetivo demostrar que todos los miembros del grupo conocen el funcionamiento de la arquitectura utilizada.
+
+Esta arquitectura deberá ser utilizada y entrenada desde cero con el dataset provisto, de manera que los grupos deberán generar imágenes completamente nuevas y evaluar de manera correcta sus resultados con las técnicas vistas en clase.
+
+\textbf{Póster:} Con todo el trabajo realizado, se deberá realizar un póster para la presentación en la rotonda. El poster deberá cubrir todo el trabajo realizado, con explicaciones de la arquitectura utilizada y los resultados objetivos.
+
+\textbf{Presentación:} Durante la presentación en la rotonda se deberá explicar por todos los miembros del grupo el trabajo realizado, apoyándose en el contenido del póster.
+
+\section{Entrega en Moodle}
+Además se deberán subir los notebooks correspondientes para los entrenos realizados, como prueba del funcionamiento de lo anteriormente descrito.
+
+\doclicenseThis
+\end{document}
