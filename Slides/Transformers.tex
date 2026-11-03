@@ -412,6 +412,117 @@ Esta formulación matemática parece compleja, pero tiene razones geométricas y
     \item \alert{RoPE (Rotary Positional Embeddings):} Es el estado del arte actual (usado en modelos como LLaMA). En lugar de sumar un vector a la entrada, rota las matrices $Q$ y $K$ en el espacio complejo según su posición relativa justo antes del \textit{Self-Attention}.
 \end{itemize}
 \end{frame}
+ 
+\begin{frame}{Grokking}
+El grokking es un fenómeno muy habitual en Transformers \cite{power2022grokking} donde
+\begin{itemize}
+    \item \textbf{Sobreajuste total:} La precisión en train llega al \alert{100\%} y la pérdida es casi $0$.
+    \item \textbf{Meseta prolongada:} La precisión en validación se queda \alert{a nivel de azar} durante miles de épocas adicionales.
+    \item \textbf{Transición de fase:} De repente, la precisión en validación \alert{salta al 100\%}.
+\end{itemize}
+
+Rompe la intuición del \textit{overfitting} y del \textit{early stopping}: entrenar más allá del error cero no destruye la generalización, sino que la \alert{desata}.
+
+\begin{itemize}
+    \item Memorizar el conjunto de train es \alert{trivial} para el modelo.
+    \item Generalizar exige haber \alert{descubierto el algoritmo} que subyace a la tarea.
+\end{itemize}
+\end{frame}
+ 
+\begin{frame}{Curvas de entrenamiento}
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[scale=0.85]
+        % Ejes
+        \draw[->] (0,0) -- (10.3,0) node[below left] {\small Épocas (escala logarítmica)};
+        \draw[->] (0,0) -- (0,4.4) node[above] {\small Precisión};
+        \draw[dashed, gray] (0,3.95) -- (10,3.95);
+        \node[left] at (0,3.95) {\small 100\%};
+        \node[left] at (0,0.3) {\small azar};
+        % Train
+        \draw[very thick, blue] (0,0.3) .. controls (1,0.3) and (0.8,3.9) .. (2,3.95) -- (10,3.95);
+        % Test
+        \draw[very thick, red] (0,0.3) -- (5.2,0.35) .. controls (6.2,0.4) and (6,3.85) .. (7.2,3.95) -- (10,3.95);
+        % Etiquetas
+        \node[blue, right] at (10,3.6) {\small Train};
+        \node[red, right] at (10,0.9) {\small Test};
+        \draw[<->, thick] (2.2,1.6) -- (5.8,1.6);
+        \node[above] at (4,1.6) {\small Meseta};
+        \draw[->, thick] (6.9,1.3) -- (6.5,2.2);
+        \node[right] at (6.9,1.2) {\small Salto};
+    \end{tikzpicture}
+    \caption{Curvas esquemáticas de precisión durante un entrenamiento con grokking.}
+\end{figure}
+\end{frame}
+ 
+\begin{frame}{¿Por qué ocurre en Transformers? Falta de sesgo inductivo}
+Recordemos que \alert{Self-Attention es un operador sobre conjuntos}, invariante a la permutación.
+ 
+\begin{itemize}
+    \item \textbf{CNN:} Localidad espacial integrada en la arquitectura.
+    \item \textbf{Transformer:} Prácticamente \alert{ninguna} suposición sobre la estructura de los datos.
+\end{itemize}
+ 
+Al inicio del entrenamiento, el camino más rápido para el gradiente suele ser la \alert{memorización puntual} y no el descubrimiento del algoritmo.
+\end{frame}
+ 
+\begin{frame}{Dos soluciones compitiendo en los pesos}
+Con regularización $L_2$ (\textit{weight decay})\footnote{Sin weight decay, el grokking desaparece \cite{power2022grokking,liu2022omnigrok}.}, la función a minimizar es:
+\begin{equation}
+\mathcal{L} = \mathcal{L}_{\text{task}} + \frac{\lambda}{2}\Vert \mathbf{w} \Vert^2
+\end{equation}
+
+Existen (al menos) dos soluciones en entrenamiento:
+\vspace{0.25cm}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{\alert{Solución memorizadora}}
+\begin{itemize}
+    \item Dispersa y no estructurada.
+    \item Norma de pesos $\Vert \mathbf{w} \Vert$ \alert{muy elevada}.
+    \item Solo funciona en los ejemplos vistos.
+\end{itemize}
+ 
+\column{0.5\textwidth}
+\textbf{\alert{Solución generalizadora}}
+\begin{itemize}
+    \item Algorítmica, compacta y altamente simétrica.
+    \item Norma de pesos $\Vert \mathbf{w} \Vert$ \alert{menor}.
+    \item Funciona también en datos no vistos.
+\end{itemize}
+\end{columns}
+
+La solución generalizadora es \alert{más eficiente} en términos de norma\footnote{La solución generalizadora necesita menos "parámetros efectivos" para lograr la misma pérdida \cite{varma2023explaining}.}.
+\end{frame}
+ 
+\begin{frame}{Las tres fases del grokking}
+Nanda et al. \cite{nanda2023progress} definieron \alert{medidas de progreso} internas que revelan que el salto en test no es un misterio:
+ 
+\begin{enumerate}
+    \item \alert{Memorización:} El modelo ajusta el train con una tabla de consulta. Test a nivel de azar.
+    \item \alert{Formación del circuito:} El circuito generalizador se construye de forma \alert{gradual}, aunque la pérdida de train apenas cambie.
+    \item \alert{Limpieza (\textit{cleanup}):} El weight decay elimina los pesos memorizadores. Es aquí cuando se produce el \alert{salto visible} en test.
+\end{enumerate}
+
+\begin{block}{Idea clave}
+\vspace{0.25cm}
+El grokking no es magia: es una \alert{competición} entre circuitos, arbitrada por la regularización.
+\end{block}
+\end{frame}
+
+\begin{frame}{Trascendencia en Modelos Fundacionales (LLMs)}
+¿Por qué importa para los grandes modelos de lenguaje?
+ 
+\begin{itemize}
+    \item \textbf{Capacidades emergentes:} Habilidades (aritmética, razonamiento en pocos pasos...) que parecen aparecer \alert{de forma súbita} al aumentar escala o tiempo de entrenamiento \cite{wei2022emergent}.
+    \item \textbf{Sobreentrenamiento:} Los \gls{llm} actuales se entrenan con muchos más datos de lo habitual, dando tiempo de pasar de memorizar a \alert{generalizar}.
+\end{itemize}
+
+\begin{alertblock}{Cautela}
+\vspace{0.25cm}
+Es una analogía \alert{aún en debate}: parte de la ``emergencia'' puede deberse a las métricas elegidas \cite{schaeffer2023mirage}, y los resultados de grokking se han obtenido sobre tareas \alert{pequeñas y sintéticas}.
+\end{alertblock}
+\end{frame}
 
 \begin{frame}{Más información...}
 

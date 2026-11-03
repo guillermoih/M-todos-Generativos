@@ -41,7 +41,7 @@
         \item 2 alumnos del Grado de Ingeniería del Software
         \item 1 alumno del Grado de Ingeniería de Computadores
         \item 1 alumno del Grado de Ciencia de Datos e Inteligencia Artificial
-        \item 1 alumno comodín de cualquier titulación
+        \item 1 alumno comodín de cualquier titulación (menos Ing. del Software)
     \end{itemize}
     \item Si se detecta cualquier sospecha de copia conllevará un 0.
     \item No se podrán utilizar modelos entrenados con la técnica de \textit{fine-tunning}.
@@ -49,7 +49,7 @@
 \end{itemize}
 
 \section{Objetivo de la práctica}
-\textbf{Dataset:} Para la realización de la práctica, usaremos de nuevo el dataset \href{https://github.com/switchablenorms/CelebAMask-HQ}{\textbf{CelebAMask-HQ}}, pero en este caso haciendo uso de las máscaras de segmentación. Que originalmente consta de 30.000 imágenes a color de 512x512 píxeles de personas y sus atributos faciales. Como en la práctica anterior, se ha realizado un subconjunto menor para facilitar la tarea. El dataset está disponible en Kaggle \href{https://www.kaggle.com}{\textcolor{red}{PREPARAR DATASET}}
+\textbf{Dataset:} Para la realización de la práctica, usaremos de nuevo el dataset \href{https://github.com/switchablenorms/CelebAMask-HQ}{\textbf{CelebAMask-HQ}}, pero en este caso haciendo uso de las máscaras de segmentación. Que originalmente consta de 30.000 imágenes a color de 512x512 píxeles de personas y sus atributos faciales. Como en la práctica anterior, se ha realizado un subconjunto menor para facilitar la tarea. El dataset está disponible en Kaggle \href{https://www.kaggle.com/competitions/mg-practica-1-generando-caras}{\nolinkurl{https://www.kaggle.com/competitions/mg-practica-1-generando-caras}}
 
 \begin{figure}[H]
     \centering
@@ -57,7 +57,7 @@
 \end{figure}
 
 \section{Evaluación}
-La evaluación de la práctica consistirá en una presentación pública realizada con una sesión de posters en la universidad. La sesión será el \textcolor{red}{DEFINIR FECHA} en la rotonda (en frente de la cafetería).
+La evaluación de la práctica consistirá en una presentación pública realizada con una sesión de posters en la universidad. La sesión será el lunes 30 de noviembre de \textbf{10:30 a 12:00} en la rotonda (enfrente de la cafetería).
 
 Cada grupo deberá ser capaz de generar caras utilizando como entradas máscaras de segmentación, al contrario que en la práctica anterior, donde no se usaban para nada. Por tanto se deberán utilizar arquitecturas capaces de ser condicionadas por ese tipo de información. Para ello, se permite utilizar cualquier modelo de los estudiados en clase en este tema (GAN, Diffusion Models, ViT). De estos modelos se podrán buscar arquitecturas no vistas en clase, siempre y cuando se conozca su funcionamiento en profundidad. Se permite el uso de código de repositorios públicos, correctamente citados.
 
@@ -68,6 +68,8 @@ Esta arquitectura deberá ser utilizada y entrenada desde cero con el dataset pr
 \textbf{Póster:} Con todo el trabajo realizado, se deberá realizar un póster para la presentación en la rotonda. El poster deberá cubrir todo el trabajo realizado, con explicaciones de la arquitectura utilizada y los resultados objetivos.
 
 \textbf{Presentación:} Durante la presentación en la rotonda se deberá explicar por todos los miembros del grupo el trabajo realizado, apoyándose en el contenido del póster.
+
+Asimismo, en la sesión de pósteres se realizará una ''votación popular'' en la que las personas asistentes podrán votar a un póster. Los 3 pósteres con mayor número de votos recibirán 1 punto extra en la práctica.
 
 \section{Entrega en Moodle}
 Además se deberán subir los notebooks correspondientes para los entrenos realizados, como prueba del funcionamiento de lo anteriormente descrito.
