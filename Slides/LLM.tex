@@ -818,10 +818,10 @@ Cuando el usuario hace una query GraphRAG no busca similitud semántica de fragm
 
 \section{Agentes LLM}
 
-\begin{frame}{¿Qué es un Agente LLM?}
+\begin{frame}{Agente}
 Hasta ahora, hemos visto modelos que reciben un texto y devuelven otro texto. Un \alert{Agente} cambia este paradigma: utiliza el \gls{llm} como el "cerebro" decidir y ejecutar acciones.
 
-Los agentes se caracterizan por ser \alert{autonomos} (sin intervención humana), capaces de usar \alert{herramientas} externas para interactuar y siguen un \alert{ciclo de retroalimentación} \textit{Razonamiento $\rightarrow$ Acción $\rightarrow$ Observación}.
+Los agentes se caracterizan por ser \alert{autonomos}, capaces de usar \alert{herramientas} externas para interactuar y siguen un \alert{ciclo de retroalimentación} \textit{Razonamiento $\rightarrow$ Acción $\rightarrow$ Observación}.
 
 \begin{figure}
     \centering
@@ -886,6 +886,388 @@ Existen varias topologías de \gls{mas}:
 \alert{AutoGen (Microsoft)} \cite{wu2023autogen} sería un ejemplo conversacional, trata a los agentes como entidades que se envían mensajes, lo que facilita el "\alert{Human-in-the-loop}", donde un humano actúa como un agente más.
 
 \alert{CrewAI} \cite{crewai2024} agrupa a los agentes en un "Crew" (equipo) estructurado por procesos. Se definen parejas \alert{Agente-Tarea} y se orquesta el trabajo en \alert{serie o en jerarquía}, integrándose nativamente con las herramientas de LangChain.
+\end{frame}
+ 
+ 
+\begin{frame}{IA agéntica}
+La \alert{IA agéntica} recibe un \alert{objetivo} y se encarga de \alert{conseguirlo}.
+
+\vspace{0.25cm}
+\begin{columns}
+\column{0.48\textwidth}
+\textbf{\alert{Workflow}}
+\begin{itemize}
+    \item El \gls{llm} y las herramientas se orquestan mediante \alert{caminos de código predefinidos}.
+    \item Predecible, barato y fácil de depurar.
+    \item Ej: \textit{extraer $\rightarrow$ clasificar $\rightarrow$ resumir}.
+\end{itemize}
+ 
+\column{0.48\textwidth}
+\textbf{\alert{Agente}}
+\begin{itemize}
+    \item El propio \gls{llm} \alert{decide dinámicamente} los pasos y las herramientas a usar.
+    \item Flexible, pero menos predecible y más costoso.
+    \item Ej: \textit{``arregla este bug y abre un PR''}.
+\end{itemize}
+\end{columns}
+ 
+\vspace{0.3cm}
+Distinción popularizada por Anthropic \cite{anthropic2024building}. En la práctica, los sistemas reales mezclan ambos.
+\end{frame}
+ 
+\begin{frame}[fragile]{Tool use}
+Un \gls{llm} \alert{solo genera texto}. Para actuar sobre el mundo se usa \alert{\textit{tool use}} (o \textit{function calling}):
+ 
+\begin{enumerate}
+    \item Se describe cada herramienta al modelo: \alert{nombre, descripción y esquema JSON} de sus parámetros.
+    \item El modelo emite una \alert{petición estructurada}: \textit{``quiero llamar a \texttt{read\_file} con \texttt{path=src/main.py}''}.
+    \item Un programa externo \alert{ejecuta} la herramienta de verdad.
+    \item El resultado se devuelve al modelo como un nuevo mensaje.
+\end{enumerate}
+
+\begin{columns}
+\column{0.48\textwidth}
+
+\textbf{Definición de la herramienta}
+\vspace{-2em}
+\begin{block}{}
+\setlength{\abovedisplayskip}{2pt}
+\setlength{\belowdisplayskip}{2pt}
+\scriptsize
+\begin{verbatim}
+{"name": "read_file",
+ "description": "Lee un fichero",
+ "input_schema": {
+   "type": "object",
+   "properties": {"path":
+        {"type": "string"}},
+   "required": ["path"]}}
+\end{verbatim}
+\end{block}
+
+\column{0.48\textwidth} 
+\textbf{Respuesta del modelo}:
+\vspace{-2em}
+\begin{block}{}
+\scriptsize
+\begin{verbatim}
+{"type": "tool_use",
+ "name": "read_file",
+ "input": {"path": "src/main.py"}}
+\end{verbatim}
+\end{block}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Harness}
+El \alert{harness} es el \alert{software que envuelve al modelo} y lo convierte en un agente útil
+ 
+\begin{itemize}
+    \item El \alert{bucle del agente} y sus condiciones de parada.
+    \item Las \alert{herramientas} (ficheros, terminal, búsqueda, web...).
+    \item La \alert{gestión del contexto} (qué entra, qué se resume, qué se descarta).
+    \item Los \alert{permisos y el sandbox}.
+    \item El \textit{system prompt} y la carga de instrucciones del proyecto.
+    \item Los \alert{puntos de extensión}: \textit{slash commands}, \textit{skills}, MCP, \textit{hooks}, subagentes.
+\end{itemize}
+ 
+Ejemplos: Claude Code, Codex CLI, Gemini CLI, Opencode, GitHub Copilot. \footnote{El mismo modelo con distinto harness da resultados muy distintos. Por eso comparar agentes solo por el modelo que llevan debajo es como comparar coches solo por el motor.}.
+\end{frame}
+ 
+\begin{frame}{Agent Loop}
+El núcleo de cualquier agente es un \alert{bucle} que sigue el patrón ReAct \cite{yao2023react}: \alert{recopilar contexto $\rightarrow$ actuar $\rightarrow$ verificar}.
+ 
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[scale=0.8, every node/.style={draw, rounded corners, align=center, font=\small, inner sep=5pt}]
+        \node (goal) at (0,0) {Objetivo\\del usuario};
+        \node (llm) at (4,0) {\textbf{\gls{llm}}\\decide};
+        \node (tool) at (8.2,0) {Ejecutar\\herramienta};
+        \node (final) at (4,2.3) {Respuesta\\final};
+        \draw[->, thick] (goal) -- (llm);
+        \draw[->, thick] (llm) -- (tool) node[midway, above, draw=none, font=\scriptsize] {\texttt{tool\_use}};
+        \draw[->, thick] (llm) -- (final) node[midway, right, draw=none, font=\scriptsize] {sin herramientas};
+        \draw[->, thick] (tool.south) -- ++(0,-1.1) -| (llm.south) node[pos=0.25, below, draw=none, font=\scriptsize] {observación};
+    \end{tikzpicture}
+\end{figure}
+ 
+\textbf{Condiciones de parada habituales:}
+\begin{itemize}
+    \item El modelo no solicita más herramientas.
+    \item Límite de turnos, de tiempo o de presupuesto de \textit{tokens}.
+    \item Interrupción o denegación por parte del humano.
+\end{itemize}
+\end{frame}
+ 
+\begin{frame}{Gestión del contexto en el bucle}
+Cada observación \alert{consume ventana de contexto}. En tareas largas el historial crece hasta saturarla, y la calidad del modelo se degrada antes incluso de llenarla (\textit{context rot}).
+ 
+El harness (y el usuario) disponen de varias técnicas:
+\begin{itemize}
+    \item \alert{Compactación:} resumir el historial y continuar con el resumen.
+    \item \alert{Memoria externa:} guardar notas, planes o listas de tareas en \alert{ficheros} que se pueden releer.
+    \item \alert{Recuperación \textit{just-in-time}:} en lugar de cargar todo el repositorio, el agente usa \texttt{grep} o \texttt{glob} y lee solo lo necesario.
+    \item \alert{Subagentes:} delegar trabajo voluminoso en un contexto aparte.
+    \item \alert{Reiniciar sesiones} entre tareas no relacionadas.
+\end{itemize}
+\end{frame}
+ 
+\begin{frame}{Orquestador y subagentes}
+En el patrón \alert{orquestador-trabajadores}, un agente principal \alert{descompone} la tarea y \alert{delega} en agentes especializados.
+ 
+\begin{columns}
+\column{0.6\textwidth}
+\begin{itemize}
+    \item El \alert{orquestador} planifica, delega y \alert{sintetiza} los resultados.
+    \item Cada \alert{subagente} tiene:
+    \begin{itemize}
+        \item Su \alert{propia ventana de contexto} (limpia).
+        \item Un \textit{system prompt} \alert{especializado}.
+        \item Un \alert{subconjunto de herramientas} (p. ej. el revisor solo lee).
+    \end{itemize}
+    \item Al terminar, \alert{devuelve solo un resumen}, no todo lo que exploró.
+\end{itemize}
+ 
+\column{0.4\textwidth}
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[scale=0.75, every node/.style={draw, rounded corners, align=center, font=\scriptsize, inner sep=4pt}]
+        \node (orq) at (0,0) {\textbf{Orquestador}};
+        \node (a) at (4,1.6) {Explorador\\(solo lectura)};
+        \node (b) at (4,0) {Implementador\\(edita código)};
+        \node (c) at (4,-1.6) {Revisor\\(solo lectura)};
+        \draw[->, thick] (orq.east) -- (a.west);
+        \draw[->, thick] (orq.east) -- (b.west);
+        \draw[->, thick] (orq.east) -- (c.west);
+    \end{tikzpicture}
+\end{figure}
+\end{columns}
+\end{frame}
+ 
+\begin{frame}[fragile]{Slash commands}
+Los \alert{\textit{slash commands}} son atajos que el \alert{usuario} define al inicio del prompt con ``\texttt{/}''. El harness los \alert{interpreta} antes de que lleguen al modelo.
+ 
+\begin{itemize}
+    \item \alert{Integrados:} controlan la sesión (\texttt{/help}, \texttt{/clear}, \texttt{/compact}, \texttt{/model}...).
+    \item \alert{Personalizados:} \alert{plantillas de prompt} guardadas como ficheros \textit{markdown}, con argumentos, \alert{versionables} en el repositorio y compartidas por el equipo.
+\end{itemize}
+ 
+\textbf{Ejemplo} (formato de Claude Code \cite{claudecodedocs}). \texttt{/fix-issue 123}:
+\begin{block}{.claude/commands/fix-issue.md}
+\scriptsize
+\begin{verbatim}
+Analiza y corrige el issue $ARGUMENTS:
+1. Lee la descripcion del issue.
+2. Localiza el codigo implicado.
+3. Implementa la correccion y anade tests.
+4. Ejecuta la suite de tests y corrige los fallos.
+\end{verbatim}
+\end{block}
+ 
+\alert{Es el humano quien decide cuándo se ejecutan}: convierten un prompt largo y repetitivo en una sola orden.
+\end{frame}
+ 
+\begin{frame}{Skills: conocimiento bajo demanda}
+Una \alert{\textit{skill}} es una \alert{carpeta} que empaqueta cómo hacer bien una tarea concreta.
+ 
+\begin{itemize}
+    \item Contiene un fichero \texttt{SKILL.md} con \alert{metadatos} (nombre y \alert{descripción}) y las instrucciones.
+    \item Puede incluir \alert{scripts, plantillas y documentos} de apoyo.
+    \item Es un \alert{formato abierto}, portable entre herramientas compatibles.
+\end{itemize}
+ 
+\begin{alertblock}{Diferencia con un slash command}
+\vspace{0.25cm}
+Un \textit{slash command} lo invoca el \alert{humano}. Una \textit{skill} la \alert{activa el modelo} por sí mismo cuando su \alert{descripción} encaja con la tarea (aunque también puede invocarse a mano).
+\end{alertblock}
+\end{frame}
+ 
+\begin{frame}{AGENTS.md: el README para agentes}
+\alert{\texttt{AGENTS.md}} \cite{agentsmd} es un fichero \textit{markdown} en la raíz del repositorio con las \alert{instrucciones persistentes} del proyecto. El harness lo \alert{carga automáticamente} al iniciar cada sesión.
+ 
+\begin{itemize}
+    \item Es un \alert{estándar abierto} soportado por muchas herramientas (Codex, Cursor, Copilot, Gemini CLI...). Claude Code usa el equivalente \texttt{CLAUDE.md}, que puede importar \texttt{AGENTS.md}.
+    \item Es \alert{jerárquico}: en \textit{monorepos} se puede poner uno por subcarpeta y prevalece el más cercano al fichero editado.
+\end{itemize}
+ 
+\textbf{Qué debe contener}
+\begin{itemize}
+    \item \alert{Comandos} de instalación, \textit{build}, test y \textit{lint}.
+    \item \alert{Convenciones} de código y arquitectura.
+    \item \alert{Reglas explícitas} (``nunca hagas X'') y flujo de trabajo (ramas, PRs).
+\end{itemize}
+ 
+Es la \alert{memoria a largo plazo} del proyecto: lo que un compañero nuevo necesitaría saber el primer día.
+\end{frame}
+ 
+\begin{frame}[fragile]{AGENTS.md: ejemplo y buenas prácticas}
+\begin{block}{}
+\scriptsize
+\begin{verbatim}
+# AGENTS.md
+## Comandos
+- Instalar: `pip install -e .[dev]`
+- Tests: `pytest -x -q`
+- Lint y tipos: `ruff check . && mypy src/`
+## Convenciones
+- Python 3.12, type hints obligatorios
+- Docstrings estilo Google
+## Reglas
+- NUNCA modificar tests existentes para que pasen
+- No tocar `migrations/` sin consultar
+\end{verbatim}
+\end{block}
+ 
+\begin{itemize}
+    \item \alert{Corto y concreto:} cada línea \alert{cuesta contexto} siempre.
+    \item No repitas lo que el agente puede \alert{deducir del código}.
+    \item Cuando el agente falla \alert{repetidamente}, escribe la regla.
+    \item Son instrucciones \alert{probabilísticas}: el modelo las sigue \textit{casi siempre}.
+\end{itemize}
+\end{frame}
+ 
+%%%%%%%%%%%%%%%%%%%% 5. MCP %%%%%%%%%%%%%%%%%%%%
+ 
+\begin{frame}{MCP: Model Context Protocol}
+Conectar un agente con \alert{un servicio externo} exigía una integración a medida para cada pareja (agente, herramienta): el problema $M \times N$.
+ 
+El \alert{\textit{Model Context Protocol}} \cite{anthropic2024mcp,mcpspec}, publicado por Anthropic a finales de 2024, es un \alert{protocolo abierto} que lo simplifica. Define:
+ 
+\begin{itemize}
+    \item \textbf{Host:} la aplicación con el \gls{llm}.
+    \item \textbf{Cliente:} conector dentro del host, uno por cada servidor.
+    \item \textbf{Servidor:} programa que \alert{expone capacidades} de un sistema externo.
+\end{itemize}
+ 
+Se comunican con mensajes \alert{JSON-RPC 2.0}. Un servidor MCP escrito una vez \alert{funciona con cualquier host compatible}\footnote{El protocolo ha sido adoptado por la mayoría de proveedores y hoy tiene gobernanza abierta bajo la Linux Foundation.}.
+\end{frame}
+ 
+\begin{frame}{MCP}
+Un servidor MCP puede exponer tres tipos de \alert{primitivas}:
+ 
+\begin{itemize}
+    \item \alert{Tools:} acciones que el \alert{modelo} decide invocar.
+    \item \alert{Resources:} datos de solo lectura que aporta la \alert{aplicación} como contexto.
+    \item \alert{Prompts:} plantillas que elige el \alert{usuario}.
+\end{itemize}
+ 
+\textbf{Transporte:} \alert{\texttt{stdio}} (servidor local lanzado como subproceso) o \alert{HTTP} (servidor remoto, con autenticación OAuth).
+ 
+\textbf{Flujo:} inicialización $\rightarrow$ el cliente lista las herramientas disponibles $\rightarrow$ el modelo las invoca igual que cualquier otra \textit{tool}.
+\end{frame}
+ 
+\begin{frame}[fragile]{Hooks}
+Las instrucciones (\texttt{AGENTS.md}, prompts) son \alert{probabilísticas}: el modelo puede ignorarlas. Un \alert{\textit{hook}} es un \alert{comando propio que el harness ejecuta automáticamente} en puntos concretos del ciclo de vida, \alert{sin pasar por el modelo}.
+ 
+\textbf{Casos de uso:} formatear el código tras cada edición, bloquear comandos peligrosos o el acceso a \texttt{.env}, ejecutar los tests al terminar, registrar auditoría, enviar notificaciones.
+
+Ejemplo (formato de Claude Code \cite{claudecodedocs}):
+\vspace{-2em}
+\begin{block}{}
+\tiny
+\begin{verbatim}
+{
+  "hooks": {
+    "PostToolUse": [{
+      "matcher": "Edit|Write",
+      "hooks": [{"type": "command", "command": "ruff format --quiet ."}]
+    }],
+    "PreToolUse": [{
+      "matcher": "Bash",
+      "hooks": [{"type": "command",
+                 "command": ".claude/hooks/block_dangerous.sh"}]
+    }]
+  }
+}
+\end{verbatim}
+\end{block}
+\end{frame}
+ 
+\begin{frame}{Verificaciones automáticas}
+Dar al agente \alert{una forma de comprobar su propio trabajo} es lo que más mejora la calidad. Sin verificación, el agente solo puede \textit{creer} que ha acertado.
+ 
+\textbf{Capas de verificación}:
+\begin{enumerate}
+    \item \alert{Compilador y comprobación de tipos.}
+    \item \alert{\textit{Linters} y formateadores.}
+    \item \alert{Tests unitarios y de integración.}
+    \item \alert{CI} completo en el repositorio.
+    \item \alert{Pruebas E2E} y, para interfaces, capturas de pantalla con un navegador.
+\end{enumerate}
+ 
+El agente entra en el bucle \alert{editar $\rightarrow$ ejecutar $\rightarrow$ leer el error $\rightarrow$ corregir}.
+\end{frame}
+ 
+\begin{frame}{Cuando la verificación falla: riesgos}
+Un agente optimiza ``que pase la verificación'', no necesariamente ``que el código sea correcto'':
+ 
+\begin{itemize}
+    \item Modifica o borra los \alert{tests} que fallan.
+    \item Escribe código que devuelve \alert{valores fijos} para satisfacer un test.
+    \item Silencia errores (\texttt{skip}, \texttt{type: ignore}, \texttt{try/except} vacío).
+    \item \alert{Alucina} funciones, librerías o paquetes que no existen.
+    \item Declara que ``todo funciona'' \alert{sin haberlo ejecutado}.
+\end{itemize}
+ 
+\textbf{Mitigaciones:}
+\begin{itemize}
+    \item Regla explícita en \texttt{AGENTS.md} + \alert{hook que impida editar los tests} (garantía).
+    \item Revisar siempre el \alert{diff de los tests}, no solo el del código.
+    \item Verificación \alert{independiente}: CI externo, no solo los comandos que lanza el propio agente.
+\end{itemize}
+\end{frame}
+ 
+\begin{frame}{Revisión: agentes y humanos}
+La revisión funciona mejor \alert{en capas}:
+ 
+\begin{enumerate}
+    \item \alert{Autorrevisión:} el agente relee su propio \textit{diff} antes de dar la tarea por terminada.
+    \item \alert{Agente revisor independiente:} un subagente con \alert{contexto limpio} y \alert{solo lectura}. No tiene el sesgo de haber escrito el código. Es el paradigma \textit{LLM-as-a-Judge} aplicado a código.
+    \item \alert{CI:} tests, análisis estático y análisis de seguridad automáticos sobre el PR.
+    \item \alert{Revisión humana:} imprescindible en cambios críticos.
+\end{enumerate}
+\end{frame}
+ 
+\begin{frame}{Ejemplo integrado: ``Corrige el issue 123''}
+\begin{enumerate}
+    \item El usuario escribe \texttt{/fix-issue 123} (\alert{slash command}). El harness carga \alert{AGENTS.md}.
+    \item Se crea una rama de git para la tarea.
+    \item Un servidor \alert{MCP} de GitHub lee el \textit{issue} y sus comentarios.
+    \item El \alert{orquestador} lanza un \alert{subagente explorador} que localiza el código y devuelve solo un resumen.
+    \item El implementador edita; un \alert{hook} \texttt{PostToolUse} formatea cada fichero.
+    \item Se ejecutan los \alert{tests} (verificación): fallan, el agente lee el error y corrige.
+    \item Un \alert{hook} \texttt{Stop} vuelve a lanzar la suite completa antes de dar la tarea por terminada.
+    \item Un \alert{subagente revisor} analiza el \textit{diff} con contexto limpio.
+    \item Se abre un Pull Request (vía MCP) y el \alert{humano} lo revisa.
+\end{enumerate}
+\end{frame}
+ 
+\begin{frame}{Resumen: ¿qué mecanismo uso para qué?}
+\begin{table}[]
+\centering
+\scriptsize
+\begin{tabular}{|l|l|l|c|}
+\hline
+\textbf{Mecanismo} & \textbf{Problema que resuelve} & \textbf{Quién liva} \\ \hline
+AGENTS.md & Contexto persistente del proyecto & Siempre cargado  \\ \hline
+Slash command & Flujos de trabajo repetibles & El humano \\ \hline
+Skill & Conocimiento procedimental bajo demanda & El modelo  \\ \hline
+MCP & Conexión con sistemas externos & El modelo (como \textit{tool})  \\ \hline
+Subagente & Aislar contexto y paralelizar & El orquestador  \\ \hline
+Hook & Reglas que deben cumplirse siempre & Un evento del ciclo de vida  \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{block}{Regla de oro}
+\begin{itemize}
+    \item ¿Debe \alert{saberlo siempre}? $\rightarrow$ AGENTS.md.
+    \item ¿Solo \alert{a veces}? $\rightarrow$ skill.
+    \item ¿Debe \alert{ocurrir siempre}? $\rightarrow$ hook.
+    \item ¿Necesita \alert{acceso externo}? $\rightarrow$ MCP.
+    \item ¿Se está \alert{saturando el contexto}? $\rightarrow$ subagente.
+\end{itemize}
+\end{block}
+
 \end{frame}
 
 \section{Multimodalidad: Vision-Language Models}
