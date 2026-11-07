@@ -1,0 +1,68 @@
+\begin{thebibliography}{10}
+
+\bibitem{simonyan2014very}
+Karen Simonyan and Andrew Zisserman.
+\newblock Very deep convolutional networks for large-scale image recognition.
+\newblock {\em arXiv preprint arXiv:1409.1556}, 2014.
+
+\bibitem{liu2022convnet}
+Zhuang Liu, Hanzi Mao, Chao-Yuan Wu, Christoph Feichtenhofer, Trevor Darrell,
+  and Saining Xie.
+\newblock A convnet for the 2020s.
+\newblock In {\em Proceedings of the IEEE/CVF conference on computer vision and
+  pattern recognition}, pages 11976--11986, 2022.
+
+\bibitem{ding2022scaling}
+Xiaohan Ding, Xiangyu Zhang, Jungong Han, and Guiguang Ding.
+\newblock Scaling up your kernels to 31x31: Revisiting large kernel design in
+  cnns.
+\newblock In {\em Proceedings of the IEEE/CVF conference on computer vision and
+  pattern recognition}, pages 11963--11975, 2022.
+
+\bibitem{liu2022more}
+Shiwei Liu, Tianlong Chen, Xiaohan Chen, Xuxi Chen, Qiao Xiao, Boqian Wu, Tommi
+  K{\"a}rkk{\"a}inen, Mykola Pechenizkiy, Decebal Mocanu, and Zhangyang Wang.
+\newblock More convnets in the 2020s: Scaling up kernels beyond 51x51 using
+  sparsity.
+\newblock {\em arXiv preprint arXiv:2207.03620}, 2022.
+
+\bibitem{Cortex}
+Michael~H. Herzog and Aaron M.~Clarke (frontiers).
+\newblock Cortex image.
+\newblock https://www.frontiersin.org/articles/10.3389/fncom.2014.00135/full.
+\newblock [Online; accessed August, 2022].
+
+\bibitem{siddiqui2018automatic}
+Shoaib~Ahmed Siddiqui, Ahmad Salman, Muhammad~Imran Malik, Faisal Shafait,
+  Ajmal Mian, Mark~R Shortis, and Euan~S Harvey.
+\newblock Automatic fish species classification in underwater videos:
+  exploiting pre-trained deep neural network models to compensate for limited
+  labelled data.
+\newblock {\em ICES Journal of Marine Science}, 75(1):374--389, 2018.
+
+\bibitem{ConvHierarchy}
+Kathrin~Melcher (Medium).
+\newblock Convolutional hierarchy image.
+\newblock
+  https://medium.com/low-code-for-advanced-data-science/introduction-to-convolutional-neural-networks-and-computer-vision-72b2d85dd1c0.
+\newblock [Online; accessed August, 2022].
+
+\bibitem{bieder2021comparison}
+Florentin Bieder, Robin Sandk{\"u}hler, and Philippe~C Cattin.
+\newblock Comparison of methods generalizing max-and average-pooling.
+\newblock {\em arXiv preprint arXiv:2103.01746}, 2021.
+
+\bibitem{MaxPoolingvsStrides}
+itdxer (StackExchange).
+\newblock Strides vs maxpooling debate.
+\newblock
+  https://stats.stackexchange.com/questions/387482/pooling-vs-stride-for-downsampling.
+\newblock [Online; accessed September, 2023].
+
+\bibitem{sun2018fishnet}
+Shuyang Sun, Jiangmiao Pang, Jianping Shi, Shuai Yi, and Wanli Ouyang.
+\newblock Fishnet: A versatile backbone for image, region, and pixel level
+  prediction.
+\newblock {\em Advances in neural information processing systems}, 31, 2018.
+
+\end{thebibliography}

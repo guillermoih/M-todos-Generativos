@@ -1,0 +1,6 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Introducción e intuición previa}{2}{0}{1}
+\beamer@sectionintoc {2}{Sampleo de datos (difusión directa e inversa)}{6}{0}{2}
+\beamer@sectionintoc {3}{Condicionamiento de la salida}{26}{0}{3}
+\beamer@sectionintoc {4}{Diffusion models avanzados}{35}{0}{4}
+\contentsline {section}{Referencias}{42}{}%
