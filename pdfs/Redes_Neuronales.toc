@@ -1,0 +1,3 @@
+\xpg@aux {}{spanish}
+\beamer@sectionintoc {1}{Perceptrón multicapa para procesar imágenes}{37}{0}{1}
+\contentsline {section}{Referencias}{41}{}%

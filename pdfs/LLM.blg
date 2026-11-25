@@ -1,0 +1,53 @@
+This is BibTeX, Version 0.99e (TeX Live 2026)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: LLM.aux
+The style file: unsrt.bst
+Database file #1: Slides/references.bib
+Warning--entry type for "crewai2024" isn't style-file defined
+--line 2665 of file Slides/references.bib
+Warning--entry type for "Liu_LlamaIndex_2022" isn't style-file defined
+--line 2727 of file Slides/references.bib
+Warning--entry type for "Ollama_2023" isn't style-file defined
+--line 2737 of file Slides/references.bib
+You've used 57 entries,
+            1791 wiz_defined-function locations,
+            735 strings with 16046 characters,
+and the built_in function-call counts, 14111 in all, are:
+= -- 1110
+> -- 937
+< -- 13
++ -- 338
+- -- 281
+* -- 847
+:= -- 2277
+add.period$ -- 188
+call.type$ -- 57
+change.case$ -- 57
+chr.to.int$ -- 0
+cite$ -- 57
+duplicate$ -- 588
+empty$ -- 1282
+format.name$ -- 281
+if$ -- 3158
+int.to.chr$ -- 0
+int.to.str$ -- 57
+missing$ -- 37
+newline$ -- 300
+num.names$ -- 55
+pop$ -- 264
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 342
+stack$ -- 0
+substring$ -- 594
+swap$ -- 196
+text.length$ -- 13
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 105
+width$ -- 59
+write$ -- 617
+(There were 3 warnings)
